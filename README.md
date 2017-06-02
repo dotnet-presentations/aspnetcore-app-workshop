@@ -53,7 +53,7 @@
   * Boilerplate
   * Identity Server
 
-![](architecture-diagram.png)
+![Architecture Diagram](https://rawgit.com/jongalloway/aspnetcore-app-workshop/master/docs/architecture-diagram.svg)
 
 ## Day 1
 | Time | Title |  |
