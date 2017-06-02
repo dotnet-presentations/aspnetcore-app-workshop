@@ -53,6 +53,8 @@
   * Boilerplate
   * Identity Server
 
+![](architecture-diagram.png)
+
 ## Day 1
 | Time | Title |  |
 | ---- | ----- | ---- |
