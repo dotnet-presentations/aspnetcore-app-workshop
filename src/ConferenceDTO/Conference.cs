@@ -1,25 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text;
 
 namespace ConferenceDTO
 {
-    public class Speaker
+    public class Conference
     {
-        public int SpeakerID { get; set; }
+        public int ConferenceID { get; set; }
 
         [Required]
         [StringLength(200)]
         public string Name { get; set; }
 
-        [DataType(DataType.MultilineText)]
-        [StringLength(4000)]
-        public string Bio { get; set; }
-
-        [DataType(DataType.Url)]
-        [StringLength(1000)]
-        public string WebSite { get; set; }
+        public virtual ICollection<Track> Tracks { get; set; }
 
         public virtual ICollection<Session> Sessions { get; set; }
+
+        public virtual ICollection<Attendee> Attendees { get; set; }
     }
 }
