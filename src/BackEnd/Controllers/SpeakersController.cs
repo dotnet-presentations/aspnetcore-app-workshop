@@ -25,7 +25,7 @@ namespace BackEnd.Controllers
             // TODO: Use AutoMapper
             var result = speakers.Select(s => new ConferenceDTO.Speaker
             {
-                SpeakerID = s.SpeakerID,
+                SpeakerID = s.ID,
                 Name = s.Name, 
                 Bio = s.Bio,
                 WebSite = s.WebSite,
@@ -47,7 +47,7 @@ namespace BackEnd.Controllers
             // TODO: Use AutoMapper
             var result = new ConferenceDTO.Speaker
             {
-                SpeakerID = speaker.SpeakerID,
+                SpeakerID = speaker.ID,
                 Name = speaker.Name,
                 Bio = speaker.Bio,
                 WebSite = speaker.WebSite,
@@ -77,13 +77,13 @@ namespace BackEnd.Controllers
             // TODO: Use AutoMapper
             var result = new ConferenceDTO.Speaker
             {
-                SpeakerID = speaker.SpeakerID,
+                SpeakerID = speaker.ID,
                 Name = speaker.Name,
                 Bio = speaker.Bio,
                 WebSite = speaker.WebSite
             };
 
-            return CreatedAtAction(nameof(GetSpeaker), new { id = speaker.SpeakerID }, result);
+            return CreatedAtAction(nameof(GetSpeaker), new { id = speaker.ID }, result);
         }
 
         [HttpPut("{id:int}")]
@@ -111,7 +111,7 @@ namespace BackEnd.Controllers
             // TODO: Use AutoMapper
             var result = new ConferenceDTO.Speaker
             {
-                SpeakerID = speaker.SpeakerID,
+                SpeakerID = speaker.ID,
                 Name = speaker.Name,
                 Bio = speaker.Bio,
                 WebSite = speaker.WebSite

@@ -15,6 +15,8 @@ namespace ConferenceDTO
 
         public virtual ICollection<Track> Tracks { get; set; }
 
+        public virtual ICollection<Speaker> Speakers { get; set; }
+
         public virtual ICollection<Session> Sessions { get; set; }
 
         public virtual ICollection<Attendee> Attendees { get; set; }
