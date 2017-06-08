@@ -6,6 +6,6 @@ namespace ConferenceDTO
 {
     public class TagResponse : Tag
     {
-        public ICollection<Session> Sessions { get; set; }
+        public ICollection<Session> Sessions { get; set; } = new List<Session>();
     }
 }

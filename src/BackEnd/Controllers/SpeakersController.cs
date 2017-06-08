@@ -23,12 +23,13 @@ namespace BackEnd.Controllers
         {
             var speakers = await _db.Speakers.AsNoTracking().ToListAsync();
             // TODO: Use AutoMapper
-            var result = speakers.Select(s => new ConferenceDTO.Speaker
+            var result = speakers.Select(s => new ConferenceDTO.SpeakerResponse
             {
                 ID = s.ID,
                 Name = s.Name, 
                 Bio = s.Bio,
-                WebSite = s.WebSite
+                WebSite = s.WebSite,
+                //Sessions = ??
             });
             return Ok(result);
         }
@@ -44,14 +45,22 @@ namespace BackEnd.Controllers
             }
             
             // TODO: Use AutoMapper
-            var result = new ConferenceDTO.Speaker
+            var result = new ConferenceDTO.SpeakerResponse
             {
                 ID = speaker.ID,
                 Name = speaker.Name,
                 Bio = speaker.Bio,
-                WebSite = speaker.WebSite
+                WebSite = speaker.WebSite,
+                Sessions = speaker.SessionSpeakers?
+                    .Select(ss =>
+                        new ConferenceDTO.Session
+                        {
+                            ID = ss.Session.ID,
+                            Title = ss.Session.Title
+                        })
+                    .ToList()
             };
-            return Ok(speaker);
+            return Ok(result);
         }
 
         [HttpPost]
@@ -73,12 +82,13 @@ namespace BackEnd.Controllers
             await _db.SaveChangesAsync();
 
             // TODO: Use AutoMapper
-            var result = new ConferenceDTO.Speaker
+            var result = new ConferenceDTO.SpeakerResponse
             {
                 ID = speaker.ID,
                 Name = speaker.Name,
                 Bio = speaker.Bio,
-                WebSite = speaker.WebSite
+                WebSite = speaker.WebSite,
+                //Sessions = ??
             };
 
             return CreatedAtAction(nameof(GetSpeaker), new { id = speaker.ID }, result);
@@ -107,12 +117,13 @@ namespace BackEnd.Controllers
             await _db.SaveChangesAsync();
 
             // TODO: Use AutoMapper
-            var result = new ConferenceDTO.Speaker
+            var result = new ConferenceDTO.SpeakerResponse
             {
                 ID = speaker.ID,
                 Name = speaker.Name,
                 Bio = speaker.Bio,
-                WebSite = speaker.WebSite
+                WebSite = speaker.WebSite,
+                //Sessions = ??
             };
 
             return AcceptedAtAction(nameof(GetSpeaker), new { id = speaker.ID }, result);

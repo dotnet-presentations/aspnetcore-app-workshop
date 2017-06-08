@@ -8,6 +8,6 @@ namespace ConferenceDTO
     {
         public Conference Conference { get; set; }
 
-        public ICollection<Session> Sessions { get; set; }
+        public ICollection<Session> Sessions { get; set; } = new List<Session>();
     }
 }
