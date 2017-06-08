@@ -25,17 +25,16 @@ namespace BackEnd.Controllers
             // TODO: Use AutoMapper
             var result = speakers.Select(s => new ConferenceDTO.Speaker
             {
-                SpeakerID = s.ID,
+                ID = s.ID,
                 Name = s.Name, 
                 Bio = s.Bio,
-                WebSite = s.WebSite,
-                //Sessions = ??
+                WebSite = s.WebSite
             });
             return Ok(result);
         }
 
         [HttpGet("{id:int}")]
-        public async Task<IActionResult> GetSpeaker(int id)
+        public async Task<IActionResult> GetSpeaker([FromRoute] int id)
         {
             var speaker = await _db.FindAsync<Speaker>(id);
 
@@ -47,17 +46,16 @@ namespace BackEnd.Controllers
             // TODO: Use AutoMapper
             var result = new ConferenceDTO.Speaker
             {
-                SpeakerID = speaker.ID,
+                ID = speaker.ID,
                 Name = speaker.Name,
                 Bio = speaker.Bio,
-                WebSite = speaker.WebSite,
-                //Sessions = ??
+                WebSite = speaker.WebSite
             };
             return Ok(speaker);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateSpeaker(ConferenceDTO.Speaker input)
+        public async Task<IActionResult> CreateSpeaker([FromBody] ConferenceDTO.Speaker input)
         {
             if (!ModelState.IsValid)
             {
@@ -77,7 +75,7 @@ namespace BackEnd.Controllers
             // TODO: Use AutoMapper
             var result = new ConferenceDTO.Speaker
             {
-                SpeakerID = speaker.ID,
+                ID = speaker.ID,
                 Name = speaker.Name,
                 Bio = speaker.Bio,
                 WebSite = speaker.WebSite
@@ -87,7 +85,7 @@ namespace BackEnd.Controllers
         }
 
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> UpdateSpeaker(int id, ConferenceDTO.Speaker input)
+        public async Task<IActionResult> UpdateSpeaker([FromRoute] int id, [FromBody] ConferenceDTO.Speaker input)
         {
             var speaker = await _db.FindAsync<Speaker>(id);
 
@@ -111,13 +109,13 @@ namespace BackEnd.Controllers
             // TODO: Use AutoMapper
             var result = new ConferenceDTO.Speaker
             {
-                SpeakerID = speaker.ID,
+                ID = speaker.ID,
                 Name = speaker.Name,
                 Bio = speaker.Bio,
                 WebSite = speaker.WebSite
             };
 
-            return Ok(result);
+            return AcceptedAtAction(nameof(GetSpeaker), new { id = speaker.ID }, result);
         }
     }
 }

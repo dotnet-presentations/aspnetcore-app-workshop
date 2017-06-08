@@ -5,12 +5,10 @@ namespace ConferenceDTO
 {
     public class Tag
     {
-        public int TagID { get; set; }
+        public int ID { get; set; }
 
         [Required]
         [StringLength(32)]
         public string Name { get; set; }
-
-        public virtual ICollection<Session> Sessions { get; set; }
     }
 }

@@ -5,10 +5,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using BackEnd.Data;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace BackEnd
 {
@@ -23,10 +25,16 @@ namespace BackEnd
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ApplicationDbContext>(options =>  
+            services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddMvc();
+            services.AddMvcCore()
+                .AddJsonFormatters()
+                .AddApiExplorer();
+
+            services.AddSwaggerGen(options =>
+                options.SwaggerDoc("v1", new Info { Title = "Conference Planner API", Version = "v1" })
+            );
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -41,10 +49,15 @@ namespace BackEnd
                 app.UseExceptionHandler("/error");
             }
 
+            app.UseSwagger();
+
+            app.UseSwaggerUI(options =>
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "Conference Planner API v1")
+            );
+
             app.UseMvc();
 
-            // TODO: Add swagger & API explorer
-            app.Run(context => context.Response.WriteAsync("This app contains APIs!"));
+            app.UseRewriter(new RewriteOptions().AddRedirect("^$", "/swagger"));
         }
     }
 }

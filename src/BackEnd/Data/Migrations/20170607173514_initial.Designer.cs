@@ -9,9 +9,10 @@ using System;
 namespace BackEnd.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20170607173514_initial")]
+    partial class initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "2.0.0-preview1-24937")
@@ -81,7 +82,7 @@ namespace BackEnd.Migrations
                         .IsRequired()
                         .HasMaxLength(200);
 
-                    b.Property<int>("TrackId");
+                    b.Property<int?>("TrackId");
 
                     b.HasKey("ID");
 
@@ -202,8 +203,7 @@ namespace BackEnd.Migrations
 
                     b.HasOne("BackEnd.Data.Track", "Track")
                         .WithMany("Sessions")
-                        .HasForeignKey("TrackId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("TrackId");
                 });
 
             modelBuilder.Entity("BackEnd.Data.SessionSpeaker", b =>

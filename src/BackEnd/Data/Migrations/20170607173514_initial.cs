@@ -126,7 +126,7 @@ namespace BackEnd.Migrations
                     AttendeeID = table.Column<int>(nullable: true),
                     ConferenceID = table.Column<int>(nullable: false),
                     Title = table.Column<string>(maxLength: 200, nullable: false),
-                    TrackId = table.Column<int>(nullable: false)
+                    TrackId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -148,7 +148,7 @@ namespace BackEnd.Migrations
                         column: x => x.TrackId,
                         principalTable: "Tracks",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
