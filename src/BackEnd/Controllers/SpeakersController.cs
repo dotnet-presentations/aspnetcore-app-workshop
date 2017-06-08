@@ -126,7 +126,25 @@ namespace BackEnd.Controllers
                 //Sessions = ??
             };
 
-            return AcceptedAtAction(nameof(GetSpeaker), new { id = speaker.ID }, result);
+            return Ok(result);
+        }
+
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> DeleteSpeaker([FromRoute] int id)
+        {
+            var speaker = await _db.FindAsync<Speaker>(id);
+
+            if (speaker == null)
+            {
+                return NotFound();
+            }
+
+            _db.Remove(speaker);
+
+            // TODO: Handle exceptions, e.g. concurrency
+            await _db.SaveChangesAsync();
+
+            return NoContent();
         }
     }
 }
