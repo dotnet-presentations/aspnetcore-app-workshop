@@ -34,6 +34,22 @@
                     <li><a asp-page="/About">About</a></li>
                     <li><a asp-page="/Contact">Contact</a></li>
                 </ul>
+                <form asp-controller="account" asp-action="logout" method="post" id="logoutForm" class="navbar-right">
+                    <ul class="nav navbar-nav navbar-right">
+
+                        @if (Context.User.Identity.IsAuthenticated)
+                        {
+                            <li><a>@Context.User.Identity.Name</a></li>
+                            <li>
+                                <button type="submit" class="btn btn-link navbar-btn navbar-link">Log out</button>
+                            </li>
+                        }
+                        else
+                        {
+                            <li><a asp-controller="account" asp-action="login">Log in</a></li>
+                        }
+                    </ul>
+                </form>
             </div>
         </div>
     </nav>
