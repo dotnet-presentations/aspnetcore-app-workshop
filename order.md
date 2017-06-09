@@ -13,6 +13,17 @@
    * Every session has an edit link
    * Every track has an add session
 1. Attendee - sign in with Twitter and favorite sessions
+1. Caching on front end
+1. Bundler.Core https://docs.microsoft.com/en-us/aspnet/core/client-side/bundling-and-minification
+1. Azure
+  1. Publishing
+  1. App Insights
+  1. Diagnostics
+
+Day 1: Get it functional
+Day 2: Make it cool
+
+React front end - show the data
 
 Todo: 
 Who covers which part
@@ -21,3 +32,4 @@ David: Backend
 David: Auth (Twitter is done, will add Google)
 Damian: Public and Admin views 
 Jon: Seed data, markdown
+Jon: SPA with React
