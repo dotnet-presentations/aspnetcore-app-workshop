@@ -1,17 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+using ConferenceDTO;
+using FrontEnd.Services;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace FrontEnd.Pages
 {
     public class IndexModel : PageModel
     {
-        public void OnGet()
-        {
+        private readonly IApiClient _apiClient;
 
+        public IndexModel(IApiClient apiClient)
+        {
+            _apiClient = apiClient;
+        }
+
+        public IList<SessionResponse> Sessions { get; set; }
+
+        public async Task OnGet()
+        {
+            Sessions = await _apiClient.GetSessionsAsync();
         }
     }
 }

@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using System;
+using System.Net.Http;
+using FrontEnd.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Twitter;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -31,6 +34,14 @@ namespace FrontEnd
 
             services.AddCookieAuthentication();
             services.AddTwitterAuthentication(options => Configuration.GetSection("twitter").Bind(options));
+
+            var httpClient = new HttpClient()
+            {
+                 BaseAddress = new Uri(Configuration["serviceUrl"])
+            };
+
+            services.AddSingleton(httpClient);
+            services.AddSingleton<IApiClient, ApiClient>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

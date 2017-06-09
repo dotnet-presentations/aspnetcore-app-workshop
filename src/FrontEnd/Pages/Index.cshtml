@@ -5,5 +5,12 @@
 }
 
 <div class="row">
-    
+    <ul>
+        @foreach (var session in Model.Sessions)
+        {
+            <li>
+                @session.Title <a asp-page="Edit">Edit</a>
+            </li>
+        }
+    </ul>
 </div>
