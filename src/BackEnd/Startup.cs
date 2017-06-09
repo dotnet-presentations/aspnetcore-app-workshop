@@ -58,6 +58,55 @@ namespace BackEnd
             app.UseMvc();
 
             app.UseRewriter(new RewriteOptions().AddRedirect("^$", "/swagger"));
+
+            using (var scope = app.ApplicationServices.CreateScope())
+            {
+                var db = scope.ServiceProvider.GetService<ApplicationDbContext>();
+                var conference = new Conference { Name = "NDC Oslo 2017" };
+                db.Conferences.Add(conference);
+
+                var startTime = new DateTimeOffset(2017, 6, 14, 9, 0, 0, TimeSpan.FromHours(1));
+                db.Sessions.Add(new Session
+                {
+                    Conference = conference,
+                    Title = "Keynote",
+                    StartTime = startTime,
+                    EndTime = startTime + TimeSpan.FromHours(1)
+                });
+                startTime = startTime + TimeSpan.FromHours(1) + TimeSpan.FromMinutes(20);
+                db.Sessions.Add(new Session
+                {
+                    Conference = conference,
+                    Title = "Thinking in Events",
+                    StartTime = startTime,
+                    EndTime = startTime + TimeSpan.FromHours(1)
+                });
+                startTime = startTime + TimeSpan.FromHours(1) + TimeSpan.FromMinutes(20);
+                db.Sessions.Add(new Session
+                {
+                    Conference = conference,
+                    Title = "Becoming the Bottleneck",
+                    StartTime = startTime,
+                    EndTime = startTime + TimeSpan.FromHours(1)
+                });
+                startTime = startTime + TimeSpan.FromHours(2);
+                db.Sessions.Add(new Session
+                {
+                    Conference = conference,
+                    Title = "Functional Techniques for C#",
+                    StartTime = startTime,
+                    EndTime = startTime + TimeSpan.FromHours(1)
+                });
+                startTime = startTime + TimeSpan.FromHours(1) + TimeSpan.FromMinutes(20);
+                db.Sessions.Add(new Session
+                {
+                    Conference = conference,
+                    Title = "Microservices",
+                    StartTime = startTime,
+                    EndTime = startTime + TimeSpan.FromHours(1)
+                });
+                db.SaveChanges();
+            }
         }
     }
 }
