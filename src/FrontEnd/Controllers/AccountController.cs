@@ -14,9 +14,9 @@ namespace FrontEnd.Controllers
         public IActionResult Login() => Challenge(new AuthenticationProperties { RedirectUri = "/" });
 
         [HttpPost]
-        public IActionResult Logout()
+        public async Task<IActionResult> Logout()
         {
-            HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return Redirect("/");
         }
     }

@@ -30,11 +30,7 @@ namespace FrontEnd
             });
 
             services.AddCookieAuthentication();
-            services.AddTwitterAuthentication(o =>
-            {
-                o.ConsumerKey = Configuration["twitter:consumerKey"];
-                o.ConsumerSecret = Configuration["twitter:consumerSecret"];
-            });
+            services.AddTwitterAuthentication(options => Configuration.GetSection("twitter").Bind(options));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
