@@ -87,7 +87,7 @@ namespace BackEnd.Controllers
         }
 
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> UpdateConference([FromRoute] int id, [FromBody] ConferenceDTO.Conference input)
+        public async Task<IActionResult> UpdateConference([FromRoute]int id, [FromBody]ConferenceDTO.Conference input)
         {
             var conference = await _db.FindAsync<Conference>(id);
 

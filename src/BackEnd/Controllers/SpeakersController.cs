@@ -21,7 +21,9 @@ namespace BackEnd.Controllers
         [HttpGet]
         public async Task<IActionResult> GetSpeakers()
         {
-            var speakers = await _db.Speakers.Include(s => s.SessionSpeakers).AsNoTracking().ToListAsync();
+            var speakers = await _db.Speakers.AsNoTracking()
+                                             .Include(s => s.SessionSpeakers)
+                                             .ToListAsync();
             // TODO: Use AutoMapper
             var result = speakers.Select(s => new ConferenceDTO.SpeakerResponse
             {
@@ -42,9 +44,10 @@ namespace BackEnd.Controllers
         }
 
         [HttpGet("{id:int}")]
-        public async Task<IActionResult> GetSpeaker([FromRoute] int id)
+        public async Task<IActionResult> GetSpeaker([FromRoute]int id)
         {
-            var speaker = await _db.Speakers.Include(s => s.SessionSpeakers)
+            var speaker = await _db.Speakers.AsNoTracking()
+                                            .Include(s => s.SessionSpeakers)
                                             .SingleOrDefaultAsync(s => s.ID == id);
 
             if (speaker == null)
@@ -72,7 +75,7 @@ namespace BackEnd.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateSpeaker([FromBody] ConferenceDTO.Speaker input)
+        public async Task<IActionResult> CreateSpeaker([FromBody]ConferenceDTO.Speaker input)
         {
             if (!ModelState.IsValid)
             {
@@ -109,7 +112,7 @@ namespace BackEnd.Controllers
         }
 
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> UpdateSpeaker([FromRoute] int id, [FromBody] ConferenceDTO.Speaker input)
+        public async Task<IActionResult> UpdateSpeaker([FromRoute]int id, [FromBody]ConferenceDTO.Speaker input)
         {
             var speaker = await _db.FindAsync<Speaker>(id);
 
@@ -137,19 +140,20 @@ namespace BackEnd.Controllers
                 Name = speaker.Name,
                 Bio = speaker.Bio,
                 WebSite = speaker.WebSite,
-                Sessions = speaker?.SessionSpeakers.Select(ss =>
+                Sessions = speaker?.SessionSpeakers
+                    .Select(ss =>
                         new ConferenceDTO.Session
                         {
                             ID = ss.SessionId
                         })
-                        .ToList()
+                    .ToList()
             };
 
             return Ok(result);
         }
 
         [HttpDelete("{id:int}")]
-        public async Task<IActionResult> DeleteSpeaker([FromRoute] int id)
+        public async Task<IActionResult> DeleteSpeaker([FromRoute]int id)
         {
             var speaker = await _db.FindAsync<Speaker>(id);
 

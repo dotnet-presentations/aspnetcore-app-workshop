@@ -35,7 +35,7 @@ namespace FrontEnd
             services.AddCookieAuthentication();
             services.AddTwitterAuthentication(options => Configuration.GetSection("twitter").Bind(options));
 
-            var httpClient = new HttpClient()
+            var httpClient = new HttpClient
             {
                  BaseAddress = new Uri(Configuration["serviceUrl"])
             };

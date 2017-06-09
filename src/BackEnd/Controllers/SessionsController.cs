@@ -18,11 +18,15 @@ namespace BackEnd.Controllers
             _db = db;
         }
 
-        // GET: api/values
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var sessions = await _db.Sessions.Include(s => s.SessionSpeakers).AsNoTracking().ToListAsync();
+            var sessions = await _db.Sessions.AsNoTracking()
+                                             .Include(s => s.SessionSpeakers)
+                                                .ThenInclude(ss => ss.Speaker)
+                                             .Include(s => s.SessionTags)
+                                                .ThenInclude(st => st.Tag)
+                                             .ToListAsync();
 
             var results = sessions.Select(s => new ConferenceDTO.SessionResponse
             {
@@ -31,17 +35,19 @@ namespace BackEnd.Controllers
                 StartTime = s.StartTime,
                 EndTime = s.EndTime,
                 Tags = s?.SessionTags
-                            .Select(t => new ConferenceDTO.Tag
-                            {
-                                ID = t.TagID,
-                            }).ToList(),
+                         .Select(t => new ConferenceDTO.Tag
+                         {
+                             ID = t.TagID,
+                             Name = t.Tag.Name
+                         })
+                         .ToList(),
                 Speakers = s?.SessionSpeakers
-                               .Select(ss => new ConferenceDTO.Speaker
-                               {
-                                   ID = ss.SpeakerId,
-                                   Name = ss.Speaker.Name
-                               })
-                               .ToList(),
+                             .Select(ss => new ConferenceDTO.Speaker
+                             {
+                                 ID = ss.SpeakerId,
+                                 Name = ss.Speaker.Name
+                             })
+                             .ToList(),
                 TrackId = s.TrackId,
                 ConferenceID = s.ConferenceID,
                 Abstract = s.Abstract
@@ -50,9 +56,8 @@ namespace BackEnd.Controllers
             return Ok(sessions);
         }
 
-        // GET api/values/5
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> Get([FromRoute]int id)
         {
             var session = await _db.Sessions.Include(s => s.SessionSpeakers)
                                             .Include(s => s.SessionTags)
@@ -70,18 +75,19 @@ namespace BackEnd.Controllers
                 StartTime = session.StartTime,
                 EndTime = session.EndTime,
                 Tags = session?.SessionTags
-                            .Select(st => new ConferenceDTO.Tag
-                            {
-                                ID = st.TagID,
-                                Name = st.Tag.Name
-                            }).ToList(),
-                Speakers = session?.SessionSpeakers
-                               .Select(ss => new ConferenceDTO.Speaker
+                               .Select(st => new ConferenceDTO.Tag
                                {
-                                   ID = ss.SpeakerId,
-                                   Name = ss.Speaker.Name
+                                   ID = st.TagID,
+                                   Name = st.Tag.Name
                                })
                                .ToList(),
+                Speakers = session?.SessionSpeakers
+                                   .Select(ss => new ConferenceDTO.Speaker
+                                   {
+                                       ID = ss.SpeakerId,
+                                       Name = ss.Speaker.Name
+                                   })
+                                   .ToList(),
                 TrackId = session.TrackId,
                 ConferenceID = session.ConferenceID,
                 Abstract = session.Abstract
@@ -90,7 +96,6 @@ namespace BackEnd.Controllers
             return Ok(session);
         }
 
-        // POST api/values
         [HttpPost]
         public async Task<IActionResult> Post([FromBody]ConferenceDTO.Session input)
         {
@@ -125,9 +130,8 @@ namespace BackEnd.Controllers
             return CreatedAtAction(nameof(Get), new { id = result.ID }, result);
         }
 
-        // PUT api/values/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody]ConferenceDTO.Session input)
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> Put([FromRoute]int id, [FromBody]ConferenceDTO.Session input)
         {
             var session = await _db.Sessions.FindAsync(id);
 
@@ -163,8 +167,7 @@ namespace BackEnd.Controllers
             return Ok(result);
         }
 
-        // DELETE api/values/5
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete(int id)
         {
             var session = await _db.Sessions.FindAsync(id);
