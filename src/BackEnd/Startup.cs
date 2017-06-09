@@ -63,7 +63,10 @@ namespace BackEnd
             //using (var scope = app.ApplicationServices.CreateScope())
             //{
             //    var db = scope.ServiceProvider.GetService<ApplicationDbContext>();
-                
+
+            //    db.Database.EnsureDeleted();
+            //    db.Database.EnsureCreated();
+
             //    var conference = new Conference { Name = "NDC Oslo 2017" };
             //    db.Conferences.Add(conference);
 

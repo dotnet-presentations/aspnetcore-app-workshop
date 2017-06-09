@@ -21,15 +21,22 @@ namespace BackEnd.Controllers
         [HttpGet]
         public async Task<IActionResult> GetSpeakers()
         {
-            var speakers = await _db.Speakers.AsNoTracking().ToListAsync();
+            var speakers = await _db.Speakers.Include(s => s.SessionSpeakers).AsNoTracking().ToListAsync();
             // TODO: Use AutoMapper
             var result = speakers.Select(s => new ConferenceDTO.SpeakerResponse
             {
                 ID = s.ID,
-                Name = s.Name, 
+                Name = s.Name,
                 Bio = s.Bio,
                 WebSite = s.WebSite,
-                //Sessions = ??
+                Sessions = s.SessionSpeakers?
+                    .Select(ss =>
+                        new ConferenceDTO.Session
+                        {
+                            ID = ss.SessionId,
+                            Title = ss.Session.Title
+                        })
+                    .ToList()
             });
             return Ok(result);
         }
@@ -37,13 +44,14 @@ namespace BackEnd.Controllers
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetSpeaker([FromRoute] int id)
         {
-            var speaker = await _db.FindAsync<Speaker>(id);
+            var speaker = await _db.Speakers.Include(s => s.SessionSpeakers)
+                                            .SingleOrDefaultAsync(s => s.ID == id);
 
             if (speaker == null)
             {
                 return NotFound();
             }
-            
+
             // TODO: Use AutoMapper
             var result = new ConferenceDTO.SpeakerResponse
             {
@@ -55,7 +63,7 @@ namespace BackEnd.Controllers
                     .Select(ss =>
                         new ConferenceDTO.Session
                         {
-                            ID = ss.Session.ID,
+                            ID = ss.SessionId,
                             Title = ss.Session.Title
                         })
                     .ToList()
@@ -88,7 +96,13 @@ namespace BackEnd.Controllers
                 Name = speaker.Name,
                 Bio = speaker.Bio,
                 WebSite = speaker.WebSite,
-                //Sessions = ??
+                Sessions = speaker.SessionSpeakers?
+                    .Select(ss =>
+                        new ConferenceDTO.Session
+                        {
+                            ID = ss.SessionId
+                        })
+                        .ToList()
             };
 
             return CreatedAtAction(nameof(GetSpeaker), new { id = speaker.ID }, result);
@@ -123,7 +137,12 @@ namespace BackEnd.Controllers
                 Name = speaker.Name,
                 Bio = speaker.Bio,
                 WebSite = speaker.WebSite,
-                //Sessions = ??
+                Sessions = speaker?.SessionSpeakers.Select(ss =>
+                        new ConferenceDTO.Session
+                        {
+                            ID = ss.SessionId
+                        })
+                        .ToList()
             };
 
             return Ok(result);
