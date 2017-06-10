@@ -23,7 +23,7 @@ namespace FrontEnd
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().AddRazorPagesOptions(options => options.AuthorizeFolder("/admin"));
+            services.AddMvc().AddRazorPagesOptions(options => options.AuthorizeFolder("/admin", "IsAdmin"));
 
             services.AddAuthentication(options =>
             {

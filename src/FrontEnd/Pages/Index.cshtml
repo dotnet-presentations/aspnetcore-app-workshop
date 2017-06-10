@@ -20,7 +20,10 @@
                         <div class="panel-body">
                             <p>@session.Track?.Name</p>
                             <h3 class="panel-title">@session.Title</h3>
-                            @session.Abstract
+                            <p>@session.Abstract</p>
+                            @if (Model.IsAdmin) {
+                                <a asp-page="/Admin/Session" asp-route-id="@session.ID" class="btn btn-link btn-xs">Edit</a>
+                            }
                         </div>
                     </div>
                 </div>
