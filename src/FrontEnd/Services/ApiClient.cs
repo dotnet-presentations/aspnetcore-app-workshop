@@ -27,7 +27,6 @@ namespace FrontEnd.Services
                 return null;
             }
             
-            // REVIEW: How do we handle errors
             response.EnsureSuccessStatusCode();
 
             return await response.Content.ReadAsJsonAsync<SessionResponse>();
@@ -37,10 +36,18 @@ namespace FrontEnd.Services
         {
             var response = await _httpClient.GetAsync("/api/sessions");
 
-            // REVIEW: How do we handle errors
             response.EnsureSuccessStatusCode();
 
             return await response.Content.ReadAsJsonAsync<List<SessionResponse>>();
+        }
+
+        public async Task<List<SpeakerResponse>> GetSpeakersAsync()
+        {
+            var response = await _httpClient.GetAsync("/api/speakers");
+
+            response.EnsureSuccessStatusCode();
+
+            return await response.Content.ReadAsJsonAsync<List<SpeakerResponse>>();
         }
     }
 }
