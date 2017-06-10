@@ -20,7 +20,7 @@ namespace FrontEnd.Pages
 
         public IEnumerable<SpeakerResponse> Speakers { get; set; }
 
-        public async Task OnGet(int day = 0)
+        public async Task OnGet()
         {
             var speakers = await _apiClient.GetSpeakersAsync();
 

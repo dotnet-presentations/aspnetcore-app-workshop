@@ -17,7 +17,7 @@
                 <ul>
                     @foreach(var session in speaker.Sessions)
                     {
-                        <li>@session.Title</li>
+                        <li><a asp-page="Details" asp-route-id="@session.ID">@session.Title</a></li>
                     }
                 </ul>
             </div>
