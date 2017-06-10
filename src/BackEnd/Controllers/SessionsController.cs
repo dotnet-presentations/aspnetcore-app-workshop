@@ -53,7 +53,7 @@ namespace BackEnd.Controllers
                 Abstract = s.Abstract
             });
 
-            return Ok(sessions);
+            return Ok(results);
         }
 
         [HttpGet("{id:int}")]
@@ -93,7 +93,7 @@ namespace BackEnd.Controllers
                 Abstract = session.Abstract
             };
 
-            return Ok(session);
+            return Ok(result);
         }
 
         [HttpPost]
