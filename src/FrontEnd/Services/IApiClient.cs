@@ -9,5 +9,6 @@ namespace FrontEnd.Services
     public interface IApiClient
     {
         Task<List<SessionResponse>> GetSessionsAsync();
+        Task<SessionResponse> GetSessionAsync(int id);
     }
 }

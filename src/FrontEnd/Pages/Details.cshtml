@@ -1,0 +1,12 @@
+@page
+@model DetailsModel
+
+<h1>@Model.Session.Title</h1>
+<p>@Model.Session.Track?.Name<p>
+
+<ul>
+@foreach(var speaker in Model.Session.Speakers)
+{
+    <li>@speaker.Name</li>
+}
+</ul>
