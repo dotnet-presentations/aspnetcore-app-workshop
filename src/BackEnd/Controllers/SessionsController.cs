@@ -60,7 +60,9 @@ namespace BackEnd.Controllers
         public async Task<IActionResult> Get([FromRoute]int id)
         {
             var session = await _db.Sessions.Include(s => s.SessionSpeakers)
+                                                .ThenInclude(ss => ss.Speaker)
                                             .Include(s => s.SessionTags)
+                                                .ThenInclude(st => st.Tag)
                                             .SingleOrDefaultAsync(s => s.ID == id);
 
             if (session == null)

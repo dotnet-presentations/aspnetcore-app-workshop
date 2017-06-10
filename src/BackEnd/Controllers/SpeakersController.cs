@@ -23,6 +23,7 @@ namespace BackEnd.Controllers
         {
             var speakers = await _db.Speakers.AsNoTracking()
                                              .Include(s => s.SessionSpeakers)
+                                                .ThenInclude(ss => ss.Session)
                                              .ToListAsync();
             // TODO: Use AutoMapper
             var result = speakers.Select(s => new ConferenceDTO.SpeakerResponse
@@ -48,6 +49,7 @@ namespace BackEnd.Controllers
         {
             var speaker = await _db.Speakers.AsNoTracking()
                                             .Include(s => s.SessionSpeakers)
+                                                .ThenInclude(ss => ss.Session)
                                             .SingleOrDefaultAsync(s => s.ID == id);
 
             if (speaker == null)
@@ -86,7 +88,8 @@ namespace BackEnd.Controllers
             var speaker = new Speaker
             {
                 Name = input.Name,
-                WebSite = input.WebSite
+                WebSite = input.WebSite,
+                Bio = input.Bio
             };
 
             _db.Speakers.Add(speaker);
@@ -129,6 +132,7 @@ namespace BackEnd.Controllers
             // TODO: Use AutoMapper
             speaker.Name = input.Name;
             speaker.WebSite = input.WebSite;
+            speaker.Bio = input.Bio;
 
             // TODO: Handle exceptions, e.g. concurrency
             await _db.SaveChangesAsync();
