@@ -11,5 +11,6 @@ namespace FrontEnd.Services
         Task<List<SessionResponse>> GetSessionsAsync();
         Task<SessionResponse> GetSessionAsync(int id);
         Task<List<SpeakerResponse>> GetSpeakersAsync();
+        Task<SpeakerResponse> GetSpeakerAsync(int id);
     }
 }

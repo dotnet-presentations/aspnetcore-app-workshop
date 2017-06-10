@@ -7,6 +7,6 @@
 <ul>
 @foreach (var speaker in Model.Session.Speakers)
 {
-    <li>@speaker.Name</li>
+    <li><a asp-page="Speaker" asp-route-id="@speaker.ID">@speaker.Name</a></li>
 }
 </ul>

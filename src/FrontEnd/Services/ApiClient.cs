@@ -41,6 +41,20 @@ namespace FrontEnd.Services
             return await response.Content.ReadAsJsonAsync<List<SessionResponse>>();
         }
 
+        public async Task<SpeakerResponse> GetSpeakerAsync(int id)
+        {
+            var response = await _httpClient.GetAsync($"/api/speakers/{id}");
+
+            if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                return null;
+            }
+            
+            response.EnsureSuccessStatusCode();
+
+            return await response.Content.ReadAsJsonAsync<SpeakerResponse>();
+        }
+
         public async Task<List<SpeakerResponse>> GetSpeakersAsync()
         {
             var response = await _httpClient.GetAsync("/api/speakers");

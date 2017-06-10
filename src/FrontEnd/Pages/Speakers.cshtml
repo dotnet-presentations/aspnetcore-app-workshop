@@ -13,7 +13,6 @@
         <div class="panel panel-default">
             <div class="panel-body">
                 <h3 class="panel-title"><a asp-page="Speaker" asp-route-id="@speaker.ID">@speaker.Name</a></h3>
-                @speaker.Bio
                 <ul>
                     @foreach(var session in speaker.Sessions)
                     {

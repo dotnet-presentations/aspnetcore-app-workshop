@@ -1,0 +1,13 @@
+@page
+@model SpeakerModel
+
+<h2>@Model.Speaker.Name</h2>
+
+<p>@Model.Speaker.Bio</p>
+
+<ul>
+    @foreach(var session in Model.Speaker.Sessions)
+    {
+        <li><a asp-page="Details" asp-route-id="@session.ID">@session.Title</a></li>
+    }
+</ul>
