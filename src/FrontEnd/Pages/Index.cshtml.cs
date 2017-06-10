@@ -34,7 +34,7 @@ namespace FrontEnd.Pages
             var filterDay = firstDay + day;
 
             Sessions = sessions.Where(s => s.StartTime?.Date.Day == filterDay)
-                               .OrderBy(s => s.Track?.Name)
+                               .OrderBy(s => s.TrackId)
                                .GroupBy(s => s.StartTime)
                                .OrderBy(g => g.Key)
                                .GroupBy(g => g.Key?.DayOfWeek);
