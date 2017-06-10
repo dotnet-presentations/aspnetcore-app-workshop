@@ -4,13 +4,38 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="row">
-    <ul>
-        @foreach (var session in Model.Sessions)
-        {
-            <li>
-                @session.Title <a asp-page="Edit">Edit</a>
-            </li>
-        }
-    </ul>
-</div>
+<h1>NDC Oslo 2017</h1>
+
+@foreach (var day in Model.Sessions)
+{
+    <h3>@(day.Key?.ToString() ?? "No Day")</h3>
+    @foreach (var timeSlot in day)
+    {
+        <h4>@timeSlot.Key?.ToString("HH:mm")</h4>
+        <div class="row">
+            @foreach (var session in timeSlot)
+            {
+                <div class="col-md-3">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">@session.Title</h3>
+                        </div>
+                        <div class="panel-body">
+                            @session.Abstract
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">@session.Title</h3>
+                        </div>
+                        <div class="panel-body">
+                            @session.Abstract
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+}

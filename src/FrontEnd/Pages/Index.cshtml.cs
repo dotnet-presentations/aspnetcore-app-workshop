@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using ConferenceDTO;
 using FrontEnd.Services;
@@ -15,11 +17,20 @@ namespace FrontEnd.Pages
             _apiClient = apiClient;
         }
 
-        public IList<SessionResponse> Sessions { get; set; }
+        public IEnumerable<IGrouping<DayOfWeek?, IGrouping<DateTimeOffset?, SessionResponse>>> Sessions { get; set; }
 
-        public async Task OnGet()
+        public async Task OnGet(int day = 0)
         {
-            Sessions = await _apiClient.GetSessionsAsync();
+            var sessions = await _apiClient.GetSessionsAsync();
+
+            var firstDay = sessions.Min(s => s.StartTime?.Day);
+            var filterDay = firstDay + day;
+
+            Sessions = sessions.Where(s => s.StartTime?.Date.Day == filterDay)
+                               .OrderBy(s => s.Track?.Name)
+                               .GroupBy(s => s.StartTime)
+                               .OrderBy(g => g.Key)
+                               .GroupBy(g => g.Key?.DayOfWeek);
         }
     }
 }
