@@ -22,6 +22,7 @@ namespace BackEnd.Controllers
         public async Task<IActionResult> Get()
         {
             var sessions = await _db.Sessions.AsNoTracking()
+                                             .Include(s => s.Track)
                                              .Include(s => s.SessionSpeakers)
                                                 .ThenInclude(ss => ss.Speaker)
                                              .Include(s => s.SessionTags)
@@ -49,6 +50,11 @@ namespace BackEnd.Controllers
                              })
                              .ToList(),
                 TrackId = s.TrackId,
+                Track = new Track
+                {
+                    TrackID = s?.TrackId ?? 0,
+                    Name = s.Track?.Name
+                },
                 ConferenceID = s.ConferenceID,
                 Abstract = s.Abstract
             });
@@ -59,7 +65,8 @@ namespace BackEnd.Controllers
         [HttpGet("{id:int}")]
         public async Task<IActionResult> Get([FromRoute]int id)
         {
-            var session = await _db.Sessions.Include(s => s.SessionSpeakers)
+            var session = await _db.Sessions.Include(s => s.Track)
+                                            .Include(s => s.SessionSpeakers)
                                                 .ThenInclude(ss => ss.Speaker)
                                             .Include(s => s.SessionTags)
                                                 .ThenInclude(st => st.Tag)
@@ -91,6 +98,11 @@ namespace BackEnd.Controllers
                                    })
                                    .ToList(),
                 TrackId = session.TrackId,
+                Track = new Track
+                {
+                    TrackID = session?.TrackId ?? 0,
+                    Name = session.Track?.Name
+                },
                 ConferenceID = session.ConferenceID,
                 Abstract = session.Abstract
             };
