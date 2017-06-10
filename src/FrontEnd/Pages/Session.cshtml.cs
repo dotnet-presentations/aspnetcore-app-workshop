@@ -9,12 +9,12 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace FrontEnd.Pages
 {
-    public class DetailsModel : PageModel
+    public class SessionModel : PageModel
     {
         private readonly IApiClient _apiClient;
         private readonly IAuthorizationService _authz;
 
-        public DetailsModel(IApiClient apiClient, IAuthorizationService authz)
+        public SessionModel(IApiClient apiClient, IAuthorizationService authz)
         {
             _apiClient = apiClient;
             _authz = authz;
