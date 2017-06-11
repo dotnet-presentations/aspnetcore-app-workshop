@@ -18,6 +18,27 @@ namespace FrontEnd.Services
             _httpClient = httpClient;
         }
 
+        public async Task AddAttendeeAsync(Attendee attendee)
+        {
+            var response = await _httpClient.PostJsonAsync($"/api/attendees", attendee);
+
+            response.EnsureSuccessStatusCode();
+        }
+
+        public async Task<AttendeeResponse> GetAttendeeAsync(string name)
+        {
+            var response = await _httpClient.GetAsync($"/api/attendees/{name}");
+
+            if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                return null;
+            }
+            
+            response.EnsureSuccessStatusCode();
+
+            return await response.Content.ReadAsJsonAsync<AttendeeResponse>();
+        }
+
         public async Task<SessionResponse> GetSessionAsync(int id)
         {
             var response = await _httpClient.GetAsync($"/api/sessions/{id}");

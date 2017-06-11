@@ -1,0 +1,39 @@
+@page
+@using ConferenceDTO
+@model WelcomeModel
+
+<h2>Welcome @User.Identity.Name</h2>
+<p>
+    Register as an atendee to get access to cool features.
+</p>
+
+<form method="post" class="form-horizontal">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <input asp-for="Attendee.UserName" value="@User.Identity.Name" type="hidden" />
+    <div class="form-group">
+        <label asp-for="Attendee.FirstName" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="Attendee.FirstName" class="form-control" />
+            <span asp-validation-for="Attendee.FirstName" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="Attendee.LastName" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="Attendee.LastName" class="form-control" />
+            <span asp-validation-for="Attendee.LastName" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="Attendee.EmailAddress" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="Attendee.EmailAddress" class="form-control" />
+            <span asp-validation-for="Attendee.EmailAddress" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+    </div>  
+</form>

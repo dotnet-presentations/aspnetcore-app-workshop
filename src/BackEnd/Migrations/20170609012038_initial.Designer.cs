@@ -34,6 +34,10 @@ namespace BackEnd.Migrations
                         .IsRequired()
                         .HasMaxLength(200);
 
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasMaxLength(200);
+
                     b.HasKey("ID");
 
                     b.ToTable("Attendees");

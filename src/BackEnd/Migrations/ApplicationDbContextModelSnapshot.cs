@@ -32,6 +32,10 @@ namespace BackEnd.Migrations
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasMaxLength(200);
+                        
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasMaxLength(200);
 
                     b.HasKey("ID");
 
