@@ -15,19 +15,19 @@ namespace BackEnd.Data
                 Title = session.Title,
                 StartTime = session.StartTime,
                 EndTime = session.EndTime,
-                Tags = session?.SessionTags
-                               .Select(st => new ConferenceDTO.Tag
-                               {
-                                   ID = st.TagID,
-                                   Name = st.Tag.Name
-                               })
+                Tags = session.SessionTags?
+                              .Select(st => new ConferenceDTO.Tag
+                              {
+                                  ID = st.TagID,
+                                  Name = st.Tag.Name
+                              })
                                .ToList(),
-                Speakers = session?.SessionSpeakers
-                                   .Select(ss => new ConferenceDTO.Speaker
-                                   {
-                                       ID = ss.SpeakerId,
-                                       Name = ss.Speaker.Name
-                                   })
+                Speakers = session.SessionSpeakers?
+                                  .Select(ss => new ConferenceDTO.Speaker
+                                  {
+                                      ID = ss.SpeakerId,
+                                      Name = ss.Speaker.Name
+                                  })
                                    .ToList(),
                 TrackId = session.TrackId,
                 Track = new ConferenceDTO.Track

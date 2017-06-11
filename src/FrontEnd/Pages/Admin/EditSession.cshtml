@@ -3,6 +3,14 @@
 
 <h3>Edit Session</h3>
 
+@if (Model.ShowMessage)
+{
+    <div class="alert alert-success alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        @Model.Message
+    </div>
+}
+
 <form method="post" class="form-horizontal">
     <div asp-validation-summary="All" class="text-danger"></div>
     <input asp-for="Session.ID" type="hidden" />
@@ -39,6 +47,7 @@
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
             <button type="submit" class="btn btn-primary">Save</button>
+            <button type="submit" asp-page-handler="Delete" class="btn btn-danger">Delete</button>
         </div>
     </div>  
 </form>

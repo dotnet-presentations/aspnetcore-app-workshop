@@ -62,6 +62,18 @@ namespace FrontEnd.Services
             return await response.Content.ReadAsJsonAsync<List<SessionResponse>>();
         }
 
+        public async Task DeleteSessionAsync(int id)
+        {
+            var response = await _httpClient.DeleteAsync($"/api/sessions/{id}");
+
+            if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                return;
+            }
+
+            response.EnsureSuccessStatusCode();
+        }
+
         public async Task<SpeakerResponse> GetSpeakerAsync(int id)
         {
             var response = await _httpClient.GetAsync($"/api/speakers/{id}");
