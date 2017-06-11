@@ -10,11 +10,13 @@
 <h1>@Model.Session.Title</h1>
 <span class="label label-default">@Model.Session.Track?.Name</span>
 
-<p>@Model.Session.Abstract</p>
-
 @foreach (var speaker in Model.Session.Speakers)
 {
     <em><a asp-page="Speaker" asp-route-id="@speaker.ID">@speaker.Name</a></em>
 }
 
-<a authz-policy="Admin" asp-page="/Admin/EditSession" asp-route-id="@Model.Session.ID" class="btn btn-link btn-xs">Edit</a>
+<p>@Html.Raw(Model.Session.Abstract)</p>
+
+<p authz-policy="Admin">
+    <a asp-page="/Admin/EditSession" asp-route-id="@Model.Session.ID" class="btn btn-default btn-sm">Edit</a>
+</p>

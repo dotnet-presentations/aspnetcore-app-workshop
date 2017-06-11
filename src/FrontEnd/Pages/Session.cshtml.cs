@@ -38,6 +38,11 @@ namespace FrontEnd.Pages
 
             DayOffset = Session.StartTime?.DateTime.Subtract(startDate ?? DateTime.MinValue).Days;
 
+            if (!string.IsNullOrEmpty(Session.Abstract))
+            {
+                Session.Abstract = "<p>" + String.Join("</p><p>", Session.Abstract.Split("\r\n", StringSplitOptions.RemoveEmptyEntries)) + "</p>";
+            }
+
             return Page();
         }
     }
