@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Net.Http;
+using FrontEnd.Infrastructure;
 using FrontEnd.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Twitter;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
@@ -20,10 +22,13 @@ namespace FrontEnd
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().AddRazorPagesOptions(options => options.AuthorizeFolder("/admin", "Admin"));
+            services.AddMvc()
+                    .AddRazorPagesOptions(options => 
+                    {
+                        options.AuthorizeFolder("/admin", "Admin");
+                    });
 
             services.AddAuthentication(options =>
             {
@@ -31,11 +36,13 @@ namespace FrontEnd
                 options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = TwitterDefaults.AuthenticationScheme;
             });
+
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("Admin", policy =>
                 {
-                    policy.RequireUserName(Configuration["admin"]);
+                    policy.RequireAuthenticatedUser()
+                          .RequireUserName(Configuration["admin"]);
                 });
             });
 
@@ -49,9 +56,9 @@ namespace FrontEnd
 
             services.AddSingleton(httpClient);
             services.AddSingleton<IApiClient, ApiClient>();
+            services.AddScoped<AdminMiddleware>();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
@@ -66,6 +73,8 @@ namespace FrontEnd
             app.UseStaticFiles();
 
             app.UseAuthentication();
+
+            app.UseMiddleware<AdminMiddleware>();
 
             app.UseMvc(routes =>
             {

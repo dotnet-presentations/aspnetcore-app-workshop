@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@{
+    var isAdmin = (bool?)Context.Items["IsAdmin"];
+}
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -32,7 +35,10 @@
                 <ul class="nav navbar-nav">
                     <li><a asp-page="/Index">Agenda</a></li>
                     <li><a asp-page="/Speakers">Speakers</a></li>
-                    <li><a asp-page="/Contact">Contact</a></li>
+                    @if (isAdmin.HasValue && isAdmin.Value)
+                    {
+                        <li><a asp-page="/Admin/Index">Manage</a></li>
+                    }
                 </ul>
                 <form asp-controller="account" asp-action="logout" method="post" id="logoutForm" class="navbar-right">
                     <ul class="nav navbar-nav navbar-right">
