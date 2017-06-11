@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using BackEnd.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using BackEnd.Data;
 
 namespace BackEnd.Controllers
 {
@@ -76,15 +76,7 @@ namespace BackEnd.Controllers
             _db.Sessions.Add(session);
             await _db.SaveChangesAsync();
 
-            var result = new ConferenceDTO.SessionResponse
-            {
-                ID = session.ID,
-                Title = session.Title,
-                StartTime = session.StartTime,
-                EndTime = session.EndTime,
-                TrackId = session.TrackId,
-                ConferenceID = session.ConferenceID
-            };
+            var result = session.MapSessionResponse();
 
             return CreatedAtAction(nameof(Get), new { id = result.ID }, result);
         }
@@ -114,16 +106,7 @@ namespace BackEnd.Controllers
 
             await _db.SaveChangesAsync();
 
-            var result = new ConferenceDTO.SessionResponse
-            {
-                ID = session.ID,
-                Title = session.Title,
-                Abstract = session.Abstract,
-                StartTime = session.StartTime,
-                EndTime = session.EndTime,
-                TrackId = session.TrackId,
-                ConferenceID = session.ConferenceID
-            };
+            var result = session.MapSessionResponse();
 
             return Ok(result);
         }
@@ -146,35 +129,7 @@ namespace BackEnd.Controllers
 
         private static ConferenceDTO.SessionResponse MapSessionResponse(Session session)
         {
-            return new ConferenceDTO.SessionResponse
-            {
-                ID = session.ID,
-                Title = session.Title,
-                StartTime = session.StartTime,
-                EndTime = session.EndTime,
-                Tags = session?.SessionTags
-                               .Select(st => new ConferenceDTO.Tag
-                               {
-                                   ID = st.TagID,
-                                   Name = st.Tag.Name
-                               })
-                               .ToList(),
-                Speakers = session?.SessionSpeakers
-                                   .Select(ss => new ConferenceDTO.Speaker
-                                   {
-                                       ID = ss.SpeakerId,
-                                       Name = ss.Speaker.Name
-                                   })
-                                   .ToList(),
-                TrackId = session.TrackId,
-                Track = new ConferenceDTO.Track
-                {
-                    TrackID = session?.TrackId ?? 0,
-                    Name = session.Track?.Name
-                },
-                ConferenceID = session.ConferenceID,
-                Abstract = session.Abstract
-            };
+            return session.MapSessionResponse();
         }
     }
 }

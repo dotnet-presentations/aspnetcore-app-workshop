@@ -25,13 +25,7 @@ namespace BackEnd
                 return NotFound();
             }
 
-            var result = new ConferenceDTO.AttendeeResponse
-            {
-                ID = attendee.ID,
-                FirstName = attendee.FirstName,
-                LastName = attendee.LastName,
-                UserName = attendee.UserName
-            };
+            var result = attendee.MapAttendeeResponse();
 
             return Ok(result);
         }
@@ -54,13 +48,7 @@ namespace BackEnd
             _db.Attendees.Add(attendee);
             await _db.SaveChangesAsync();
 
-            var result = new ConferenceDTO.AttendeeResponse
-            {
-                ID = attendee.ID,
-                FirstName = attendee.FirstName,
-                LastName = attendee.LastName,
-                UserName = attendee.UserName
-            };
+            var result = attendee.MapAttendeeResponse();
 
             return CreatedAtAction(nameof(Get), new { username = result.UserName }, result);
         }

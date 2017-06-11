@@ -25,22 +25,8 @@ namespace BackEnd.Controllers
                                              .Include(s => s.SessionSpeakers)
                                                 .ThenInclude(ss => ss.Session)
                                              .ToListAsync();
-            // TODO: Use AutoMapper
-            var result = speakers.Select(s => new ConferenceDTO.SpeakerResponse
-            {
-                ID = s.ID,
-                Name = s.Name,
-                Bio = s.Bio,
-                WebSite = s.WebSite,
-                Sessions = s.SessionSpeakers?
-                    .Select(ss =>
-                        new ConferenceDTO.Session
-                        {
-                            ID = ss.SessionId,
-                            Title = ss.Session.Title
-                        })
-                    .ToList()
-            });
+
+            var result = speakers.Select(s => s.MapSpeakerResponse());
             return Ok(result);
         }
 
@@ -57,22 +43,7 @@ namespace BackEnd.Controllers
                 return NotFound();
             }
 
-            // TODO: Use AutoMapper
-            var result = new ConferenceDTO.SpeakerResponse
-            {
-                ID = speaker.ID,
-                Name = speaker.Name,
-                Bio = speaker.Bio,
-                WebSite = speaker.WebSite,
-                Sessions = speaker.SessionSpeakers?
-                    .Select(ss =>
-                        new ConferenceDTO.Session
-                        {
-                            ID = ss.SessionId,
-                            Title = ss.Session.Title
-                        })
-                    .ToList()
-            };
+            var result = speaker.MapSpeakerResponse();
             return Ok(result);
         }
 
@@ -84,7 +55,6 @@ namespace BackEnd.Controllers
                 return BadRequest(ModelState);
             }
 
-            // TODO: Use AutoMapper
             var speaker = new Speaker
             {
                 Name = input.Name,
@@ -95,21 +65,7 @@ namespace BackEnd.Controllers
             _db.Speakers.Add(speaker);
             await _db.SaveChangesAsync();
 
-            // TODO: Use AutoMapper
-            var result = new ConferenceDTO.SpeakerResponse
-            {
-                ID = speaker.ID,
-                Name = speaker.Name,
-                Bio = speaker.Bio,
-                WebSite = speaker.WebSite,
-                Sessions = speaker.SessionSpeakers?
-                    .Select(ss =>
-                        new ConferenceDTO.Session
-                        {
-                            ID = ss.SessionId
-                        })
-                        .ToList()
-            };
+            var result = speaker.MapSpeakerResponse();
 
             return CreatedAtAction(nameof(GetSpeaker), new { id = speaker.ID }, result);
         }
@@ -129,7 +85,6 @@ namespace BackEnd.Controllers
                 return BadRequest(ModelState);
             }
 
-            // TODO: Use AutoMapper
             speaker.Name = input.Name;
             speaker.WebSite = input.WebSite;
             speaker.Bio = input.Bio;
@@ -137,21 +92,7 @@ namespace BackEnd.Controllers
             // TODO: Handle exceptions, e.g. concurrency
             await _db.SaveChangesAsync();
 
-            // TODO: Use AutoMapper
-            var result = new ConferenceDTO.SpeakerResponse
-            {
-                ID = speaker.ID,
-                Name = speaker.Name,
-                Bio = speaker.Bio,
-                WebSite = speaker.WebSite,
-                Sessions = speaker?.SessionSpeakers
-                    .Select(ss =>
-                        new ConferenceDTO.Session
-                        {
-                            ID = ss.SessionId
-                        })
-                    .ToList()
-            };
+            var result = speaker.MapSpeakerResponse();
 
             return Ok(result);
         }

@@ -22,7 +22,7 @@ namespace BackEnd.Controllers
         public async Task<IActionResult> GetConferences()
         {
             var conferences = await _db.Conferences.AsNoTracking().ToListAsync();
-            // TODO: Use AutoMapper
+
             var result = conferences.Select(s => new ConferenceDTO.ConferenceResponse
             {
                 ID = s.ID,
@@ -44,7 +44,6 @@ namespace BackEnd.Controllers
                 return NotFound();
             }
             
-            // TODO: Use AutoMapper
             var result = new ConferenceDTO.ConferenceResponse
             {
                 ID = conference.ID,
@@ -64,7 +63,6 @@ namespace BackEnd.Controllers
                 return BadRequest(ModelState);
             }
 
-            // TODO: Use AutoMapper
             var conference = new Conference
             {
                 Name = input.Name
@@ -73,7 +71,6 @@ namespace BackEnd.Controllers
             _db.Conferences.Add(conference);
             await _db.SaveChangesAsync();
 
-            // TODO: Use AutoMapper
             var result = new ConferenceDTO.ConferenceResponse
             {
                 ID = conference.ID,
@@ -101,13 +98,10 @@ namespace BackEnd.Controllers
                 return BadRequest(ModelState);
             }
 
-            // TODO: Use AutoMapper
             conference.Name = input.Name;
 
-            // TODO: Handle exceptions, e.g. concurrency
             await _db.SaveChangesAsync();
 
-            // TODO: Use AutoMapper
             var result = new ConferenceDTO.ConferenceResponse
             {
                 ID = conference.ID,
@@ -132,7 +126,6 @@ namespace BackEnd.Controllers
 
             _db.Remove(conference);
 
-            // TODO: Handle exceptions, e.g. concurrency
             await _db.SaveChangesAsync();
 
             return NoContent();
