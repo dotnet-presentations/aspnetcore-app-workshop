@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -20,6 +21,18 @@ namespace FrontEnd.Infrastructure
 
                 return _jsonSerializer.Deserialize<T>(jsonReader);
             }
+        }
+
+        public static Task<HttpResponseMessage> PutJsonAsync<T>(this HttpClient client, string url, T value)
+        {
+            var stream = new MemoryStream();
+            var jsonWriter = new JsonTextWriter(new StreamWriter(stream));
+
+            _jsonSerializer.Serialize(jsonWriter, value);
+
+            stream.Position = 0;
+
+            return client.PutAsync(url, new StreamContent(stream));
         }
     }
 }

@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using ConferenceDTO;
 using FrontEnd.Infrastructure;
+using Microsoft.Extensions.Logging;
 
 namespace FrontEnd.Services
 {
@@ -62,6 +63,13 @@ namespace FrontEnd.Services
             response.EnsureSuccessStatusCode();
 
             return await response.Content.ReadAsJsonAsync<List<SpeakerResponse>>();
+        }
+
+        public async Task PutSessionAsync(Session session)
+        {
+            var response = await _httpClient.PutJsonAsync($"/api/session/{session.ID}", session);
+
+            response.EnsureSuccessStatusCode();
         }
     }
 }

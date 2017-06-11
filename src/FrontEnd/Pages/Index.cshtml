@@ -20,13 +20,16 @@
                         <div class="panel-body">
                             <p>@session.Track?.Name</p>
                             <h3 class="panel-title"><a asp-page="Session" asp-route-id="@session.ID">@session.Title</a></h3>
-                            @session.Abstract
                             <ul>
                                 @foreach(var speaker in session.Speakers)
                                 {
                                     <li><a asp-page="Speaker" asp-route-id="@speaker.ID">@speaker.Name</a></li>
                                 }
                             </ul>
+                            @if (Model.IsAdmin) 
+                            {
+                                <a asp-page="/Admin/EditSession" asp-route-id="@session.ID" class="btn btn-link btn-xs">Edit</a>
+                            }
                         </div>
                     </div>
                 </div>

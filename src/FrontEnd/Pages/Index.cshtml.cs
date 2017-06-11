@@ -20,6 +20,8 @@ namespace FrontEnd.Pages
 
         public IEnumerable<IGrouping<DayOfWeek?, IGrouping<DateTimeOffset?, SessionResponse>>> Sessions { get; set; }
 
+        public bool IsAdmin => (bool)HttpContext.Items["IsAdmin"];
+
         public async Task OnGet(int day = 0)
         {
             var sessions = await _apiClient.GetSessionsAsync();

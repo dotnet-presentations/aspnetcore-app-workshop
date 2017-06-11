@@ -1,32 +1,30 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using ConferenceDTO;
 using FrontEnd.Services;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Authorization;
 
 namespace FrontEnd.Pages
 {
-    public class SessionModel : PageModel
+    public class EditSessionModel : PageModel
     {
         private readonly IApiClient _apiClient;
-
-        public SessionModel(IApiClient apiClient)
+        public EditSessionModel(IApiClient apiClient)
         {
             _apiClient = apiClient;
         }
 
-        public SessionResponse Session { get; set; }
-
-        public bool IsAdmin => (bool)HttpContext.Items["IsAdmin"];
+        [BindProperty]
+        public Session Session { get; set; }
 
         public async Task OnGet(int id)
         {
             Session = await _apiClient.GetSessionAsync(id);
+        }
 
-            // Do something if it's null
+        public async Task OnPostAsync()
+        {
+            // TODO: Validation errors etc
+            await _apiClient.PutSessionAsync(Session);
         }
     }
 }

@@ -2,7 +2,9 @@
 @model SessionModel
 
 <h1>@Model.Session.Title</h1>
-<p>@Model.Session.Track?.Name<p>
+<p>@Model.Session.Track?.Name</p>
+
+<p>@Model.Session.Abstract</p>
 
 <ul>
 @foreach (var speaker in Model.Session.Speakers)
@@ -10,3 +12,7 @@
     <li><a asp-page="Speaker" asp-route-id="@speaker.ID">@speaker.Name</a></li>
 }
 </ul>
+ @if (Model.IsAdmin) 
+ {
+<a asp-page="/Admin/EditSession" asp-route-id="@Model.Session.ID" class="btn btn-link btn-xs">Edit</a>
+ }
