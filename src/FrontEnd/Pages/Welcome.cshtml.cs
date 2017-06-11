@@ -20,8 +20,9 @@ namespace FrontEnd
 
         public async Task<IActionResult> OnGetAsync()
         {
-            var attendee = await _apiClient.GetAttendeeAsync(HttpContext.User.Identity.Name);
-            if (attendee != null)
+            var attendee = User.Identity.IsAuthenticated ? await _apiClient.GetAttendeeAsync(HttpContext.User.Identity.Name) : null;
+
+            if (!User.Identity.IsAuthenticated || attendee != null)
             {
                 return RedirectToPage("/Index");
             }
