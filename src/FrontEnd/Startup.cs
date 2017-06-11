@@ -56,14 +56,23 @@ namespace FrontEnd
                 options.LoginPath = "/Login";
                 options.LogoutPath = "/Logout";
             });
-            services.AddTwitterAuthentication(options => Configuration.GetSection("twitter").Bind(options));
-            services.AddGoogleAuthentication(options => Configuration.GetSection("google").Bind(options));
+
+            var twitterConfig = Configuration.GetSection("twitter");
+            if (twitterConfig["consumerKey"] != null)
+            {
+                services.AddTwitterAuthentication(options => twitterConfig.Bind(options));
+            }
+
+            var googleConfig = Configuration.GetSection("google");
+            if (googleConfig["clientID"] != null)
+            {
+                services.AddGoogleAuthentication(options => googleConfig.Bind(options));
+            }
 
             var httpClient = new HttpClient
             {
                 BaseAddress = new Uri(Configuration["serviceUrl"])
             };
-
             services.AddSingleton(httpClient);
             services.AddSingleton<IApiClient, ApiClient>();
         }
