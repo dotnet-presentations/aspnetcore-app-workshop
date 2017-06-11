@@ -40,6 +40,7 @@
  
  ## Extra credit
 
+- Add 3rd party logger (serilog)
 - Add image upload to speaker
 - Add caching to front end (memory cache and distributed cache)
 - Make the site work for multiple conferences
