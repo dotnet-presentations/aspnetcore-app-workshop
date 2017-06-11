@@ -74,6 +74,8 @@ namespace FrontEnd
                 app.UseExceptionHandler("/Error");
             }
 
+            app.UseStatusCodePagesWithReExecute("/Status/{0}");
+
             app.UseStaticFiles();
 
             app.UseAuthentication();
