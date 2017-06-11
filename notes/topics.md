@@ -43,12 +43,12 @@
 - Add image upload to speaker
 - Add caching to front end (memory cache and distributed cache)
 - Make the site work for multiple conferences
- - Add conference date
- - Make the home page show upcoming conferences
+  - Add conference date
+  - Make the home page show upcoming conferences (instead of agenda) and move agenda to separate page
 - Make the names slugs instead of using ids to navigate entities
-- Add ILogger support to ApiClient implementation
+- Add `ILogger` support to ApiClient implementation 
 - Markdown for abstract
-- Add date filtering to the backend
+- Add date filtering to the backend (instead of doing it in the front end)
 - Add paging to the back end
 - Use postgres
 - Add admin pages to manage sessions
