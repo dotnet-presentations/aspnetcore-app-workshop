@@ -18,20 +18,6 @@ namespace FrontEnd
         [BindProperty]
         public Attendee Attendee { get; set; }
 
-        public async Task<IActionResult> OnGetAsync()
-        {
-            // If the user is already associated then redirect
-            var attendee = await _apiClient.GetAttendeeAsync(User.Identity.Name);
-
-            if (attendee != null)
-            {
-                return RedirectToPage("/");
-            }
-
-            // Otherwise, link the user
-            return Page();
-        }
-
         public async Task<IActionResult> OnPostAsync()
         {
             await _apiClient.AddAttendeeAsync(Attendee);

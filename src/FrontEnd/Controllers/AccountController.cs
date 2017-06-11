@@ -13,7 +13,7 @@ namespace FrontEnd.Controllers
         [HttpGet]
         public IActionResult Login()
         {
-            return Challenge(new AuthenticationProperties { RedirectUri = Url.Page("/Welcome") });
+            return Challenge(new AuthenticationProperties { RedirectUri = "/" });
         }
 
         [HttpPost]
