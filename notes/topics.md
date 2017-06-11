@@ -17,37 +17,39 @@
  ## ConferenceDTO
  - .NET Standard 2.0 library
  - APIs are back in .NET Standard 2.0
+ - Model Metadata
  
- ### Notes from earlier meeting - integrate or remove
- * Introduction
-  * Get SDK (Preview 1)
-  * How to use more recent bits
-  * File / New
-    * Back End (EF, API)
-    * Front End
-* Tag Helpers and Forms
-  * Validation
-  * Model Binding
-  * Razor Pages
-* EF and Data
-  * What's new in EF 2
-* Unit Testing
-* API
-* Security
-  * Middleware for HSTS (use one from live.asp.net)
-  * Switch to nsecweb HSTS
-* Auth
-* Hosted Service
-* Azure
-  * Publishing
-  * App Insights
-  * Diagnostics
-  * Deployment Slots (?)
-  * Containers (?)
-* Day 2 Second Half
-  * SPA Services (optional lunch session)
-  * Docker
-  * Xamarin app
-* Call to action at end
-  * Boilerplate
-  * Identity Server
+ ## FrontEnd
+ - Razor Pages
+ - Custom Tag Helpers
+ - Custom Filter
+ - Validation in forms
+ - Logging
+ - Outgoing HttpClient calls with JSON
+ - Configuration in DI
+ - Authentication (new system in 2.0)
+   - Cookies
+   - Adding Twitter and Google support
+- Status Code pages
+- Error page
+ 
+ ## Cross cutting
+ - Unit testing Controllers
+ - Unit testing Pages
+ 
+ 
+ ## Extra credit
+
+- Add image upload to speaker
+- Add caching to front end (memory cache and distributed cache)
+- Make the site work for multiple conferences
+ - Add conference date
+ - Make the home page show upcoming conferences
+- Make the names slugs instead of using ids to navigate entities
+- Add ILogger support to ApiClient implementation
+- Markdown for abstract
+- Add date filtering to the backend
+- Add paging to the back end
+- Use postgres
+- Add admin pages to manage sessions
+
