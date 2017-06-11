@@ -17,7 +17,7 @@ namespace ConferenceDTO
         public string Title { get; set; }
 
         [StringLength(4000)]
-        public string Abstract { get; set; }
+        public virtual string Abstract { get; set; }
 
         public DateTimeOffset? StartTime { get; set; }
 

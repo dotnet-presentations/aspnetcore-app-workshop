@@ -1,0 +1,18 @@
+@page
+@model SearchResultsModel
+
+<ul>
+@foreach (var result in Model.SearchResults)
+{
+    <li>
+        @if (result.Type == ConferenceDTO.SearchResultType.Speaker)
+        {
+            <a asp-page="Speaker" asp-route-id="@result.Id">@result.DisplayName</a>
+        }
+        else if (result.Type == ConferenceDTO.SearchResultType.Session)
+        {
+            <a asp-page="Session" asp-route-id="@result.Id">@result.DisplayName</a>
+        }
+    </li>
+}
+</ul>

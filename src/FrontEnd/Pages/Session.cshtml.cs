@@ -9,25 +9,21 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace FrontEnd.Pages
 {
-    public class DetailsModel : PageModel
+    public class SessionModel : PageModel
     {
         private readonly IApiClient _apiClient;
-        private readonly IAuthorizationService _authz;
 
-        public DetailsModel(IApiClient apiClient, IAuthorizationService authz)
+        public SessionModel(IApiClient apiClient)
         {
             _apiClient = apiClient;
-            _authz = authz;
         }
 
         public SessionResponse Session { get; set; }
 
-        public bool IsAdmin { get; set; }
+        public bool IsAdmin => (bool)HttpContext.Items["IsAdmin"];
 
         public async Task OnGet(int id)
         {
-            IsAdmin = await _authz.AuthorizeAsync(User, "Admin");
-
             Session = await _apiClient.GetSessionAsync(id);
 
             // Do something if it's null

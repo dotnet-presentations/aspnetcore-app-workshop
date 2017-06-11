@@ -27,7 +27,6 @@ namespace FrontEnd.Services
                 return null;
             }
             
-            // REVIEW: How do we handle errors
             response.EnsureSuccessStatusCode();
 
             return await response.Content.ReadAsJsonAsync<SessionResponse>();
@@ -37,10 +36,53 @@ namespace FrontEnd.Services
         {
             var response = await _httpClient.GetAsync("/api/sessions");
 
-            // REVIEW: How do we handle errors
             response.EnsureSuccessStatusCode();
 
             return await response.Content.ReadAsJsonAsync<List<SessionResponse>>();
+        }
+
+        public async Task<SpeakerResponse> GetSpeakerAsync(int id)
+        {
+            var response = await _httpClient.GetAsync($"/api/speakers/{id}");
+
+            if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                return null;
+            }
+            
+            response.EnsureSuccessStatusCode();
+
+            return await response.Content.ReadAsJsonAsync<SpeakerResponse>();
+        }
+
+        public async Task<List<SpeakerResponse>> GetSpeakersAsync()
+        {
+            var response = await _httpClient.GetAsync("/api/speakers");
+
+            response.EnsureSuccessStatusCode();
+
+            return await response.Content.ReadAsJsonAsync<List<SpeakerResponse>>();
+        }
+
+        public async Task PutSessionAsync(Session session)
+        {
+            var response = await _httpClient.PutJsonAsync($"/api/sessions/{session.ID}", session);
+
+            response.EnsureSuccessStatusCode();
+        }
+
+        public async Task<List<SearchResult>> SearchAsync(string query)
+        {
+            var term = new SearchTerm
+            {
+                Query = query
+            };
+
+            var response = await _httpClient.PostJsonAsync($"/api/search", term);
+
+            response.EnsureSuccessStatusCode();
+
+            return await response.Content.ReadAsJsonAsync<List<SearchResult>>();
         }
     }
 }
