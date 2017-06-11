@@ -25,9 +25,9 @@ namespace FrontEnd
             var urlHelper = _urlHelperFactory.GetUrlHelper(context);
 
             var ignoreRoutes = new[] {
-                urlHelper.Action("login", "account"),
+                urlHelper.Page("/Login"),
                 urlHelper.Action("logout", "account"),
-                urlHelper.Page("/welcome")
+                urlHelper.Page("/Welcome")
             };
 
             // If the user is already associated then redirect

@@ -10,12 +10,6 @@ namespace FrontEnd.Controllers
 {
     public class AccountController : Controller
     {
-        [HttpGet]
-        public IActionResult Login()
-        {
-            return Challenge(new AuthenticationProperties { RedirectUri = "/" });
-        }
-
         [HttpPost]
         public async Task<IActionResult> Logout()
         {

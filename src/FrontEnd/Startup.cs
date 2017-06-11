@@ -39,7 +39,7 @@ namespace FrontEnd
             {
                 options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = TwitterDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
             });
 
             services.AddAuthorization(options =>
@@ -51,8 +51,13 @@ namespace FrontEnd
                 });
             });
 
-            services.AddCookieAuthentication();
+            services.AddCookieAuthentication(options =>
+            {
+                options.LoginPath = "/Login";
+                options.LogoutPath = "/Logout";
+            });
             services.AddTwitterAuthentication(options => Configuration.GetSection("twitter").Bind(options));
+            services.AddGoogleAuthentication(options => Configuration.GetSection("google").Bind(options));
 
             var httpClient = new HttpClient
             {
