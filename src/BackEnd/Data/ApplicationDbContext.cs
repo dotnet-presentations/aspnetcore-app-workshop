@@ -18,6 +18,10 @@ namespace BackEnd.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Attendee>()
+               .HasIndex(a => a.UserName)
+               .IsUnique();
+
             // Many-to-many: Conference <-> Attendee
             modelBuilder.Entity<ConferenceAttendee>()
                 .HasKey(ca => new { ca.ConferenceID, ca.AttendeeID });

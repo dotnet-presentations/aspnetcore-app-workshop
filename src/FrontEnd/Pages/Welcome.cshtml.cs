@@ -1,8 +1,8 @@
 using System.Threading.Tasks;
-using ConferenceDTO;
 using FrontEnd.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using FrontEnd.Pages.Models;
 
 namespace FrontEnd
 {
@@ -18,11 +18,22 @@ namespace FrontEnd
         [BindProperty]
         public Attendee Attendee { get; set; }
 
+        public async Task<IActionResult> OnGetAsync()
+        {
+            var attendee = await _apiClient.GetAttendeeAsync(HttpContext.User.Identity.Name);
+            if (attendee != null)
+            {
+                return RedirectToPage("/Index");
+            }
+
+            return Page();
+        }
+
         public async Task<IActionResult> OnPostAsync()
         {
             await _apiClient.AddAttendeeAsync(Attendee);
 
-            return RedirectToPage("/");
+            return RedirectToPage("/Index");
         }
     }
 }
