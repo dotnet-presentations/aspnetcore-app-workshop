@@ -441,7 +441,7 @@ namespace BackEnd
                         new SessionData { Name = "Banish Your Inner Critic v2.0", Speakers = new[] { "Denise Jacobs" }, Track = "Room 5" },
                         new SessionData { Name = "Lightning talks", Speakers = new[] { "Einar Afiouni","Andreas Ahlgren","Filip Van Laenen","Ronald Mavarez","Christian Brevik" }, Track = "Room 6" },
                         new SessionData { Name = "High Performance API on Kubernetes", Speakers = new[] { "Ken Grønnbeck" }, Track = "Room 7" },
-                        new SessionData { Name = "TBA", Speakers = new[] { "Jon Galloway" }, Track = "Room 8" },
+                        new SessionData { Name = "Talk: Open Source Software Foundations: Not Totally Boring, Actually Super Awesome", Speakers = new[] { "Jon Galloway" }, Track = "Room 8" },
                     }
                 });
 
