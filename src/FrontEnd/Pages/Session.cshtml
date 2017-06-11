@@ -1,15 +1,20 @@
 @page "{id}"
 @model SessionModel
 
+<ol class="breadcrumb">
+    <li><a asp-page="/Index">Agenda</a></li>
+    <li><a asp-page="/Index" asp-route-day="@Model.DayOffset">Day @(Model.DayOffset + 1)</a></li>
+    <li class="active">@Model.Session.Title</li>
+</ol>
+
 <h1>@Model.Session.Title</h1>
-<p>@Model.Session.Track?.Name</p>
+<span class="label label-default">@Model.Session.Track?.Name</span>
 
 <p>@Model.Session.Abstract</p>
 
-<ul>
 @foreach (var speaker in Model.Session.Speakers)
 {
-    <li><a asp-page="Speaker" asp-route-id="@speaker.ID">@speaker.Name</a></li>
+    <em><a asp-page="Speaker" asp-route-id="@speaker.ID">@speaker.Name</a></em>
 }
-</ul>
+
 <a authz-policy="Admin" asp-page="/Admin/EditSession" asp-route-id="@Model.Session.ID" class="btn btn-link btn-xs">Edit</a>
