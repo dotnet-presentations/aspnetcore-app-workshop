@@ -30,9 +30,18 @@ namespace FrontEnd.Infrastructure
 
             _jsonSerializer.Serialize(jsonWriter, value);
 
+            jsonWriter.Flush();
+
             stream.Position = 0;
 
-            return client.PutAsync(url, new StreamContent(stream));
+            var request = new HttpRequestMessage(HttpMethod.Put, url)
+            {
+                Content = new StreamContent(stream)
+            };
+
+            request.Content.Headers.TryAddWithoutValidation("Content-Type", "application/json");
+
+            return client.SendAsync(request);
         }
     }
 }

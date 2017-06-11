@@ -161,6 +161,7 @@ namespace BackEnd.Controllers
 
             session.ID = input.ID;
             session.Title = input.Title;
+            session.Abstract = input.Abstract;
             session.StartTime = input.StartTime;
             session.EndTime = input.EndTime;
             session.TrackId = input.TrackId;
@@ -172,6 +173,7 @@ namespace BackEnd.Controllers
             {
                 ID = session.ID,
                 Title = session.Title,
+                Abstract = session.Abstract,
                 StartTime = session.StartTime,
                 EndTime = session.EndTime,
                 TrackId = session.TrackId,
