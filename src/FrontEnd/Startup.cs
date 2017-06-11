@@ -24,11 +24,16 @@ namespace FrontEnd
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc()
-                    .AddRazorPagesOptions(options => 
+            services.AddMvc(options =>
+                    {
+                        options.Filters.AddService(typeof(RequireLoginFilter));
+                    })
+                    .AddRazorPagesOptions(options =>
                     {
                         options.AuthorizeFolder("/admin", "Admin");
                     });
+
+            services.AddScoped<RequireLoginFilter>();
 
             services.AddAuthentication(options =>
             {
@@ -51,7 +56,7 @@ namespace FrontEnd
 
             var httpClient = new HttpClient
             {
-                 BaseAddress = new Uri(Configuration["serviceUrl"])
+                BaseAddress = new Uri(Configuration["serviceUrl"])
             };
 
             services.AddSingleton(httpClient);
