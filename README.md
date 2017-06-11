@@ -65,38 +65,3 @@ In this workshop, you'll learn by building a full-featured ASP.NET Core applicat
   * Follow Damian's code in live.asp.net (preview 2 branch)
   * Input / Output models in API
   * Front end will have page models
-
-### Notes
-> Will move or remove  
-* Introduction
-  * Get SDK (Preview 1)
-  * How to use more recent bits
-  * File / New
-    * Back End (EF, API)
-    * Front End
-* Tag Helpers and Forms
-  * Validation
-  * Model Binding
-  * Razor Pages
-* EF and Data
-  * What's new in EF 2
-* Unit Testing
-* API
-* Security
-  * Middleware for HSTS (use one from live.asp.net)
-  * Switch to nsecweb HSTS
-* Auth
-* Hosted Service
-* Azure
-  * Publishing
-  * App Insights
-  * Diagnostics
-  * Deployment Slots (?)
-  * Containers (?)
-* Day 2 Second Half
-  * SPA Services (optional lunch session)
-  * Docker
-  * Xamarin app
-* Call to action at end
-  * Boilerplate
-  * Identity Server
