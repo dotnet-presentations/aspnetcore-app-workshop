@@ -12,7 +12,4 @@
     <li><a asp-page="Speaker" asp-route-id="@speaker.ID">@speaker.Name</a></li>
 }
 </ul>
- @if (Model.IsAdmin) 
- {
-<a asp-page="/Admin/EditSession" asp-route-id="@Model.Session.ID" class="btn btn-link btn-xs">Edit</a>
- }
+<a authz-policy="Admin" asp-page="/Admin/EditSession" asp-route-id="@Model.Session.ID" class="btn btn-link btn-xs">Edit</a>

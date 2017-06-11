@@ -1,0 +1,46 @@
+@page
+@using ConferenceDTO
+@model SearchModel
+
+<div class="row">
+    <h1>Search</h1>
+    <form method="get">
+        <div class="input-group">
+            <input asp-for="Term" class="form-control" />
+            <span class="input-group-btn">
+                <button class="btn btn-default" type="button">Go!</button>
+            </span>
+        </div>
+    </form>
+</div>
+
+<div class="row">
+    @foreach (var result in Model.SearchResults)
+    {
+        <div>
+            @switch (result)
+            {
+                case SpeakerResponse speaker:
+                    <a asp-page="Speaker" asp-route-id="@speaker.ID">@speaker.Name</a>
+                    break;
+
+                case SessionResponse session:
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"><a asp-page="Session" asp-route-id="@session.ID">@session.Title</a></h3>
+                        </div>
+                        <div class="panel-body">
+                            <p>
+                                @foreach (var speaker in session.Speakers)
+                                {
+                                    <em>@speaker.Name</em>
+                                }
+                            </p>
+                            @session.Abstract
+                        </div>
+                    </div>
+                    break;
+            }
+        </div>
+    }
+</div>

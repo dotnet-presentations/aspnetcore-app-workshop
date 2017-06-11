@@ -45,10 +45,22 @@ namespace FrontEnd.TagHelpers
                 // auth="true" & user is authenticated
                 showOutput = true;
             }
-            else if (!string.IsNullOrEmpty(RequiredPolicy) && await _authzService.AuthorizeAsync(ViewContext.HttpContext.User, RequiredPolicy))
+            else if (!string.IsNullOrEmpty(RequiredPolicy))
             {
                 // auth-policy="foo" & user is authorized for policy "foo"
-                showOutput = true;
+                var authorized = false;
+                var cachedResult = ViewContext.ViewData["AuthPolicy." + RequiredPolicy];
+                if (cachedResult != null)
+                {
+                    authorized = (bool)cachedResult;
+                }
+                else
+                {
+                    authorized = await _authzService.AuthorizeAsync(ViewContext.HttpContext.User, RequiredPolicy);
+                    ViewContext.ViewData["AuthPolicy." + RequiredPolicy] = authorized;
+                }
+                
+                showOutput = authorized;
             }
 
             if (!showOutput)

@@ -50,7 +50,7 @@ namespace BackEnd.Controllers
                              })
                              .ToList(),
                 TrackId = s.TrackId,
-                Track = new Track
+                Track = new ConferenceDTO.Track
                 {
                     TrackID = s?.TrackId ?? 0,
                     Name = s.Track?.Name

@@ -4,6 +4,7 @@ using BackEnd.Data;
 using ConferenceDTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
 
 namespace BackEnd
 {
@@ -22,30 +23,67 @@ namespace BackEnd
         {
             var query = term.Query;
             var sessionResults = await _db.Sessions.Include(s => s.Track)
-                                        .Where(s => 
-                                            s.Title.Contains(query) || 
-                                            s.Track.Name.Contains(query)
-                                         )
-                                        .ToListAsync();
+                                                   .Include(s => s.SessionSpeakers)
+                                                     .ThenInclude(ss => ss.Speaker)
+                                                   .Where(s => 
+                                                       s.Title.Contains(query) || 
+                                                       s.Track.Name.Contains(query)
+                                                   )
+                                                   .ToListAsync();
 
-            var speakerResults = await _db.Speakers.Where(s => 
-                                         s.Name.Contains(query) || 
-                                         s.Bio.Contains(query) || 
-                                         s.WebSite.Contains(query)
-                                        )
-                                        .ToListAsync();
+            var speakerResults = await _db.Speakers.Include(s => s.SessionSpeakers)
+                                                     .ThenInclude(ss => ss.Session)
+                                                   .Where(s => 
+                                                       s.Name.Contains(query) || 
+                                                       s.Bio.Contains(query) || 
+                                                       s.WebSite.Contains(query)
+                                                   )
+                                                   .ToListAsync();
 
             var results = sessionResults.Select(s => new SearchResult
             {
-                DisplayName = s.Title,
-                Id = s.ID,
-                Type = SearchResultType.Session
+                Type = SearchResultType.Session,
+                Value = JObject.FromObject(new SessionResponse
+                {
+                    ID = s.ID,
+                    Title = s.Title,
+                    Abstract = s.Abstract,
+                    ConferenceID = s.ConferenceID,
+                    StartTime = s.StartTime,
+                    EndTime = s.EndTime,
+                    TrackId = s.TrackId,
+                    Track = new ConferenceDTO.Track
+                                {
+                                    TrackID = s?.TrackId ?? 0,
+                                    Name = s.Track?.Name
+                                },
+                    Speakers = s?.SessionSpeakers
+                                 .Select(ss => new ConferenceDTO.Speaker
+                                 {
+                                     ID = ss.SpeakerId,
+                                     Name = ss.Speaker.Name
+                                 })
+                                 .ToList()
+                })
             })
             .Concat(speakerResults.Select(s => new SearchResult
             {
-                DisplayName = s.Name,
-                Id = s.ID,
-                Type = SearchResultType.Speaker
+                Type = SearchResultType.Speaker,
+                Value = JObject.FromObject(new SpeakerResponse
+                {
+                    ID = s.ID,
+                    Name = s.Name,
+                    Bio = s.Bio,
+                    WebSite = s.WebSite,
+                    Sessions = s.SessionSpeakers?
+                                .Select(ss =>
+                                    new ConferenceDTO.Session
+                                    {
+                                        ID = ss.SessionId,
+                                        Title = ss.Session.Title
+                                    })
+                                .ToList()
+                })
             }));
 
             return Ok(results);

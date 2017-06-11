@@ -20,8 +20,6 @@ namespace FrontEnd.Pages
 
         public SessionResponse Session { get; set; }
 
-        public bool IsAdmin => (bool)HttpContext.Items["IsAdmin"];
-
         public async Task OnGet(int id)
         {
             Session = await _apiClient.GetSessionAsync(id);
