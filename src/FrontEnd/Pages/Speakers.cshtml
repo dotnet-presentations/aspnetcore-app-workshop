@@ -13,13 +13,11 @@
             <div class="col-md-3">
                 <div class="panel panel-default speaker">
                     <div class="panel-body">
-                        <a asp-page="Speaker" asp-route-id="@speaker.ID"><h3 class="panel-title">@speaker.Name</h3></a>
-                        <ul>
-                            @foreach (var session in speaker.Sessions)
-                            {
-                                <li><a asp-page="Session" asp-route-id="@session.ID">@session.Title</a></li>
-                            }
-                        </ul>
+                        <h3 class="panel-title"><a asp-page="Speaker" asp-route-id="@speaker.ID">@speaker.Name</a></h3>
+                        @foreach (var session in speaker.Sessions)
+                        {
+                            <em><a asp-page="Session" asp-route-id="@session.ID">@session.Title</a></em>
+                        }
                     </div>
                 </div>
             </div>

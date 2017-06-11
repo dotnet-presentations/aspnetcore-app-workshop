@@ -6,6 +6,14 @@
 <div class="agenda">
     <h1>NDC Oslo 2017</h1>
 
+    @if (Model.ShowMessage)
+    {
+        <div class="alert alert-success alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            @Model.Message
+        </div>
+    }
+
     <ul class="nav nav-pills">
         @foreach (var day in Model.DayOffsets)
         {
@@ -26,11 +34,15 @@
                         <div class="panel-body">
                             <p>@session.Track?.Name</p>
                             <h3 class="panel-title"><a asp-page="Session" asp-route-id="@session.ID">@session.Title</a></h3>
-                                @foreach (var speaker in session.Speakers)
-                                {
-                                    <em><a asp-page="Speaker" asp-route-id="@speaker.ID">@speaker.Name</a></em>
-                                }
-                            <a authz-policy="Admin" asp-page="/Admin/EditSession" asp-route-id="@session.ID" class="btn btn-link btn-xs">Edit</a>
+                            <p>
+                            @foreach (var speaker in session.Speakers)
+                            {
+                                <em><a asp-page="Speaker" asp-route-id="@speaker.ID">@speaker.Name</a></em>
+                            }
+                            </p>
+                            <p>
+                                <a authz-policy="Admin" asp-page="/Admin/EditSession" asp-route-id="@session.ID" class="btn btn-default btn-xs">Edit</a>
+                            </p>
                         </div>
                     </div>
                 </div>

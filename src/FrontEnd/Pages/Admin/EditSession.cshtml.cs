@@ -1,8 +1,9 @@
 using System.Threading.Tasks;
 using FrontEnd.Services;
+using FrontEnd.Pages.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using FrontEnd.Pages.Models;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace FrontEnd.Pages
 {
@@ -17,6 +18,11 @@ namespace FrontEnd.Pages
 
         [BindProperty]
         public Session Session { get; set; }
+
+        [TempData]
+        public string Message { get; set; }
+
+        public bool ShowMessage => !string.IsNullOrEmpty(Message);
 
         public async Task OnGet(int id)
         {
@@ -42,7 +48,23 @@ namespace FrontEnd.Pages
 
             await _apiClient.PutSessionAsync(Session);
 
-            return RedirectToPage("/Session", new { id = Session.ID });
+            Message = "Session updated successfully!";
+
+            return RedirectToPage();
+        }
+
+        public async Task<IActionResult> OnPostDeleteAsync(int id)
+        {
+            var session = await _apiClient.GetSessionAsync(id);
+
+            if (session != null)
+            {
+                await _apiClient.DeleteSessionAsync(id);
+            }
+
+            Message = "Session deleted successfully!";
+
+            return RedirectToPage("/Index");
         }
     }
 }

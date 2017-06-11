@@ -6,6 +6,7 @@ using ConferenceDTO;
 using FrontEnd.Services;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace FrontEnd.Pages
 {
@@ -25,6 +26,11 @@ namespace FrontEnd.Pages
         public IEnumerable<(int Offset, DayOfWeek? DayofWeek)> DayOffsets { get; set; }
 
         public int CurrentDayOffset { get; set; }
+
+        [TempData]
+        public string Message { get; set; }
+
+        public bool ShowMessage => !string.IsNullOrEmpty(Message);
 
         public async Task OnGet(int day = 0)
         {

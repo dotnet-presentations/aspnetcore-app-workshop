@@ -10,9 +10,12 @@ namespace BackEnd
         private class SessionData
         {
             public string Name { get; set; }
+
             public string[] Speakers { get; set; }
 
             public string Track { get; set; }
+
+            public string Abstract { get; set; }
         }
 
         private class SessionGroup 
@@ -264,6 +267,7 @@ namespace BackEnd
                             StartTime = group.StartTime,
                             EndTime = end,
                             Track = trackLookup[s.Track],
+                            Abstract = s.Abstract
                         };
 
                         session.SessionSpeakers = new List<SessionSpeaker>();
@@ -292,7 +296,10 @@ namespace BackEnd
                 {
                     StartTime = startTime,
                     Sessions = new[] {
-                        new SessionData { Name = "Keynote: Are There Any Questions?", Speakers = new[] { "Dylan Beattie" }, Track = "Expo" }
+                        new SessionData { Name = "Keynote: Are There Any Questions?", Speakers = new[] { "Dylan Beattie" }, Track = "Expo",
+                            Abstract = @"Not this time. At NDC Oslo 2017, we're going to turn things upside-down and do the questions right at the beginning. Because, for as long as human beings have existed, we've asked questions. Questions about the world around us. Questions about the past, about the future, about our place in the universe. As our world moves online, the search for answers has become inextricably linked with the history, and the future, of software development. The earliest mechanical calculating machines were built to answer questions - to solve complex mathematical problems many thousands of times faster than their human operators.
+
+Today, in the age of connected devices and machine learning, we live in a world where humans ask questions and expect computers to have the answers. So let's take this chance to ask some of the really big questions: Who are we? How did we get here? How is modern software changing the way we interact with the world around us? Where are the really big questions in modern software development - and who's working on them? And how will those questions shape the future of our relationship with the machines that have become such an important part of our lives?" }
                     }
                 });
 
@@ -339,15 +346,39 @@ namespace BackEnd
                     StartTime = startTime,
                     Sessions = new[]
                     {
-                        new SessionData { Name = "Building a Serverless, EventSourced Slack clone", Speakers = new[] { "Andy Davies" }, Track = "Room 1" },
-                        new SessionData { Name = "Thinking in Events", Speakers = new[] { "Mathew McLoughlin" }, Track = "Room 2" },
-                        new SessionData { Name = "What’s New in VS 2017 + VS Code", Speakers = new[] { "Adam Cogan" }, Track = "Room 3" },
-                        new SessionData { Name = "F# for C# programmers", Speakers = new[] { "Scott Wlaschin" }, Track = "Room 4" },
-                        new SessionData { Name = "Creating A .NET Renaissance", Speakers = new[] { "Ian Cooper" }, Track = "Room 5" },
-                        new SessionData { Name = "Stream Data Processing for Fun and Profit", Speakers = new[] { "David Ostrovsky" }, Track = "Room 6" },
-                        new SessionData { Name = "Accessibility for UX: Don't worry, it's much worse than you think", Speakers = new[] { "Elle Waters" }, Track = "Room 7" },
-                        new SessionData { Name = "Implementing authorization in web applications and APIs", Speakers = new[] { "Brock Allen","Dominick Baier" }, Track = "Room 8" },
-                        new SessionData { Name = "C++17, part 1: The Language Features", Speakers = new[] { "Nicolai Josuttis" }, Track = "Room 9" },
+                        new SessionData { Name = "Building a Serverless, EventSourced Slack clone", Speakers = new[] { "Andy Davies" }, Track = "Room 1",
+                            Abstract = @"EventSourcing and Serverless are all the rage at the moment, and everyone loves Slack...so lets build a Slack clone using the two technologies!
+This talk will go through the implementation, looking at a number of interesting integration properties that EventSourcing gives us, and how we can utilise AWS Lambda to make our service very scalable with very little effort" },
+                        new SessionData { Name = "Thinking in Events", Speakers = new[] { "Mathew McLoughlin" }, Track = "Room 2",
+                            Abstract = @"The CRUD mentality made its way into our industry over the past few years, often being looked to as the solution to all our architectural needs.
+But it turns out this model doesn't always fit. It's often the case that the systems we work on are just a representation of the real world events that are happening within the business we are modelling. This isn't a problem that CRUD is very good at solving. In this talk I'll discuss the advantages of looking at your system as a distinct series of events and how doing so can help you better model your domain. I'll also talk about how this will change the way you write the software, how it changes the way your users will use the software and how it can ultimately lead to a better experience all around."},
+                        new SessionData { Name = "What’s New in VS 2017 + VS Code", Speakers = new[] { "Adam Cogan" }, Track = "Room 3",
+                            Abstract = @"Visual Studio 2017 is a great step forward in developer productivity, thanks to a new/refreshing/cool/awesome change of attitude, Microsoft is embracing the winning tools in the development space and is building them into the next version of Visual Studio. The open sourcing of .NET Core and ASP.NET Core along with the release of the free Visual Studio Community Edition and Visual Studio Code gives developers lots of choice as to which IDE to use.
+Come see Adam give you a tour of all the sexy new features in Visual Studio 2017 and Team Foundation Server 2017. This session is guaranteed to make you even more productive and highlight why Visual Studio is still the best IDE for developing software." },
+                        new SessionData { Name = "F# for C# programmers", Speakers = new[] { "Scott Wlaschin" }, Track = "Room 4",
+                            Abstract = @"Curious about F# and want to understand how is it different from C#?
+In this talk, we'll look at the basics of coding in F#, and how functional programming differs from object-oriented programming. Along the way, there will be many examples showing the same code written in C# and F# so that you can see for yourself how the two languages differ in style and approach." },
+                        new SessionData { Name = "Creating A .NET Renaissance", Speakers = new[] { "Ian Cooper" }, Track = "Room 5",
+                            Abstract = @"The .NET platform has been in decline over the last four years, losing half if its available positions in server-side development. In this presentation we look at the data behind that decline and ask what happened and what can we do to reverse it.
+In 201I, Bob Eel called for a Java Renaissance to capitalize on new developments on the Java platform and fight off the competition from frameworks like Ruby on Rails. The numbers show that Renaissance having an impact on server-side Java development, and many web scale companies have returned to Java for their server workloads.
+
+Can we make a similar move in .NET and create a renaissance that will see .NET taking a role server-side in web scale deployments?
+
+Part-history lesson, and part call to action, this talk tries to set out where we could go, if the community can create a .NET Renaissance around the .NET Core developments." },
+                        new SessionData { Name = "Stream Data Processing for Fun and Profit", Speakers = new[] { "David Ostrovsky" }, Track = "Room 6",
+                            Abstract = @"Software systems today have to handle increasingly large streams of incoming data, whether it’s user interactions with a web page, events generated by sensors, or messages sent by different system components. Oftentimes, this data loses value over time, becomes irrelevant or stale, which makes handling events quickly and reliably not just desirable, but critical. However, building a system that can process hundreds of thousands, or millions, of events per second without compromising either speed or reliability is a major engineering challenge. This is where distributed data processing frameworks come in.
+In this session, we’ll talk about stream data processing: where it originated, how it works, when to use it, how to build robust stream processing applications, and the tools available to us. We’ll examine the two most popular platforms used in the industry today: Apache Storm and Apache Spark, as well as some interesting up-and-coming frameworks like Flink, Kafka Streams, Apex and Microsoft Orleans Streams. Each uses a conceptually different approach, has a plethora of features, and works (or doesn’t) best for different use-cases. Understanding how and when to use which streaming data framework is key to building a reliable, scalable, robust system and avoiding painful and costly redesigns down the road." },
+                        new SessionData { Name = "Accessibility for UX: Don't worry, it's much worse than you think", Speakers = new[] { "Elle Waters" }, Track = "Room 7",
+                            Abstract = @"Create an easy-to-use experience that delights your user and reinforces the value of your business? Got it. Make all your designs adaptive to prepare for any and all devices that may be thrown your way? Check! Get leaner, get personalized, get localized, and oh, don’t forget to account for seniors, and low-literacy users. Well, okay. Also, have you considered people with disabilities? Wait… what?
+When we think about all that goes into mastering good design principles, it’s no wonder that tackling accessibility can appear like a daunting, unrealistic burden. How can we consider all of these highly technical, specific user needs when we don’t even know how people with disabilities use the web? How do we incorporate accessibility into a rapidly evolving design process that’s literally sprinting towards releases? And what about the Internet of Things? Is it time to give up?!
+
+In this session, we'll embark on a tremulous journey through the wilderness of the Web Content Accessibility Guidelines and deep into the mire of assistive technologies. But, stay the course! Before you know it, you’ll feel the warm comforting rays of a heat map once again. After this experience, you’ll be equipped with five simple but powerful techniques you can integrate into your daily work. Calling all usability testers, all content strategists, and all visual and interaction designers. Ready? Grab your wires, and let’s go!" },
+                        new SessionData { Name = "Implementing authorization in web applications and APIs", Speakers = new[] { "Brock Allen","Dominick Baier" }, Track = "Room 8",
+                            Abstract = @"Authentication is easy – authorization is the hard part. This might sound daunting, but since every application is different, there is no single recipe for how authorization has to work.
+Dominick & Brock walk you through a couple of approaches and pitfalls and use the new ASP.NET Core authorization API (which has been back-ported to standard .NET) as an example of a decent abstraction layer for clean authorization for your applications. But we will also learn that that regardless of your approach, there is no one size that fits all – that’s why it important to understand your options." },
+                        new SessionData { Name = "C++17, part 1: The Language Features", Speakers = new[] { "Nicolai Josuttis" }, Track = "Room 9",
+                            Abstract = @"C++17 is around the corner.
+After feature freeze in June 2016, currently the final details are specified. This talk presents all the new language features C++17 will have. Besides the motivation and context of these features examples and background information demonstrate how to benefit from them in practice." },
                     }
                 });
 
