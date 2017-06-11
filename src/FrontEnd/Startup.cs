@@ -56,7 +56,6 @@ namespace FrontEnd
 
             services.AddSingleton(httpClient);
             services.AddSingleton<IApiClient, ApiClient>();
-            services.AddScoped<AdminMiddleware>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -73,8 +72,6 @@ namespace FrontEnd
             app.UseStaticFiles();
 
             app.UseAuthentication();
-
-            app.UseMiddleware<AdminMiddleware>();
 
             app.UseMvc(routes =>
             {
