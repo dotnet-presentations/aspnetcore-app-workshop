@@ -18,22 +18,33 @@ namespace FrontEnd.Pages
             _apiClient = apiClient;
         }
 
-        public IEnumerable<IGrouping<DayOfWeek?, IGrouping<DateTimeOffset?, SessionResponse>>> Sessions { get; set; }
+        public IEnumerable<IGrouping<DateTimeOffset?, SessionResponse>> Sessions { get; set; }
 
         public bool IsAdmin => (bool)HttpContext.Items["IsAdmin"];
 
+        public IEnumerable<(int Offset, DayOfWeek? DayofWeek)> DayOffsets { get; set; }
+
+        public int CurrentDayOffset { get; set; }
+
         public async Task OnGet(int day = 0)
         {
+            CurrentDayOffset = day;
             var sessions = await _apiClient.GetSessionsAsync();
 
-            var firstDay = sessions.Min(s => s.StartTime?.Day);
-            var filterDay = firstDay + day;
+            var startDate = sessions.Min(s => s.StartTime?.Date);
+            var endDate = sessions.Max(s => s.EndTime?.Date);
 
-            Sessions = sessions.Where(s => s.StartTime?.Date.Day == filterDay)
+            var numberOfDays = ((endDate - startDate)?.Days) + 1;
+
+            DayOffsets = Enumerable.Range(0, numberOfDays ?? 0)
+                .Select(offset => (offset, (startDate?.AddDays(offset))?.DayOfWeek));
+
+            var filterDate = startDate?.AddDays(day);
+
+            Sessions = sessions.Where(s => s.StartTime?.Date == filterDate)
                                .OrderBy(s => s.TrackId)
                                .GroupBy(s => s.StartTime)
-                               .OrderBy(g => g.Key)
-                               .GroupBy(g => g.Key?.DayOfWeek);
+                               .OrderBy(g => g.Key);
         }
     }
 }

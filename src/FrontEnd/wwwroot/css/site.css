@@ -48,3 +48,7 @@ textarea {
         display: none;
     }
 }
+
+.agenda .session, .speaker-list .speaker {
+    height: 140px;
+}
