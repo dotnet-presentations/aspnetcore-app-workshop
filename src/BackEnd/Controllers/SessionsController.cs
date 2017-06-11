@@ -29,35 +29,7 @@ namespace BackEnd.Controllers
                                                 .ThenInclude(st => st.Tag)
                                              .ToListAsync();
 
-            var results = sessions.Select(s => new ConferenceDTO.SessionResponse
-            {
-                ID = s.ID,
-                Title = s.Title,
-                StartTime = s.StartTime,
-                EndTime = s.EndTime,
-                Tags = s?.SessionTags
-                         .Select(t => new ConferenceDTO.Tag
-                         {
-                             ID = t.TagID,
-                             Name = t.Tag.Name
-                         })
-                         .ToList(),
-                Speakers = s?.SessionSpeakers
-                             .Select(ss => new ConferenceDTO.Speaker
-                             {
-                                 ID = ss.SpeakerId,
-                                 Name = ss.Speaker.Name
-                             })
-                             .ToList(),
-                TrackId = s.TrackId,
-                Track = new ConferenceDTO.Track
-                {
-                    TrackID = s?.TrackId ?? 0,
-                    Name = s.Track?.Name
-                },
-                ConferenceID = s.ConferenceID,
-                Abstract = s.Abstract
-            });
+            var results = sessions.Select(s => MapSessionResponse(s));
 
             return Ok(results);
         }
@@ -65,7 +37,8 @@ namespace BackEnd.Controllers
         [HttpGet("{id:int}")]
         public async Task<IActionResult> Get([FromRoute]int id)
         {
-            var session = await _db.Sessions.Include(s => s.Track)
+            var session = await _db.Sessions.AsNoTracking()
+                                            .Include(s => s.Track)
                                             .Include(s => s.SessionSpeakers)
                                                 .ThenInclude(ss => ss.Speaker)
                                             .Include(s => s.SessionTags)
@@ -77,35 +50,7 @@ namespace BackEnd.Controllers
                 return NotFound();
             }
 
-            var result = new ConferenceDTO.SessionResponse
-            {
-                ID = session.ID,
-                Title = session.Title,
-                StartTime = session.StartTime,
-                EndTime = session.EndTime,
-                Tags = session?.SessionTags
-                               .Select(st => new ConferenceDTO.Tag
-                               {
-                                   ID = st.TagID,
-                                   Name = st.Tag.Name
-                               })
-                               .ToList(),
-                Speakers = session?.SessionSpeakers
-                                   .Select(ss => new ConferenceDTO.Speaker
-                                   {
-                                       ID = ss.SpeakerId,
-                                       Name = ss.Speaker.Name
-                                   })
-                                   .ToList(),
-                TrackId = session.TrackId,
-                Track = new Track
-                {
-                    TrackID = session?.TrackId ?? 0,
-                    Name = session.Track?.Name
-                },
-                ConferenceID = session.ConferenceID,
-                Abstract = session.Abstract
-            };
+            var result = MapSessionResponse(session);
 
             return Ok(result);
         }
@@ -197,6 +142,39 @@ namespace BackEnd.Controllers
             await _db.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        private static ConferenceDTO.SessionResponse MapSessionResponse(Session session)
+        {
+            return new ConferenceDTO.SessionResponse
+            {
+                ID = session.ID,
+                Title = session.Title,
+                StartTime = session.StartTime,
+                EndTime = session.EndTime,
+                Tags = session?.SessionTags
+                               .Select(st => new ConferenceDTO.Tag
+                               {
+                                   ID = st.TagID,
+                                   Name = st.Tag.Name
+                               })
+                               .ToList(),
+                Speakers = session?.SessionSpeakers
+                                   .Select(ss => new ConferenceDTO.Speaker
+                                   {
+                                       ID = ss.SpeakerId,
+                                       Name = ss.Speaker.Name
+                                   })
+                                   .ToList(),
+                TrackId = session.TrackId,
+                Track = new ConferenceDTO.Track
+                {
+                    TrackID = session?.TrackId ?? 0,
+                    Name = session.Track?.Name
+                },
+                ConferenceID = session.ConferenceID,
+                Abstract = session.Abstract
+            };
         }
     }
 }

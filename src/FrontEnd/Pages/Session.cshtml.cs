@@ -6,6 +6,7 @@ using ConferenceDTO;
 using FrontEnd.Services;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace FrontEnd.Pages
 {
@@ -20,11 +21,24 @@ namespace FrontEnd.Pages
 
         public SessionResponse Session { get; set; }
 
-        public async Task OnGet(int id)
+        public int? DayOffset { get; set; }
+
+        public async Task<IActionResult> OnGet(int id)
         {
             Session = await _apiClient.GetSessionAsync(id);
 
-            // Do something if it's null
+            if (Session == null)
+            {
+                return RedirectToPage("/Index");
+            }
+
+            var allSessions = await _apiClient.GetSessionsAsync();
+
+            var startDate = allSessions.Min(s => s.StartTime?.Date);
+
+            DayOffset = Session.StartTime?.DateTime.Subtract(startDate ?? DateTime.MinValue).Days;
+
+            return Page();
         }
     }
 }

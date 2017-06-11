@@ -26,12 +26,10 @@
                         <div class="panel-body">
                             <p>@session.Track?.Name</p>
                             <h3 class="panel-title"><a asp-page="Session" asp-route-id="@session.ID">@session.Title</a></h3>
-                            <ul>
                                 @foreach (var speaker in session.Speakers)
                                 {
-                                    <li><a asp-page="Speaker" asp-route-id="@speaker.ID">@speaker.Name</a></li>
+                                    <em><a asp-page="Speaker" asp-route-id="@speaker.ID">@speaker.Name</a></em>
                                 }
-                            </ul>
                             <a authz-policy="Admin" asp-page="/Admin/EditSession" asp-route-id="@session.ID" class="btn btn-link btn-xs">Edit</a>
                         </div>
                     </div>
