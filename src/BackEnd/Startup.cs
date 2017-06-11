@@ -54,10 +54,6 @@ namespace BackEnd
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
             }
-            else
-            {
-                app.UseExceptionHandler("/error");
-            }
 
             app.UseSwagger();
 

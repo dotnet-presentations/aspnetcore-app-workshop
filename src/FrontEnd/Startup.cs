@@ -33,7 +33,7 @@ namespace FrontEnd
                         options.AuthorizeFolder("/admin", "Admin");
                     });
 
-            services.AddScoped<RequireLoginFilter>();
+            services.AddTransient<RequireLoginFilter>();
 
             services.AddAuthentication(options =>
             {
