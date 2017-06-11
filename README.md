@@ -28,23 +28,23 @@ In this workshop, you'll learn by building a full-featured ASP.NET Core applicat
 ## Day 1
 | Time | Title |  |
 | ---- | ----- | ---- |
-| 9:00 AM - 10:30 AM | Lab #1 | Get bits installed, build the back-end application with basic EF model |
+| 9:00 AM - 10:30 AM | Session #1 | Get bits installed, build the back-end application with basic EF model |
 | 10:30 PM - 10:45 AM | Breakfast Snack | |
-| 10:45 AM - 12:30 PM | Lab #2 | Build out back-end, extract EF model |  |
+| 10:45 AM - 12:30 PM | Session #2 | Build out back-end, extract EF model |  |
 | 12:30 PM - 1:30 PM | Lunch | |
-| 1:30 PM - 3:00 PM | Lab #3 | Add front-end, render agenda, set up front-end models |
+| 1:30 PM - 3:00 PM | Session #3 | Add front-end, render agenda, set up front-end models |
 | 3:00 PM - 3:15 PM | Break | |
-| 3:15 PM - 5:00 PM | Lab #4 | Add Admin auth, add / edit sessions, users can sign-in with Twitter and favorite sessions |
+| 3:15 PM - 5:00 PM | Session #4 | Add Admin auth, add / edit sessions, users can sign-in with Twitter and favorite sessions |
 
 ## Day 2
 | Time | Title |  |
 | ---- | ----- | ---- |
-| 9:00 AM - 10:30 AM | Lab #5 | Caching and bundling |
+| 9:00 AM - 10:30 AM | Session #5 | Caching and bundling |
 | 10:30 AM - 10:45 AM | Break | |
-| 10:45 AM - 12:30 PM | Lab #6 | Deploy to Azure |
+| 10:45 AM - 12:30 PM | Session #6 | Deploy to Azure |
 | 12:30 PM - 1:30 PM | Lunch | |
 | 1:00 PM - 1:30 PM | Optional Lunch Session | Single Page Applications | Jon |
-| 1:30 PM - 5:00 PM | Lab #8 | Challenges |
+| 1:30 PM - 5:00 PM | Session #8 | Challenges |
 
 * Conference Planner
   * Admin
