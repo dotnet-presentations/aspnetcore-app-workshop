@@ -2,7 +2,7 @@
 1. File / New / Backend
 1. EF Model
    * Core
-	 * Session Result
+   * Session Result
 	 * Entity Object
 1. Build all API controllers
 1. Validation attribute to prevent overlapping sessions in a track
