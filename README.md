@@ -3,13 +3,13 @@
 ## Setup
 
 ### .NET Core SDK 2.0 Preview 1 build 005977
-Follow instructions from https://github.com/dotnet/core/blob/master/release-notes/preview4-download.md
+Follow instructions from step 1 here: https://www.microsoft.com/net/core/preview
 
 ### Visual Studio 2017 Preview (Version 15.3.0 Preview 2.0)
 If you're using Windows, you'll want to install Visual Studio 2017 Preview. You can install multiple versions of Visual Studio 2017 side by side, so you won't need to modify your existing Visual Studio 2017 install if you don't want.
 
 #### Web Based Installer
-1. Download the installer from the link at the bottom of this page: http://microsoft.com/net/core/preview
+1. Download the installer from the link at the bottom of this page: https://www.microsoft.com/net/core/preview
 1. Select **only** `.NET Core` and `Web Development` workloads
 
 #### (if available) Offline Installer
@@ -30,7 +30,7 @@ In this workshop, you'll learn by building a full-featured ASP.NET Core applicat
 | ---- | ----- | ---- |
 | 9:00 AM - 10:30 AM | Lab #1 | Get bits installed, build the back-end application with basic EF model |
 | 10:30 PM - 10:45 AM | Breakfast Snack | |
-| 10:45 AM - 12:30 PM | Lab #2: Build out back-end, extract EF model |  |
+| 10:45 AM - 12:30 PM | Lab #2 | Build out back-end, extract EF model |  |
 | 12:30 PM - 1:30 PM | Lunch | |
 | 1:30 PM - 3:00 PM | Lab #3 | Add front-end, render agenda, set up front-end models |
 | 3:00 PM - 3:15 PM | Break | |
