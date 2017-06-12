@@ -21,6 +21,8 @@ namespace FrontEnd.Pages
 
         public SessionResponse Session { get; set; }
 
+        public bool IsFavorite { get; set; }
+
         public int? DayOffset { get; set; }
 
         public async Task<IActionResult> OnGet(int id)
@@ -31,6 +33,10 @@ namespace FrontEnd.Pages
             {
                 return RedirectToPage("/Index");
             }
+
+            var attendee = await _apiClient.GetAttendeeAsync(User.Identity.Name);
+
+            IsFavorite = attendee?.Sessions.Any(s => s.ID == id) ?? false;
 
             var allSessions = await _apiClient.GetSessionsAsync();
 
@@ -44,6 +50,20 @@ namespace FrontEnd.Pages
             }
 
             return Page();
+        }
+
+        public async Task<IActionResult> OnPostAsync(int sessionId)
+        {
+            await _apiClient.AddSessionToUser(User.Identity.Name, sessionId);
+
+            return RedirectToPage();
+        }
+
+        public async Task<IActionResult> OnPostRemoveAsync(int sessionId)
+        {
+            await _apiClient.RemoveSessionFromUser(User.Identity.Name, sessionId);
+
+            return RedirectToPage();
         }
     }
 }
