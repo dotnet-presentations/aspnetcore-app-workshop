@@ -5,14 +5,13 @@ using System.Threading.Tasks;
 using ConferenceDTO;
 using FrontEnd.Services;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace FrontEnd.Pages
 {
     public class IndexModel : PageModel
     {
-        private readonly IApiClient _apiClient;
+        protected readonly IApiClient _apiClient;
 
         public IndexModel(IApiClient apiClient)
         {
@@ -20,8 +19,6 @@ namespace FrontEnd.Pages
         }
 
         public IEnumerable<IGrouping<DateTimeOffset?, SessionResponse>> Sessions { get; set; }
-
-        public bool IsAdmin => (bool)HttpContext.Items["IsAdmin"];
 
         public IEnumerable<(int Offset, DayOfWeek? DayofWeek)> DayOffsets { get; set; }
 
@@ -32,10 +29,16 @@ namespace FrontEnd.Pages
 
         public bool ShowMessage => !string.IsNullOrEmpty(Message);
 
+        protected virtual Task<List<SessionResponse>> GetSessionsAsync()
+        {
+            return _apiClient.GetSessionsAsync();
+        }
+
         public async Task OnGet(int day = 0)
         {
             CurrentDayOffset = day;
-            var sessions = await _apiClient.GetSessionsAsync();
+
+            var sessions = await GetSessionsAsync();
 
             var startDate = sessions.Min(s => s.StartTime?.Date);
             var endDate = sessions.Max(s => s.EndTime?.Date);

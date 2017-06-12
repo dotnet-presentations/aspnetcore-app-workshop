@@ -54,14 +54,14 @@ namespace FrontEnd.Pages
 
         public async Task<IActionResult> OnPostAsync(int sessionId)
         {
-            await _apiClient.AddSessionToUser(User.Identity.Name, sessionId);
+            await _apiClient.AddSessionToAttendeeAsync(User.Identity.Name, sessionId);
 
             return RedirectToPage();
         }
 
         public async Task<IActionResult> OnPostRemoveAsync(int sessionId)
         {
-            await _apiClient.RemoveSessionFromUser(User.Identity.Name, sessionId);
+            await _apiClient.RemoveSessionFromAttendeeAsync(User.Identity.Name, sessionId);
 
             return RedirectToPage();
         }
