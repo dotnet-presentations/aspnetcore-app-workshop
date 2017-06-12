@@ -34,9 +34,9 @@ namespace FrontEnd.Pages
                 return RedirectToPage("/Index");
             }
 
-            var attendee = await _apiClient.GetAttendeeAsync(User.Identity.Name);
+            var sessions = await _apiClient.GetSessionsByAttendeeAsync(User.Identity.Name);
 
-            IsFavorite = attendee?.Sessions.Any(s => s.ID == id) ?? false;
+            IsFavorite = sessions.Any(s => s.ID == id);
 
             var allSessions = await _apiClient.GetSessionsAsync();
 
