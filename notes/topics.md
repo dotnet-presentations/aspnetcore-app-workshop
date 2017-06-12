@@ -40,17 +40,21 @@
  
  ## Extra credit
 
-- Add 3rd party logger (serilog)
-- Add image upload to speaker
+- Add 3rd party logger (serilog) and disable built in console logging
+- Add image upload to Speaker entity
 - Add caching to front end (memory cache and distributed cache)
 - Make the site work for multiple conferences
   - Add conference date
   - Make the home page show upcoming conferences (instead of agenda) and move agenda to separate page
 - Make the names slugs instead of using ids to navigate entities
 - Add `ILogger` support to ApiClient implementation 
-- Markdown for abstract
+- Allow Markdown for the Abstract using a custom markdown tag helper
 - Add date filtering to the backend (instead of doing it in the front end)
 - Add paging to the back end
-- Use postgres
-- Add admin pages to manage sessions
+- Use postgres instead of SQL server or SQLite
+- Add admin pages to manage:
+  - Tracks
+  - Attendees
+  - Conferences
+  - Sessions
 

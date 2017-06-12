@@ -28,7 +28,7 @@ In this workshop, you'll learn by building a full-featured ASP.NET Core applicat
 ## Day 1
 | Time | Title |  |
 | ---- | ----- | ---- |
-| 9:00 AM - 10:30 AM | Session #1 | Get bits installed, build the back-end application with basic EF model |
+| 9:00 AM - 10:30 AM | [Session #1](/docs/1.%20Create%20BackEnd%20API%20project.md) | Get bits installed, build the back-end application with basic EF model |
 | 10:30 PM - 10:45 AM | Breakfast Snack | |
 | 10:45 AM - 12:30 PM | Session #2 | Build out back-end, extract EF model |  |
 | 12:30 PM - 1:30 PM | Lunch | |
@@ -45,23 +45,3 @@ In this workshop, you'll learn by building a full-featured ASP.NET Core applicat
 | 12:30 PM - 1:30 PM | Lunch | |
 | 1:00 PM - 1:30 PM | Optional Lunch Session | Single Page Applications | Jon |
 | 1:30 PM - 5:00 PM | Session #8 | Challenges |
-
-* Conference Planner
-  * Admin
-  * Attendee (customize session)
-  * Public
-* Search
-* Schema
-  * Speakers
-  * Tracks
-  * Tags
-  * Sessions
-  * Users
-* Need architecture diagram
-* Conference DTO
-  * .NET Standard
-* API App has Entity Models referencing DTOs
-* DTOs with buddy types
-  * Follow Damian's code in live.asp.net (preview 2 branch)
-  * Input / Output models in API
-  * Front end will have page models
