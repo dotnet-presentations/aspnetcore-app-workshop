@@ -41,6 +41,7 @@
  
  ## Extra credit
 
+- Add local user accounts using ASP.NET Core Identity
 - Add 3rd party logger (serilog) and disable built in console logging
 - Add image upload to Speaker entity
 - Add caching to front end (memory cache and distributed cache)
