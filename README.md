@@ -28,9 +28,9 @@ In this workshop, you'll learn by building a full-featured ASP.NET Core applicat
 ## Day 1
 | Time | Title |  |
 | ---- | ----- | ---- |
-| 9:00 AM - 10:30 AM | [Session #1](/docs/1. Create BackEnd API project.md) | Get bits installed, build the back-end application with basic EF model |
+| 9:00 AM - 10:30 AM | [Session #1](/docs/1.%20Create%20BackEnd%20API%20project.md) | Get bits installed, build the back-end application with basic EF model |
 | 10:30 PM - 10:45 AM | Breakfast Snack | |
-| 10:45 AM - 12:30 PM | [Session #2](/docs/2. Build out BackEnd and Refactor.md) | Build out back-end, extract EF model |  |
+| 10:45 AM - 12:30 PM | [Session #2](/docs/2.%20Build%20out%20BackEnd%20and%20Refactor.md) | Build out back-end, extract EF model |  |
 | 12:30 PM - 1:30 PM | Lunch | |
 | 1:30 PM - 3:00 PM | Session #3 | Add front-end, render agenda, set up front-end models |
 | 3:00 PM - 3:15 PM | Break | |
