@@ -21,7 +21,7 @@
     <input type="hidden" name="sessionId" value="@Model.Session.ID" />
     <p>
         <a authz-policy="Admin" asp-page="/Admin/EditSession" asp-route-id="@Model.Session.ID" class="btn btn-default btn-sm">Edit</a>
-        @if (Model.IsFavorite)
+        @if (Model.IsInPersonalAgenda)
         {
             <button authz="true" type="submit" asp-page-handler="Remove" class="btn btn-primary">Remove from My Agenda</button>
         }

@@ -21,7 +21,7 @@ namespace FrontEnd.Pages
 
         public SessionResponse Session { get; set; }
 
-        public bool IsFavorite { get; set; }
+        public bool IsInPersonalAgenda { get; set; }
 
         public int? DayOffset { get; set; }
 
@@ -36,7 +36,7 @@ namespace FrontEnd.Pages
 
             var sessions = await _apiClient.GetSessionsByAttendeeAsync(User.Identity.Name);
 
-            IsFavorite = sessions.Any(s => s.ID == id);
+            IsInPersonalAgenda = sessions.Any(s => s.ID == id);
 
             var allSessions = await _apiClient.GetSessionsAsync();
 
