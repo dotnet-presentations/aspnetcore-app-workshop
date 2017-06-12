@@ -27,6 +27,11 @@ namespace FrontEnd.Services
 
         public async Task<AttendeeResponse> GetAttendeeAsync(string name)
         {
+            if (string.IsNullOrEmpty(name))
+            {
+                return null;
+            }
+
             var response = await _httpClient.GetAsync($"/api/attendees/{name}");
 
             if (response.StatusCode == HttpStatusCode.NotFound)
@@ -116,6 +121,20 @@ namespace FrontEnd.Services
             response.EnsureSuccessStatusCode();
 
             return await response.Content.ReadAsJsonAsync<List<SearchResult>>();
+        }
+
+        public async Task AddSessionToUser(string name, int sessionId)
+        {
+            var response = await _httpClient.PostAsync($"/api/attendees/{name}/session/{sessionId}", null);
+
+            response.EnsureSuccessStatusCode();
+        }
+
+        public async Task RemoveSessionFromUser(string name, int sessionId)
+        {
+            var response = await _httpClient.DeleteAsync($"/api/attendees/{name}/session/{sessionId}");
+
+            response.EnsureSuccessStatusCode();
         }
     }
 }

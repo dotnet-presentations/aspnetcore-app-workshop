@@ -17,6 +17,17 @@
 
 <p>@Html.Raw(Model.Session.Abstract)</p>
 
-<p authz-policy="Admin">
-    <a asp-page="/Admin/EditSession" asp-route-id="@Model.Session.ID" class="btn btn-default btn-sm">Edit</a>
-</p>
+<form method="post">
+    <input type="hidden" name="sessionId" value="@Model.Session.ID" />
+    <p>
+        <a authz-policy="Admin" asp-page="/Admin/EditSession" asp-route-id="@Model.Session.ID" class="btn btn-default btn-sm">Edit</a>
+        @if (Model.IsFavorite)
+        {
+            <button type="submit" asp-page-handler="Remove" class="btn btn-primary">Remove from Favorites</button>
+        }
+        else
+        {
+            <button type="submit" class="btn btn-primary">Add to Favorites</button>
+        }
+    </p>
+</form>

@@ -17,5 +17,7 @@ namespace FrontEnd.Services
         Task AddAttendeeAsync(Attendee attendee);
         Task<AttendeeResponse> GetAttendeeAsync(string name);
         Task DeleteSessionAsync(int id);
+        Task AddSessionToUser(string name, int sessionId);
+        Task RemoveSessionFromUser(string name, int sessionId);
     }
 }
