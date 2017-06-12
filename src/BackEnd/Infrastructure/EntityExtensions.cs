@@ -62,7 +62,25 @@ namespace BackEnd.Data
                 ID = attendee.ID,
                 FirstName = attendee.FirstName,
                 LastName = attendee.LastName,
-                UserName = attendee.UserName
+                UserName = attendee.UserName,
+                Sessions = attendee.Sessions?
+                    .Select(s =>
+                        new ConferenceDTO.Session
+                        {
+                            ID = s.ID,
+                            Title = s.Title,
+                            StartTime = s.StartTime,
+                            EndTime = s.EndTime
+                        })
+                    .ToList(),
+                Conferences = attendee.ConferenceAttendees?
+                    .Select(ca =>
+                        new ConferenceDTO.Conference
+                        {
+                            ID = ca.ConferenceID,
+                            Name = ca.Conference.Name
+                        })
+                    .ToList(),
             };
     }
 }
