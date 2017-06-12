@@ -26,7 +26,7 @@ namespace FrontEnd.Pages
 
         public int? DayOffset { get; set; }
 
-        public async Task<IActionResult> OnGet(int id)
+        public async Task<IActionResult> OnGetAsync(int id)
         {
             Session = await _apiClient.GetSessionAsync(id);
 
