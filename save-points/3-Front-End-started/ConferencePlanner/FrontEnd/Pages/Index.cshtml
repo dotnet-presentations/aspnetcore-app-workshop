@@ -1,0 +1,42 @@
+﻿@page
+@model IndexModel
+@{
+ViewData["Title"] = "Home Page";
+}
+
+<div class="agenda">
+    <h1>NDC Oslo 2017</h1>
+
+    <ul class="nav nav-pills">
+        @foreach (var day in Model.DayOffsets)
+        {
+            <li role="presentation" class="@(Model.CurrentDayOffset == day.Offset ? "active" : null)">
+                <a asp-route-day="@day.Offset">@day.DayofWeek?.ToString()</a>
+            </li>
+        }
+    </ul>
+
+    @foreach (var timeSlot in Model.Sessions)
+    {
+        <h4>@timeSlot.Key?.ToString("HH:mm")</h4>
+        <div class="row">
+            @foreach (var session in timeSlot)
+            {
+                <div class="col-md-3">
+                    <div class="panel panel-default session">
+                        <div class="panel-body">
+                            <p>@session.Track?.Name</p>
+                            <h3 class="panel-title"><a asp-page="Session" asp-route-id="@session.ID">@session.Title</a></h3>
+                            <p>
+                                @foreach (var speaker in session.Speakers)
+                                {
+                                    <em><a asp-page="Speaker" asp-route-id="@speaker.ID">@speaker.Name</a></em>
+                                }
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
