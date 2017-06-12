@@ -20,6 +20,7 @@
  - Model Metadata
  
  ## FrontEnd
+ - User Secrets
  - Razor Pages
  - Custom Tag Helpers
  - Custom Filter
