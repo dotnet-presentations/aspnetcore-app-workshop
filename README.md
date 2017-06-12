@@ -34,7 +34,7 @@ In this workshop, you'll learn by building a full-featured ASP.NET Core applicat
 | 12:30 PM - 1:30 PM | Lunch | |
 | 1:30 PM - 3:00 PM | [Session #3](/docs/3.%20Add%20front-end%2C%20render%20agenda%2C%20set%20up%20front-end%20models.md) | Add front-end, render agenda, set up front-end models |
 | 3:00 PM - 3:15 PM | Break | |
-| 3:15 PM - 5:00 PM | [Session #4](/docs/4.%20Add%20auth%20features.md) | Add Admin auth, edit sessions, users can sign-in with Twitter, custom auth tag helper |
+| 3:15 PM - 5:00 PM | [Session #4](/docs/4.%20Add%20auth%20features.md) | Add auth, admin policy, edit sessions, users can sign-in with Twitter and Google, custom auth tag helper |
 
 ## Day 2
 | Time | Title |  |
