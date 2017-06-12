@@ -25,6 +25,7 @@ In this workshop, you'll learn by building a full-featured ASP.NET Core applicat
 
 ![Architecture Diagram](https://rawgit.com/jongalloway/aspnetcore-app-workshop/master/docs/architecture-diagram.svg)
 
+## Sessions
 
 | Session | Topics |
 | ----- | ---- |
