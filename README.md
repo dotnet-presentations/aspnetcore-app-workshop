@@ -32,7 +32,7 @@ In this workshop, you'll learn by building a full-featured ASP.NET Core applicat
 | 10:30 PM - 10:45 AM | Breakfast Snack | |
 | 10:45 AM - 12:30 PM | [Session #2](/docs/2.%20Build%20out%20BackEnd%20and%20Refactor.md) | Build out back-end, extract EF model |  |
 | 12:30 PM - 1:30 PM | Lunch | |
-| 1:30 PM - 3:00 PM | Session #3 | Add front-end, render agenda, set up front-end models |
+| 1:30 PM - 3:00 PM | [Session #3](/docs/3.%20Add%20front-end%2C%20render%20agenda%2C%20set%20up%20front-end%20models.md) | Add front-end, render agenda, set up front-end models |
 | 3:00 PM - 3:15 PM | Break | |
 | 3:15 PM - 5:00 PM | Session #4 | Add Admin auth, add / edit sessions, users can sign-in with Twitter and favorite sessions |
 
