@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ConferenceDTO;
 using FrontEnd.Services;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
@@ -22,6 +23,8 @@ namespace FrontEnd.Pages
 
         public IEnumerable<(int Offset, DayOfWeek? DayofWeek)> DayOffsets { get; set; }
 
+        public List<int> UserSessions { get; set; }
+
         public int CurrentDayOffset { get; set; }
 
         [TempData]
@@ -37,6 +40,10 @@ namespace FrontEnd.Pages
         public async Task OnGet(int day = 0)
         {
             CurrentDayOffset = day;
+
+            var userSessions = await _apiClient.GetSessionsByAttendeeAsync(User.Identity.Name);
+
+            UserSessions = userSessions.Select(u => u.ID).ToList();
 
             var sessions = await GetSessionsAsync();
 
@@ -54,6 +61,20 @@ namespace FrontEnd.Pages
                                .OrderBy(s => s.TrackId)
                                .GroupBy(s => s.StartTime)
                                .OrderBy(g => g.Key);
+        }
+        
+        public async Task<IActionResult> OnPostAsync(int sessionId)
+        {
+            await _apiClient.AddSessionToAttendeeAsync(User.Identity.Name, sessionId);
+
+            return RedirectToPage();
+        }
+
+        public async Task<IActionResult> OnPostRemoveAsync(int sessionId)
+        {
+            await _apiClient.RemoveSessionFromAttendeeAsync(User.Identity.Name, sessionId);
+
+            return RedirectToPage();
         }
     }
 }
