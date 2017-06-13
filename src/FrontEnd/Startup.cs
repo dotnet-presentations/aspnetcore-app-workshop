@@ -54,7 +54,6 @@ namespace FrontEnd
             services.AddCookieAuthentication(options =>
             {
                 options.LoginPath = "/Login";
-                options.LogoutPath = "/Logout";
             });
 
             var twitterConfig = Configuration.GetSection("twitter");
