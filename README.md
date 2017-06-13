@@ -36,4 +36,4 @@ In this workshop, you'll learn by building a full-featured ASP.NET Core applicat
 | [Session #5](/docs/5.%20Add%20personal%20agenda.md) | User association, Add personal agenda |
 | Session #6 | Deployment |
 | Optional Lunch Session | Single Page Applications |
-| Session #8 | Challenges |
+| [Session #8](/docs/8.%20Challenges.md) | Challenges |
