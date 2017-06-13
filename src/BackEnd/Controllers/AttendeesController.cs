@@ -19,7 +19,8 @@ namespace BackEnd
         [HttpGet("{username}")]
         public async Task<IActionResult> Get(string username)
         {
-            var attendee = await _db.Attendees.Include(a => a.Sessions)
+            var attendee = await _db.Attendees.Include(a => a.SessionsAttendees)
+                                                .ThenInclude(sa => sa.Session)
                                               .SingleOrDefaultAsync(a => a.UserName == username);
 
             if (attendee == null)
@@ -58,7 +59,8 @@ namespace BackEnd
         [HttpPost("{username}/session/{sessionId:int}")]
         public async Task<IActionResult> AddSession(string username, int sessionId)
         {
-            var attendee = await _db.Attendees.Include(a => a.Sessions)
+            var attendee = await _db.Attendees.Include(a => a.SessionsAttendees)
+                                                .ThenInclude(sa => sa.Session)
                                               .Include(a => a.ConferenceAttendees)
                                                 .ThenInclude(ca => ca.Conference)
                                               .SingleOrDefaultAsync(a => a.UserName == username);
@@ -75,7 +77,11 @@ namespace BackEnd
                 return BadRequest();
             }
 
-            attendee.Sessions.Add(session);
+            attendee.SessionsAttendees.Add(new SessionAttendee
+            {
+                AttendeeID = attendee.ID,
+                SessionID = sessionId
+            });
 
             await _db.SaveChangesAsync();
 
@@ -101,7 +107,11 @@ namespace BackEnd
                 return BadRequest();
             }
 
-            attendee.Sessions.Remove(session);
+            attendee.SessionsAttendees.Remove(new SessionAttendee
+            {
+                AttendeeID = attendee.ID,
+                SessionID = sessionId
+            });
 
             await _db.SaveChangesAsync();
 
