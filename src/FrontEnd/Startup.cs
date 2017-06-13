@@ -25,13 +25,13 @@ namespace FrontEnd
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc(options =>
-                    {
-                        options.Filters.AddService(typeof(RequireLoginFilter));
-                    })
-                    .AddRazorPagesOptions(options =>
-                    {
-                        options.AuthorizeFolder("/admin", "Admin");
-                    });
+            {
+                options.Filters.AddService(typeof(RequireLoginFilter));
+            })
+            .AddRazorPagesOptions(options =>
+            {
+                options.AuthorizeFolder("/admin", "Admin");
+            });
 
             services.AddTransient<RequireLoginFilter>();
 
@@ -54,6 +54,7 @@ namespace FrontEnd
             services.AddCookieAuthentication(options =>
             {
                 options.LoginPath = "/Login";
+                options.AccessDeniedPath = "/Denied";
             });
 
             var twitterConfig = Configuration.GetSection("twitter");

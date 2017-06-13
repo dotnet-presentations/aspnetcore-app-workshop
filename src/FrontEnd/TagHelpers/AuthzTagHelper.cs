@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Razor.Runtime.TagHelpers;
-using Microsoft.AspNetCore.Razor.TagHelpers;
+﻿using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace FrontEnd.TagHelpers
 {
@@ -14,11 +10,11 @@ namespace FrontEnd.TagHelpers
     [HtmlTargetElement("*", Attributes = "authz-policy")]
     public class AuthzTagHelper : TagHelper
     {
-        private readonly IAuthorizationService _authzService;
+        private readonly IAuthorizationService _authz;
 
-        public AuthzTagHelper(IAuthorizationService authzService)
+        public AuthzTagHelper(IAuthorizationService authz)
         {
-            _authzService = authzService;
+            _authz = authz;
         }
 
         [HtmlAttributeName("authz")]
@@ -40,11 +36,6 @@ namespace FrontEnd.TagHelpers
                 // authz="false" & user isn't authenticated
                 showOutput = true;
             }
-            else if (requiresAuth && ViewContext.HttpContext.User.Identity.IsAuthenticated)
-            {
-                // auth="true" & user is authenticated
-                showOutput = true;
-            }
             else if (!string.IsNullOrEmpty(RequiredPolicy))
             {
                 // auth-policy="foo" & user is authorized for policy "foo"
@@ -56,11 +47,16 @@ namespace FrontEnd.TagHelpers
                 }
                 else
                 {
-                    authorized = await _authzService.AuthorizeAsync(ViewContext.HttpContext.User, RequiredPolicy);
+                    authorized = await _authz.AuthorizeAsync(ViewContext.HttpContext.User, RequiredPolicy);
                     ViewContext.ViewData["AuthPolicy." + RequiredPolicy] = authorized;
                 }
-                
+
                 showOutput = authorized;
+            }
+            else if (requiresAuth && ViewContext.HttpContext.User.Identity.IsAuthenticated)
+            {
+                // auth="true" & user is authenticated
+                showOutput = true;
             }
 
             if (!showOutput)
