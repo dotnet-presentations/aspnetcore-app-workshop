@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using BackEnd.Data;
 using Microsoft.AspNetCore.Mvc;
@@ -93,7 +94,8 @@ namespace BackEnd
         [HttpDelete("{username}/session/{sessionId:int}")]
         public async Task<IActionResult> RemoveSession(string username, int sessionId)
         {
-            var attendee = await _db.Attendees.SingleOrDefaultAsync(a => a.UserName == username);
+            var attendee = await _db.Attendees.Include(a => a.SessionsAttendees)
+                                              .SingleOrDefaultAsync(a => a.UserName == username);
 
             if (attendee == null)
             {
@@ -107,15 +109,10 @@ namespace BackEnd
                 return BadRequest();
             }
 
-            attendee.SessionsAttendees.Remove(new SessionAttendee
-            {
-                AttendeeID = attendee.ID,
-                SessionID = sessionId
-            });
+            var sessionAttendee = attendee.SessionsAttendees.FirstOrDefault(sa => sa.SessionID == sessionId);
+            attendee.SessionsAttendees.Remove(sessionAttendee);
 
             await _db.SaveChangesAsync();
-
-            var result = attendee.MapAttendeeResponse();
 
             return NoContent();
         }
