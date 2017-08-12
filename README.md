@@ -2,23 +2,43 @@
 
 ## Setup
 
-### .NET Core SDK 2.0 Preview 1 build 005977
-Follow instructions from step 1 here: https://www.microsoft.com/net/core/preview
+### .NET Core SDK 2.0
+#### Offline (on USB drive)
+Run the appropriate SDK installer for your platform in the *dotnet-sdk-2.0.0* folder
 
-### Visual Studio 2017 Preview (Version 15.3.0 Preview 2.0)
-If you're using Windows, you'll want to install Visual Studio 2017 Preview. You can install multiple versions of Visual Studio 2017 side by side, so you won't need to modify your existing Visual Studio 2017 install if you don't want.
+#### Online
+Download and run SDK installer for your platform:
+- [Windows x64](https://aka.ms/dotnet-sdk-2.0.0-win-x64)
+- [MacOS 10.12+](https://aka.ms/dotnet-sdk-2.0.0-osx-x64)
+- [Ubuntu 16.04](https://aka.ms/dotnet-sdk-2.0.0-ubuntu.16.04-x64)
+- [Linux DEB](https://aka.ms/dotnet-sdk-2.0.0-debian-x64)
+
+### Visual Studio 2017 (Version 15.3)
+If you're using Windows, you'll want to install Visual Studio 2017 15.3. You can install multiple versions of Visual Studio 2017 side by side, so you won't need to modify your existing Visual Studio 2017 install if you don't want. The Community edition is free to install and is suitable to complete this workshop.
+
+#### Offline Installer (if available)
+> Since conference WiFi can be a little slow, we'll try to have some USB sticks with offline installers.
+1. Run *vs_community.exe* in *VS2017.3\Community* folder
+1. Select **only** the following workloads:
+   - `.NET desktop development`
+   - `ASP.NET and web development`
+   - `Azure development`
+   - `.NET Core cross-platform development`
 
 #### Web Based Installer
-1. Download the installer from the link at the bottom of this page: https://www.microsoft.com/net/core/preview
-1. Select **only** `.NET Core` and `Web Development` workloads
+1. Download the installer from the button on the left of this page: https://www.visualstudio.com
+1. Select **only** the following workloads:
+   - `.NET desktop development`
+   - `ASP.NET and web development`
+   - `Azure development`
+   - `.NET Core cross-platform development`
 
-#### (if available) Offline Installer
-> Since conference wifi can be a little slow, we'll try to have some USB sticks with an offline installer.
-1. Run vs_community.exe in vs2017 folder
-1. Select **only** `.NET Core` and `Web Development` workloads
+### Visual Studio Code
+#### Offline (on USB drive)
+Run the appropriate installer for your platform in the *VSCode* folder
 
-### VS Code (on USB drive)
-1. Install VS Code from USB drive or http://code.visualstudio.com.
+#### Online
+Install Visual Studio Code from http://code.visualstudio.com.
 
 ## What you'll be building
 In this workshop, you'll learn by building a full-featured ASP.NET Core application from scratch. We'll start from File/ New and build up to an API back-end application, a web front-end application, and a common library for shared data transfer objects using .NET Standard.
