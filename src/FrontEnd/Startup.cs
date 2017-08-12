@@ -28,31 +28,17 @@ namespace FrontEnd
             })
             .AddRazorPagesOptions(options =>
             {
-                options.Conventions.AuthorizeFolder("/admin", "Admin");
+                options.Conventions.AuthorizeFolder("/Admin", "Admin");
             });
 
             services.AddTransient<RequireLoginFilter>();
-
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            });
-
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy("Admin", policy =>
-                {
-                    policy.RequireAuthenticatedUser()
-                          .RequireUserName(Configuration["admin"]);
-                });
-            });
 
             var authBuilder =  services
                 .AddAuthentication(options =>
                 {
                     options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 })
                 .AddCookie(options =>
                 {
@@ -71,6 +57,15 @@ namespace FrontEnd
             {
                 authBuilder.AddGoogle(options => googleConfig.Bind(options));
             }
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("Admin", policy =>
+                {
+                    policy.RequireAuthenticatedUser()
+                          .RequireUserName(Configuration["admin"]);
+                });
+            });
 
             var httpClient = new HttpClient
             {
