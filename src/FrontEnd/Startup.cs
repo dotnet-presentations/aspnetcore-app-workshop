@@ -3,8 +3,6 @@ using System.Net.Http;
 using FrontEnd.Infrastructure;
 using FrontEnd.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.Twitter;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
@@ -30,7 +28,7 @@ namespace FrontEnd
             })
             .AddRazorPagesOptions(options =>
             {
-                options.AuthorizeFolder("/admin", "Admin");
+                options.Conventions.AuthorizeFolder("/admin", "Admin");
             });
 
             services.AddTransient<RequireLoginFilter>();
@@ -51,22 +49,27 @@ namespace FrontEnd
                 });
             });
 
-            services.AddCookieAuthentication(options =>
-            {
-                options.LoginPath = "/Login";
-                options.AccessDeniedPath = "/Denied";
-            });
+            var authBuilder =  services
+                .AddAuthentication(options =>
+                {
+                    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                })
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/Login";
+                    options.AccessDeniedPath = "/Denied";
+                });
 
             var twitterConfig = Configuration.GetSection("twitter");
             if (twitterConfig["consumerKey"] != null)
             {
-                services.AddTwitterAuthentication(options => twitterConfig.Bind(options));
+                authBuilder.AddTwitter(options => twitterConfig.Bind(options));
             }
 
             var googleConfig = Configuration.GetSection("google");
             if (googleConfig["clientID"] != null)
             {
-                services.AddGoogleAuthentication(options => googleConfig.Bind(options));
+                authBuilder.AddGoogle(options => googleConfig.Bind(options));
             }
 
             var httpClient = new HttpClient

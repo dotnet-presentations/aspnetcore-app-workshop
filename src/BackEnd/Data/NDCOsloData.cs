@@ -289,7 +289,7 @@ namespace BackEnd
                 var sessionGroups = new List<SessionGroup>();
 
                 // 9:00 - 10:00
-                var startTime = new DateTimeOffset(2017, 6, 14, 9, 0, 0, TimeSpan.FromHours(1));
+                var startTime = new DateTimeOffset(2017, 8, 14, 9, 0, 0, TimeSpan.FromHours(10));
 
                 // Wed
                 sessionGroups.Add(new SessionGroup

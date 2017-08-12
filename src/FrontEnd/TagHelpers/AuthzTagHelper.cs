@@ -47,7 +47,8 @@ namespace FrontEnd.TagHelpers
                 }
                 else
                 {
-                    authorized = await _authz.AuthorizeAsync(ViewContext.HttpContext.User, RequiredPolicy);
+                    var authResult = await _authz.AuthorizeAsync(ViewContext.HttpContext.User, RequiredPolicy);
+                    authorized = authResult.Succeeded;
                     ViewContext.ViewData["AuthPolicy." + RequiredPolicy] = authorized;
                 }
 
