@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore.Design;
 
 namespace BackEnd.Data
 {
@@ -48,9 +48,9 @@ namespace BackEnd.Data
         public DbSet<Attendee> Attendees { get; set; }
     }
 
-    public class ApplicationDbContextFactory : IDbContextFactory<ApplicationDbContext>
+    public class ApplicationDbContextFactory : IDesignTimeDbContextFactory<ApplicationDbContext>
     {
-        public ApplicationDbContext Create(string[] args) =>
+        public ApplicationDbContext CreateDbContext(string[] args) =>
             Program.BuildWebHost(args).Services.CreateScope().ServiceProvider.GetRequiredService<ApplicationDbContext>();
     }
 }

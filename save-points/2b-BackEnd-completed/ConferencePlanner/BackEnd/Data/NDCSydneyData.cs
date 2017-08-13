@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace BackEnd
 {
-    public static class NDCOsloData
+    public static class NDCSydneyData
     {
         private class SessionData
         {
@@ -36,7 +36,7 @@ namespace BackEnd
                 db.Database.EnsureCreated();
 
                 // Conference
-                var conference = new Conference { Name = "NDC Oslo 2017" };
+                var conference = new Conference { Name = "NDC Sydney 2017" };
                 db.Conferences.Add(conference);
 
                 // Speakers
@@ -297,7 +297,7 @@ namespace BackEnd
                     StartTime = startTime,
                     Sessions = new[] {
                         new SessionData { Name = "Keynote: Are There Any Questions?", Speakers = new[] { "Dylan Beattie" }, Track = "Expo",
-                            Abstract = @"Not this time. At NDC Oslo 2017, we're going to turn things upside-down and do the questions right at the beginning. Because, for as long as human beings have existed, we've asked questions. Questions about the world around us. Questions about the past, about the future, about our place in the universe. As our world moves online, the search for answers has become inextricably linked with the history, and the future, of software development. The earliest mechanical calculating machines were built to answer questions - to solve complex mathematical problems many thousands of times faster than their human operators.
+                            Abstract = @"Not this time. At NDC Sydney 2017, we're going to turn things upside-down and do the questions right at the beginning. Because, for as long as human beings have existed, we've asked questions. Questions about the world around us. Questions about the past, about the future, about our place in the universe. As our world moves online, the search for answers has become inextricably linked with the history, and the future, of software development. The earliest mechanical calculating machines were built to answer questions - to solve complex mathematical problems many thousands of times faster than their human operators.
 
 Today, in the age of connected devices and machine learning, we live in a world where humans ask questions and expect computers to have the answers. So let's take this chance to ask some of the really big questions: Who are we? How did we get here? How is modern software changing the way we interact with the world around us? Where are the really big questions in modern software development - and who's working on them? And how will those questions shape the future of our relationship with the machines that have become such an important part of our lives?" }
                     }

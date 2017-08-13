@@ -29,38 +29,32 @@ namespace FrontEnd
             services.AddMvc()
                     .AddRazorPagesOptions(options =>
                     {
-                        options.AuthorizeFolder("/admin", "Admin");
+                        options.Conventions.AuthorizeFolder("/admin", "Admin");
                     });
 
-            var httpClient = new HttpClient
-            {
-                BaseAddress = new Uri(Configuration["serviceUrl"])
-            };
-            services.AddSingleton(httpClient);
-            services.AddSingleton<IApiClient, ApiClient>();
-
-            services.AddCookieAuthentication(options =>
-            {
-                options.LoginPath = "/Login";
-            });
-
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            });
+            var authBuilder = services
+                .AddAuthentication(options =>
+                {
+                    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                })
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/Login";
+                    options.AccessDeniedPath = "/Denied";
+                });
 
             var twitterConfig = Configuration.GetSection("twitter");
             if (twitterConfig["consumerKey"] != null)
             {
-                services.AddTwitterAuthentication(options => twitterConfig.Bind(options));
+                authBuilder.AddTwitter(options => twitterConfig.Bind(options));
             }
 
             var googleConfig = Configuration.GetSection("google");
             if (googleConfig["clientID"] != null)
             {
-                services.AddGoogleAuthentication(options => googleConfig.Bind(options));
+                authBuilder.AddGoogle(options => googleConfig.Bind(options));
             }
 
             services.AddAuthorization(options =>
@@ -71,6 +65,13 @@ namespace FrontEnd
                           .RequireUserName(Configuration["admin"]);
                 });
             });
+
+            var httpClient = new HttpClient
+            {
+                BaseAddress = new Uri(Configuration["serviceUrl"])
+            };
+            services.AddSingleton(httpClient);
+            services.AddSingleton<IApiClient, ApiClient>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

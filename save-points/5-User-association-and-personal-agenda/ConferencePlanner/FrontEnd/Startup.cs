@@ -27,29 +27,40 @@ namespace FrontEnd
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCookieAuthentication(options =>
-            {
-                options.LoginPath = "/Login";
-                options.AccessDeniedPath = "/Denied";
-            });
+            services.AddMvc(options =>
+                {
+                    options.Filters.AddService(typeof(RequireLoginFilter));
+                })
+                .AddRazorPagesOptions(options =>
+                {
+                    options.Conventions.AuthorizeFolder("/admin", "Admin");
+                });
 
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            });
+            services.AddTransient<RequireLoginFilter>();
+
+            var authBuilder = services
+                .AddAuthentication(options =>
+                {
+                    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                })
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/Login";
+                    options.AccessDeniedPath = "/Denied";
+                });
 
             var twitterConfig = Configuration.GetSection("twitter");
             if (twitterConfig["consumerKey"] != null)
             {
-                services.AddTwitterAuthentication(options => twitterConfig.Bind(options));
+                authBuilder.AddTwitter(options => twitterConfig.Bind(options));
             }
 
             var googleConfig = Configuration.GetSection("google");
             if (googleConfig["clientID"] != null)
             {
-                services.AddGoogleAuthentication(options => googleConfig.Bind(options));
+                authBuilder.AddGoogle(options => googleConfig.Bind(options));
             }
 
             services.AddAuthorization(options =>
@@ -60,17 +71,6 @@ namespace FrontEnd
                           .RequireUserName(Configuration["admin"]);
                 });
             });
-
-            services.AddMvc(options =>
-            {
-                options.Filters.AddService(typeof(RequireLoginFilter));
-            })
-            .AddRazorPagesOptions(options =>
-            {
-                options.AuthorizeFolder("/Admin", "Admin");
-            });
-
-            services.AddTransient<RequireLoginFilter>();
 
             var httpClient = new HttpClient
             {

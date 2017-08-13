@@ -14,11 +14,11 @@ namespace FrontEnd.TagHelpers
     [HtmlTargetElement("*", Attributes = "authz-policy")]
     public class AuthzTagHelper : TagHelper
     {
-        private readonly IAuthorizationService _authzService;
+        private readonly IAuthorizationService _authz;
 
-        public AuthzTagHelper(IAuthorizationService authzService)
+        public AuthzTagHelper(IAuthorizationService authz)
         {
-            _authzService = authzService;
+            _authz = authz;
         }
 
         [HtmlAttributeName("authz")]
@@ -56,7 +56,8 @@ namespace FrontEnd.TagHelpers
                 }
                 else
                 {
-                    authorized = await _authzService.AuthorizeAsync(ViewContext.HttpContext.User, RequiredPolicy);
+                    var authResult = await _authz.AuthorizeAsync(ViewContext.HttpContext.User, RequiredPolicy);
+                    authorized = authResult.Succeeded;
                     ViewContext.ViewData["AuthPolicy." + RequiredPolicy] = authorized;
                 }
 

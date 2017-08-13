@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BackEnd.Models
@@ -15,9 +15,9 @@ namespace BackEnd.Models
         public DbSet<Speaker> Speaker { get; set; }
     }
 
-    public class ApplicationDbContextFactory : IDbContextFactory<ApplicationDbContext>
+    public class ApplicationDbContextFactory : IDesignTimeDbContextFactory<ApplicationDbContext>
     {
-        public ApplicationDbContext Create(string[] args) =>
+        public ApplicationDbContext CreateDbContext(string[] args) =>
             Program.BuildWebHost(args).Services.CreateScope().ServiceProvider.GetRequiredService<ApplicationDbContext>();
     }
 }
