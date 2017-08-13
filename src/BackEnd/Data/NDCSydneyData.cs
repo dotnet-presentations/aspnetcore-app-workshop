@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace BackEnd
 {
-    public static class NDCOsloData
+    public static class NDCSydneyData
     {
         private class SessionData
         {

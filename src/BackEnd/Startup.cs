@@ -69,7 +69,8 @@ namespace BackEnd
                 return Task.CompletedTask;
             });
 
-            NDCOsloData.Seed(app.ApplicationServices);
+            // Comment out the following line to avoid resetting the database each time
+            NDCSydneyData.Seed(app.ApplicationServices);
         }
     }
 }
