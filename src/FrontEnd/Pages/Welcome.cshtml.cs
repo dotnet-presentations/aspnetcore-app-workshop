@@ -1,8 +1,8 @@
 using System.Threading.Tasks;
 using FrontEnd.Services;
+using FrontEnd.Pages.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using FrontEnd.Pages.Models;
 
 namespace FrontEnd
 {
@@ -20,7 +20,10 @@ namespace FrontEnd
 
         public async Task<IActionResult> OnGetAsync()
         {
-            var attendee = User.Identity.IsAuthenticated ? await _apiClient.GetAttendeeAsync(HttpContext.User.Identity.Name) : null;
+            // Redirect to home page if user is anonymous or already registered as attendee
+            var attendee = User.Identity.IsAuthenticated
+                ? await _apiClient.GetAttendeeAsync(HttpContext.User.Identity.Name)
+                : null;
 
             if (!User.Identity.IsAuthenticated || attendee != null)
             {

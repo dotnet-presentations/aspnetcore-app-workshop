@@ -5,14 +5,13 @@ using FrontEnd.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Routing;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace FrontEnd
 {
     public class RequireLoginFilter : IAsyncResourceFilter
     {
-        private IApiClient _apiClient;
-        private IUrlHelperFactory _urlHelperFactory;
+        private readonly IApiClient _apiClient;
+        private readonly IUrlHelperFactory _urlHelperFactory;
 
         public RequireLoginFilter(IApiClient apiClient, IUrlHelperFactory urlHelperFactory)
         {
@@ -24,15 +23,18 @@ namespace FrontEnd
         {
             var urlHelper = _urlHelperFactory.GetUrlHelper(context);
 
-            var ignoreRoutes = new[] {
+            var ignoreRoutes = new[]
+            {
                 urlHelper.Page("/Login"),
                 urlHelper.Action("logout", "account"),
                 urlHelper.Page("/Welcome")
             };
 
-            // If the user is already associated then redirect
-            if (context.HttpContext.User.Identity.IsAuthenticated && 
-                !ignoreRoutes.Any(path => string.Equals(context.HttpContext.Request.Path, path, StringComparison.OrdinalIgnoreCase)))
+            // If the user is authenticated but not associated *and* we're not ignoring this path
+            // then redirect to the Welcome page
+            if (context.HttpContext.User.Identity.IsAuthenticated &&
+                !ignoreRoutes.Any(path =>
+                    string.Equals(context.HttpContext.Request.Path, path, StringComparison.OrdinalIgnoreCase)))
             {
                 var attendee = await _apiClient.GetAttendeeAsync(context.HttpContext.User.Identity.Name);
 

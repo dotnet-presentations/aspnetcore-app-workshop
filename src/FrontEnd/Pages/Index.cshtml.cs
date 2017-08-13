@@ -6,7 +6,6 @@ using ConferenceDTO;
 using FrontEnd.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace FrontEnd.Pages
 {
@@ -37,7 +36,7 @@ namespace FrontEnd.Pages
             return _apiClient.GetSessionsAsync();
         }
 
-        public async Task OnGet(int day = 0)
+        public async Task OnGetAsync(int day = 0)
         {
             CurrentDayOffset = day;
 

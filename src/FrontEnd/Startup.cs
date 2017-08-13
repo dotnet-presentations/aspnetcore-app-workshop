@@ -24,7 +24,7 @@ namespace FrontEnd
         {
             services.AddMvc(options =>
             {
-                options.Filters.AddService(typeof(RequireLoginFilter));
+                options.Filters.AddService<RequireLoginFilter>();
             })
             .AddRazorPagesOptions(options =>
             {

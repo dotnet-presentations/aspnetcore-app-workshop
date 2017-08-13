@@ -9,8 +9,8 @@ namespace FrontEnd.Pages
 {
     public class MyAgendaModel : IndexModel
     {
-        public MyAgendaModel(IApiClient client) :
-            base(client)
+        public MyAgendaModel(IApiClient client)
+            : base(client)
         {
 
         }
