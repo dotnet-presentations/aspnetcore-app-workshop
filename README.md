@@ -13,12 +13,12 @@ Download and run SDK installer for your platform:
 - [Ubuntu 16.04](https://aka.ms/dotnet-sdk-2.0.0-ubuntu.16.04-x64)
 - [Linux DEB](https://aka.ms/dotnet-sdk-2.0.0-debian-x64)
 
-### Visual Studio 2017 (Version 15.3)
-If you're using Windows, you'll want to install Visual Studio 2017 15.3. You can install multiple versions of Visual Studio 2017 side by side, so you won't need to modify your existing Visual Studio 2017 install if you don't want. The Community edition is free to install and is suitable to complete this workshop.
+### Visual Studio 2017 (Version 15.4)
+If you're using Windows, you'll want to install Visual Studio 2017 15.4. You can install multiple versions of Visual Studio 2017 side by side, so you won't need to modify your existing Visual Studio 2017 install if you don't want. The Community edition is free to install and is suitable to complete this workshop.
 
 #### Offline Installer (if available)
 > Since conference WiFi can be a little slow, we'll try to have some USB sticks with offline installers.
-1. Run *vs_community.exe* in *VS2017.3\Community* folder
+1. Run *vs_community.exe* in *VS2017.4\Community* folder
 1. Select **only** the following workloads:
    - `.NET desktop development`
    - `ASP.NET and web development`
