@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.EntityFrameworkCore.Storage.Internal;
 using System;
 
 namespace BackEnd.Migrations
@@ -13,8 +15,9 @@ namespace BackEnd.Migrations
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
+#pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.0.0-preview1-24937")
+                .HasAnnotation("ProductVersion", "2.0.0-rtm-26452")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("BackEnd.Models.Speaker", b =>
@@ -36,6 +39,7 @@ namespace BackEnd.Migrations
 
                     b.ToTable("Speaker");
                 });
+#pragma warning restore 612, 618
         }
     }
 }

@@ -13,11 +13,11 @@ namespace BackEnd.Migrations
                 name: "Speaker",
                 columns: table => new
                 {
-                    ID = table.Column<int>(nullable: false)
+                    ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Bio = table.Column<string>(maxLength: 4000, nullable: true),
-                    Name = table.Column<string>(maxLength: 200, nullable: false),
-                    WebSite = table.Column<string>(maxLength: 1000, nullable: true)
+                    Bio = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    WebSite = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true)
                 },
                 constraints: table =>
                 {

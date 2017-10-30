@@ -40,6 +40,7 @@ namespace BackEnd
             });
 
             services.AddMvcCore()
+                .AddDataAnnotations()
                 .AddJsonFormatters()
                 .AddApiExplorer();
 
@@ -49,13 +50,18 @@ namespace BackEnd
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             app.UseSwagger();
 
             app.UseSwaggerUI(options =>
                 options.SwaggerEndpoint("/swagger/v1/swagger.json", "Conference Planner API v1")
             );
+
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
 
             app.UseMvc();
         }
