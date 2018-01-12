@@ -2,9 +2,9 @@
 
 ## Setup
 
-### .NET Core SDK 2.0
+### .NET Core SDK 2.1.4
 #### Offline (on USB drive)
-Run the appropriate SDK installer for your platform in the *dotnet-sdk-2.0.0* folder
+Run the appropriate SDK installer for your platform in the *dotnet-sdk* folder
 
 #### Online
 Download and run SDK installer for your platform:
