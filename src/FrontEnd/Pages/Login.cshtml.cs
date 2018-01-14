@@ -5,9 +5,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Authentication;
+using FrontEnd.Filters;
 
 namespace FrontEnd.Pages
 {
+    [SkipWelcome]
     public class LoginModel : PageModel
     {
         private readonly IAuthenticationSchemeProvider _authSchemeProvider;

@@ -3,9 +3,11 @@ using FrontEnd.Services;
 using FrontEnd.Pages.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using FrontEnd.Filters;
 
 namespace FrontEnd
 {
+    [SkipWelcome]
     public class WelcomeModel : PageModel
     {
         private readonly IApiClient _apiClient;

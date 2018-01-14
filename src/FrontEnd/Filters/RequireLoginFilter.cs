@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using FrontEnd.Filters;
 using FrontEnd.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -23,23 +24,16 @@ namespace FrontEnd
         {
             var urlHelper = _urlHelperFactory.GetUrlHelper(context);
 
-            var ignoreRoutes = new[]
-            {
-                urlHelper.Page("/Login"),
-                urlHelper.Action("logout", "account"),
-                urlHelper.Page("/Welcome")
-            };
-
-            // If the user is authenticated but not associated *and* we're not ignoring this path
-            // then redirect to the Welcome page
+            // If the user is authenticated but not a known attendee *and* we've not marked this page
+            // to skip attendee welcome, then redirect to the Welcome page
             if (context.HttpContext.User.Identity.IsAuthenticated &&
-                !ignoreRoutes.Any(path =>
-                    string.Equals(context.HttpContext.Request.Path, path, StringComparison.OrdinalIgnoreCase)))
+                !context.Filters.OfType<SkipWelcomeAttribute>().Any())
             {
                 var attendee = await _apiClient.GetAttendeeAsync(context.HttpContext.User.Identity.Name);
 
                 if (attendee == null)
                 {
+                    // No attendee registerd for this user
                     context.HttpContext.Response.Redirect(urlHelper.Page("/Welcome"));
 
                     return;
