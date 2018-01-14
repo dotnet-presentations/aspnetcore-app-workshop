@@ -1,16 +1,18 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using FrontEnd.Filters;
+using FrontEnd.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Routing;
 
-namespace FrontEnd.Filters
+namespace FrontEnd
 {
     public class RequireLoginFilter : IAsyncResourceFilter
     {
-        private IApiClient _apiClient;
-        private IUrlHelperFactory _urlHelperFactory;
+        private readonly IApiClient _apiClient;
+        private readonly IUrlHelperFactory _urlHelperFactory;
 
         public RequireLoginFilter(IApiClient apiClient, IUrlHelperFactory urlHelperFactory)
         {
@@ -21,35 +23,19 @@ namespace FrontEnd.Filters
         public async Task OnResourceExecutionAsync(ResourceExecutingContext context, ResourceExecutionDelegate next)
         {
             var urlHelper = _urlHelperFactory.GetUrlHelper(context);
-            var welcomePage = urlHelper.Page("/Welcome");
-            
-            var ignoreRoutes = new[] {
-                urlHelper.Page("/Login"),
-                urlHelper.Action("logout", "account"),
-                welcomePage
-            };
 
-            // If the user is authenticated but not associated *and* we're not ignoring this path
-            // then redirect to /Welcome
+            // If the user is authenticated but not a known attendee *and* we've not marked this page
+            // to skip attendee welcome, then redirect to the Welcome page
             if (context.HttpContext.User.Identity.IsAuthenticated &&
-                !ignoreRoutes.Any(path => string.Equals(context.HttpContext.Request.Path, path, StringComparison.OrdinalIgnoreCase)))
+                !context.Filters.OfType<SkipWelcomeAttribute>().Any())
             {
                 var attendee = await _apiClient.GetAttendeeAsync(context.HttpContext.User.Identity.Name);
 
                 if (attendee == null)
                 {
+                    // No attendee registerd for this user
                     context.HttpContext.Response.Redirect(urlHelper.Page("/Welcome"));
 
-                    return;
-                }
-            }
-            else if (string.Equals(context.HttpContext.Request.Path, welcomePage, StringComparison.OrdinalIgnoreCase))
-            {
-                var attendee = await _apiClient.GetAttendeeAsync(context.HttpContext.User.Identity.Name);
-
-                if (attendee != null)
-                {
-                    context.HttpContext.Response.Redirect(urlHelper.Page("/Index"));
                     return;
                 }
             }

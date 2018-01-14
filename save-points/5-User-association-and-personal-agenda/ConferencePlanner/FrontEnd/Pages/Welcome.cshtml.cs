@@ -1,11 +1,12 @@
 using System.Threading.Tasks;
-using FrontEnd.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using FrontEnd.Filters;
 using FrontEnd.Pages.Models;
 
 namespace FrontEnd.Pages
 {
+    [SkipWelcome]
     public class WelcomeModel : PageModel
     {
         private readonly IApiClient _apiClient;
