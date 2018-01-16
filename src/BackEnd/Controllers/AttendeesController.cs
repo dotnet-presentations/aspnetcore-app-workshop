@@ -46,7 +46,8 @@ namespace BackEnd
             {
                 FirstName = input.FirstName,
                 LastName = input.LastName,
-                UserName = input.UserName
+                UserName = input.UserName,
+                EmailAddress = input.EmailAddress
             };
 
             _db.Attendees.Add(attendee);
