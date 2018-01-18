@@ -6,6 +6,8 @@ services:
     build:
       context: .
       dockerfile: BackEnd/Dockerfile
+    depends_on:
+      - db
 
   frontend:
     image: frontend
@@ -14,3 +16,6 @@ services:
       dockerfile: FrontEnd/Dockerfile
     links:
       - backend
+
+  db:
+    image: "microsoft/mssql-server-linux"

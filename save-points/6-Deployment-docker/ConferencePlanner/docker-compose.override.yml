@@ -13,3 +13,7 @@ services:
     ports:
       - "5001:80"
 
+  db:
+    environment:
+      SA_PASSWORD: "ConferencePlanner1234$$"
+      ACCEPT_EULA: "Y"    
