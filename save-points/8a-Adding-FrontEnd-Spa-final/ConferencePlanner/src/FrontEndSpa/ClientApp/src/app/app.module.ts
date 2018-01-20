@@ -9,6 +9,7 @@ import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { HomeComponent } from './home/home.component';
 import { SessionsComponent } from './sessions/sessions.component';
 import { SessionDetailComponent } from './session-detail/session-detail.component';
+import { SpeakerDetailComponent } from './speaker-detail/speaker-detail.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { SessionDetailComponent } from './session-detail/session-detail.componen
     NavMenuComponent,
     HomeComponent,
     SessionsComponent,
-    SessionDetailComponent
+    SessionDetailComponent,
+    SpeakerDetailComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
