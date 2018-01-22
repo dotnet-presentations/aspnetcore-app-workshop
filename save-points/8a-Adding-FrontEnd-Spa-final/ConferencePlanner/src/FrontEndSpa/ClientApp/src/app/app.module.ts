@@ -10,6 +10,7 @@ import { HomeComponent } from './home/home.component';
 import { SessionsComponent } from './sessions/sessions.component';
 import { SessionDetailComponent } from './session-detail/session-detail.component';
 import { SpeakerDetailComponent } from './speaker-detail/speaker-detail.component';
+import { DataService } from './shared/data.service';
 
 @NgModule({
   declarations: [
@@ -25,10 +26,16 @@ import { SpeakerDetailComponent } from './speaker-detail/speaker-detail.componen
     HttpClientModule,
     FormsModule,
     RouterModule.forRoot([
-      { path: '', component: HomeComponent, pathMatch: 'full' }
+      { path: '', component: HomeComponent, pathMatch: 'full' },
+      { path: 'home', component: HomeComponent },
+      { path: 'sessions', component: HomeComponent },
+      { path: 'sessiondetail/:id', component: HomeComponent },
+      { path: 'speaker/:id', component: HomeComponent },
+      { path: 'speakers', component: HomeComponent },
+      { path: '**', redirectTo: 'home' }
     ])
   ],
-  providers: [],
+  providers: [DataService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
