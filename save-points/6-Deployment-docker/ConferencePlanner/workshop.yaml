@@ -54,7 +54,6 @@ items:
     strategy: {}
     template:
       metadata:
-        creationTimestamp: null
         labels:
           service: backend
       spec:
