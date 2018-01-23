@@ -9,7 +9,7 @@ items:
   spec:
     ports:
     - name: "56009"
-      containerPort: 80
+      port: 80
     selector:
       service: backend
   status:
@@ -24,7 +24,7 @@ items:
     clusterIP: None
     ports:
     - name: headless
-      containerPort: 55555
+      port: 55555
     selector:
       service: db
   status:
@@ -38,7 +38,7 @@ items:
   spec:
     ports:
     - name: "5001"
-      containerPort: 80
+      port: 80
     selector:
       service: frontend
   status:
