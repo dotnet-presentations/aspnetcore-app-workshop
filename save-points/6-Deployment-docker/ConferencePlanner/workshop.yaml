@@ -21,7 +21,6 @@ items:
       service: db
     name: db
   spec:
-    clusterIP: None
     ports:
     - name: headless
       containerPort: 55555
