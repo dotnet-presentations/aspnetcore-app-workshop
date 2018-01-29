@@ -1,0 +1,133 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      service: backend
+    name: backend
+  spec:
+    ports:
+    - name: "56009"
+      port: 80
+    selector:
+      service: backend
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      service: db
+    name: db
+  spec:
+    ports:
+    - name: sql
+      port: 55555
+    selector:
+      service: db
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      service: frontend
+    name: frontend
+  spec:
+    ports:
+    - name: "5001"
+      port: 80
+    selector:
+      service: frontend
+  status:
+    loadBalancer: {}
+- apiVersion: extensions/v1beta1
+  kind: Deployment
+  metadata:
+    labels:
+      service: backend
+    name: backend
+  spec:
+    replicas: 1
+    strategy: {}
+    template:
+      metadata:
+        labels:
+          service: backend
+      spec:
+        containers:
+        - env:
+          - name: ASPNETCORE_ENVIRONMENT
+            value: Development
+          image: backend
+          name: backend
+          ports:
+          - containerPort: 80
+          resources: {}
+        restartPolicy: Always
+  status: {}
+- apiVersion: extensions/v1beta1
+  kind: Deployment
+  metadata:
+    labels:
+      service: db
+    name: db
+  spec:
+    replicas: 1
+    strategy: {}
+    template:
+      metadata:
+        labels:
+          service: db
+      spec:
+        containers:
+        - env:
+          - name: ACCEPT_EULA
+            value: "Y"
+          - name: SA_PASSWORD
+            value: ConferencePlanner1234$
+          image: microsoft/mssql-server-linux
+          name: db
+          resources: {}
+        restartPolicy: Always
+  status: {}
+- apiVersion: extensions/v1beta1
+  kind: Deployment
+  metadata:
+    labels:
+      service: frontend
+    name: frontend
+  spec:
+    replicas: 1
+    strategy: {}
+    template:
+      metadata:
+        labels:
+          service: frontend
+      spec:
+        containers:
+        - env:
+          - name: ASPNETCORE_ENVIRONMENT
+            value: Development
+          image: frontend
+          name: frontend
+          ports:
+          - containerPort: 80
+          resources: {}
+        restartPolicy: Always
+  status: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: frontend
+  spec:
+    type: LoadBalancer
+    ports:
+    - port: 80
+    selector:
+      service: frontend
+kind: List
+metadata: {}
+
+
