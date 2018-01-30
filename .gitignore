@@ -292,4 +292,6 @@ __pycache__/
 
 # Visual Studio code
 .vscode/
-/save-points/6-Deployment-docker/ConferencePlanner/conferenceplanner.yml
+
+# MacOS
+.DS_Store
