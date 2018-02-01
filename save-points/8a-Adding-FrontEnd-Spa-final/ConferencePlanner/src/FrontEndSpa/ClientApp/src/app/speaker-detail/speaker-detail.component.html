@@ -1,0 +1,20 @@
+<ol class="breadcrumb">
+  <li><a (click)="goBack()" style="cursor: pointer">Back</a></li>
+  <li><a [routerLink]="['/speakers']">Speakers</a></li>
+  <li class="active">{{speaker.name}}</li>
+</ol>
+
+<h2>{{speaker.name}}</h2>
+
+<p>{{speaker.bio}}</p>
+
+<h3>Sessions</h3>
+<div class="row">
+  <div class="col-md-5">
+      <ul class="list-group">
+        <li *ngFor="let session of speaker.sessions" class="list-group-item">
+          <a [routerLink]="['/sessiondetail', session.id]">{{session.title}}</a>
+        </li>
+    </ul>
+  </div>
+</div>

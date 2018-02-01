@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "fullname" . }}-{{ .Values.db.name }}
+  labels:
+    app: {{ template "name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  ports:
+    - name: {{ .Values.db.name }}
+      port: {{ .Values.db.externalPort }}
+      targetPort: {{ .Values.db.internalPort }}
+  selector:
+    app: {{ template "name" . }}
+    release: {{ .Release.Name }}

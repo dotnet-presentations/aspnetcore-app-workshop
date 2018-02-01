@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  backend:
+    image: backend
+    build:
+      context: .
+      dockerfile: BackEnd/Dockerfile
+    ports:
+      - "56009:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    depends_on:
+      - db
+
+  frontend:
+    image: frontend
+    build:
+      context: .
+      dockerfile: FrontEnd/Dockerfile
+    ports:
+      - "5001:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    links:
+      - backend
+
+  db:
+    image: "microsoft/mssql-server-linux"
+    environment:
+      SA_PASSWORD: "ConferencePlanner1234$$"
+      ACCEPT_EULA: "Y"

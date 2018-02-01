@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  backend:
+    image: backend
+    build:
+      context: .
+      dockerfile: BackEnd/Dockerfile
+    depends_on:
+      - db
+
+  frontend:
+    image: frontend
+    build:
+      context: .
+      dockerfile: FrontEnd/Dockerfile
+    links:
+      - backend
+
+  db:
+    image: "microsoft/mssql-server-linux"
