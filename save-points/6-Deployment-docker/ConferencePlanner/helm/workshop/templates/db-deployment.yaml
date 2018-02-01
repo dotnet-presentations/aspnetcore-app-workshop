@@ -1,0 +1,30 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}-{{ .Values.db.name }}
+  labels:
+    app: {{ template "name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.db.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - env :
+          - name: {{ .Values.db.eula }}
+            value: {{ .Values.db.eulaValue }}
+          - name: {{ .Values.db.sa }}
+            value: {{ .Values.db.saValue }}
+          name: {{ .Chart.Name }}
+          image: "{{ .Values.db.image }}:{{ .Values.db.tag }}"
+          imagePullPolicy: {{ .Values.db.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.db.internalPort }}
+          resources: {}
+      restartPolicy: Always
