@@ -1,0 +1,29 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}-{{ .Values.backend.name }}
+  labels:
+    app: {{ template "name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.backend.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - env:
+          - name: ASPNETCORE_ENVIRONMENT
+            value: {{ .Values.backend.environment }}
+          name: {{ .Chart.Name }}
+          image: "{{ .Values.backend.image }}:{{ .Values.backend.tag }}"
+          imagePullPolicy: {{ .Values.backend.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.backend.internalPort }}
+          resources: {}
+      restartPolicy: Always
+status: {}
