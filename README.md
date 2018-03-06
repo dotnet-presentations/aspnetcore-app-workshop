@@ -56,3 +56,4 @@ In this workshop, you'll learn by building a full-featured ASP.NET Core applicat
 | [Session #5](/docs/5.%20Add%20personal%20agenda.md) | Add user association and personal agenda |
 | [Session #6](docs/6.%20Deployment.md) | Deployment, Azure and other production environments, configuring environments, diagnostics |
 | [Session #7](/docs/7.%20Challenges.md) | Challenges |
+| [Session #8](/docs/8.%20SPA%20FrontEnd.md) | Add single-page application front-end |
