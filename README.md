@@ -2,43 +2,11 @@
 
 ## Setup
 
-### .NET Core SDK 2.1.4
-#### Offline (on USB drive)
-Run the appropriate SDK installer for your platform in the *dotnet-sdk* folder
+[Download](https://www.microsoft.com/net/download) and install the .NET Core SDK and Visual Studio.
 
-#### Online
-Download and run SDK installer for your platform:
-- [Windows x64](https://aka.ms/dotnet-sdk-2.0.0-win-x64)
-- [MacOS 10.12+](https://aka.ms/dotnet-sdk-2.0.0-osx-x64)
-- [Ubuntu 16.04](https://aka.ms/dotnet-sdk-2.0.0-ubuntu.16.04-x64)
-- [Linux DEB](https://aka.ms/dotnet-sdk-2.0.0-debian-x64)
+> Note: When installing Visual Studio you only need to install the `ASP.NET and web development` workload.
 
-### Visual Studio 2017 (Version 15.5)
-If you're using Windows, you'll want to install Visual Studio 2017 15.5. You can install multiple versions of Visual Studio 2017 side by side, so you won't need to modify your existing Visual Studio 2017 install if you don't want. The Community edition is free to install and is suitable to complete this workshop.
-
-#### Offline Installer (if available)
-> Since conference WiFi can be a little slow, we'll try to have some USB sticks with offline installers.
-1. Run *vs_community.exe* in *VS2017.5\Community* folder
-1. Select **only** the following workloads:
-   - `.NET desktop development`
-   - `ASP.NET and web development`
-   - `Azure development`
-   - `.NET Core cross-platform development`
-
-#### Web Based Installer
-1. Download the installer from the button on the left of this page: https://www.visualstudio.com
-1. Select **only** the following workloads:
-   - `.NET desktop development`
-   - `ASP.NET and web development`
-   - `Azure development`
-   - `.NET Core cross-platform development`
-
-### Visual Studio Code
-#### Offline (on USB drive)
-Run the appropriate installer for your platform in the *VSCode* folder
-
-#### Online
-Install Visual Studio Code from http://code.visualstudio.com.
+If you have issues downloading the installers we may have USB sticks with offline installers for you to use.
 
 ## What you'll be building
 In this workshop, you'll learn by building a full-featured ASP.NET Core application from scratch. We'll start from File/ New and build up to an API back-end application, a web front-end application, and a common library for shared data transfer objects using .NET Standard.
@@ -56,3 +24,4 @@ In this workshop, you'll learn by building a full-featured ASP.NET Core applicat
 | [Session #5](/docs/5.%20Add%20personal%20agenda.md) | Add user association and personal agenda |
 | [Session #6](docs/6.%20Deployment.md) | Deployment, Azure and other production environments, configuring environments, diagnostics |
 | [Session #7](/docs/7.%20Challenges.md) | Challenges |
+| [Session #8](/docs/8.%20SPA%20FrontEnd.md) | SPA front-end |
