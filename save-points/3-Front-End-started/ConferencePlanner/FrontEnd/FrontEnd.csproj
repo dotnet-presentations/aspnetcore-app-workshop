@@ -4,9 +4,12 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <MvcRazorCompileOnPublish>true</MvcRazorCompileOnPublish>
     <UserSecretsId>aspnet-FrontEnd-FC7A9125-D2E6-49EC-B0A7-0A2262EC4AD2</UserSecretsId>
+    <ApplicationInsightsResourceId>/subscriptions/5ca082f3-38f2-4bb0-b0a4-c401184ae3a8/resourcegroups/spb-aspnetworkshop/providers/microsoft.insights/components/aspnetworkshop-frontend</ApplicationInsightsResourceId>
+    <ApplicationInsightsAnnotationResourceId>/subscriptions/5ca082f3-38f2-4bb0-b0a4-c401184ae3a8/resourcegroups/spb-aspnetworkshop/providers/microsoft.insights/components/aspnetworkshop-frontend</ApplicationInsightsAnnotationResourceId>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0" />
   </ItemGroup>
   <ItemGroup>
@@ -14,6 +17,9 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ConferenceDTO\ConferenceDTO.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services" />
   </ItemGroup>
 
 </Project>

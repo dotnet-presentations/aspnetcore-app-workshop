@@ -3,6 +3,8 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <UserSecretsId>aspnet-BackEnd-A3CA407D-9E91-4945-AABD-F3C32822964D</UserSecretsId>
     <AssetTargetFallback>net461;portable-net45+win8</AssetTargetFallback>
+    <ApplicationInsightsResourceId>/subscriptions/5ca082f3-38f2-4bb0-b0a4-c401184ae3a8/resourcegroups/spb-aspnetworkshop/providers/microsoft.insights/components/aspnetworkshop-backend</ApplicationInsightsResourceId>
+    <ApplicationInsightsAnnotationResourceId>/subscriptions/5ca082f3-38f2-4bb0-b0a4-c401184ae3a8/resourceGroups/spb-aspnetworkshop/providers/microsoft.insights/components/aspnetworkshop-backend</ApplicationInsightsAnnotationResourceId>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="wwwroot\**" />
@@ -11,6 +13,7 @@
     <None Remove="wwwroot\**" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="1.0.0" />
@@ -21,5 +24,8 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ConferenceDTO\ConferenceDTO.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services" />
   </ItemGroup>
 </Project>
