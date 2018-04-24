@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using BackEnd.Data;
 using Swashbuckle.AspNetCore.Swagger;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BackEnd
 {
@@ -26,6 +27,7 @@ namespace BackEnd
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddDbContext<ApplicationDbContext>(options =>
             {
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
@@ -54,6 +56,10 @@ namespace BackEnd
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
             }
+            else
+            {
+                app.UseHsts();
+            }
 
             app.UseSwagger();
 
@@ -61,6 +67,7 @@ namespace BackEnd
                     options.SwaggerEndpoint("/swagger/v1/swagger.json", "Conference Planner API v1")
             );
 
+            app.UseHttpsRedirection();
             app.UseMvc();
 
             app.Run(context =>
