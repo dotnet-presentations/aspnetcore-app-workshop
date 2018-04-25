@@ -70,12 +70,10 @@ namespace FrontEnd
                 });
             });
 
-            var httpClient = new HttpClient
+            services.AddHttpClient<IApiClient, ApiClient>(client =>
             {
-                BaseAddress = new Uri(Configuration["serviceUrl"])
-            };
-            services.AddSingleton(httpClient);
-            services.AddSingleton<IApiClient, ApiClient>();
+                client.BaseAddress = new Uri(Configuration["serviceUrl"]);
+            });
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
