@@ -55,10 +55,4 @@ namespace BackEnd.Data
 
         public DbSet<Attendee> Attendees { get; set; }
     }
-
-   // public class ApplicationDbContextFactory : IDesignTimeDbContextFactory<ApplicationDbContext>
-   // {
-       // public ApplicationDbContext CreateDbContext(string[] args) =>
-       //     Program.BuildWebHost(args).Services.CreateScope().ServiceProvider.GetRequiredService<ApplicationDbContext>();
-   // }
 }

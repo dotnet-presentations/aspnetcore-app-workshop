@@ -5,6 +5,7 @@ using FrontEnd.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,6 +23,8 @@ namespace FrontEnd
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
             services.AddMvc(options =>
             {
                 options.Filters.AddService<RequireLoginFilter>();
@@ -86,7 +89,11 @@ namespace FrontEnd
                 app.UseExceptionHandler("/Error");
             }
 
+            app.UseHsts();
+
             app.UseStatusCodePagesWithReExecute("/Status/{0}");
+
+            app.UseHttpsRedirection();
 
             app.UseStaticFiles();
 
