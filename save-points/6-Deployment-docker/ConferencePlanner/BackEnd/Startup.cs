@@ -27,6 +27,7 @@ namespace BackEnd
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
              services.AddDbContext<ApplicationDbContext>(options =>
              {
                  //if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
@@ -53,12 +54,14 @@ namespace BackEnd
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
+            app.UseHsts();
             app.UseSwagger();
 
             app.UseSwaggerUI(options =>
                 options.SwaggerEndpoint("/swagger/v1/swagger.json", "Conference Planner API v1")
             );
 
+            app.UseHttpsRedirection();
             app.UseMvc();
 
             app.Run(context =>
