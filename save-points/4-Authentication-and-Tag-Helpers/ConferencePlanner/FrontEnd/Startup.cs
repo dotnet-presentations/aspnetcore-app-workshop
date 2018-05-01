@@ -66,12 +66,10 @@ namespace FrontEnd
                 });
             });
 
-            var httpClient = new HttpClient
+            services.AddHttpClient<IApiClient, ApiClient>(client =>
             {
-                BaseAddress = new Uri(Configuration["serviceUrl"])
-            };
-            services.AddSingleton(httpClient);
-            services.AddSingleton<IApiClient, ApiClient>();
+                client.BaseAddress = new Uri(Configuration["serviceUrl"]);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
