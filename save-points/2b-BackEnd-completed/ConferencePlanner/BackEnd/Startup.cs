@@ -44,8 +44,10 @@ namespace BackEnd
 								.AddApiExplorer();
 
 						services.AddSwaggerGen(options =>
-								options.SwaggerDoc("v1", new Info { Title = "Conference Planner API", Version = "v1" })
-						);
+					      {
+						options.SwaggerDoc("v1", new Info { Title = "Conference Planner API", Version = "v1" });
+						options.CustomSchemaIds(c => c.FullName);
+					      });
 
 						services.AddMvc();
 				}
