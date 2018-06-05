@@ -30,7 +30,7 @@ namespace FrontEnd
                     .AddRazorPagesOptions(options =>
                     {
                         options.Conventions.AuthorizeFolder("/admin", "Admin");
-                    });
+                    }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             var authBuilder = services
                 .AddAuthentication(options =>
@@ -84,9 +84,15 @@ namespace FrontEnd
                 app.UseExceptionHandler("/Error");
             }
 
+            app.UseHsts();
+
+            app.UseStatusCodePagesWithReExecute("/Status/{0}");
+
+            app.UseHttpsRedirection();
+
             app.UseStaticFiles();
 
-            app.UseAuthentication();
+            app.UseAuthentication();;
 
             app.UseMvc(routes =>
             {

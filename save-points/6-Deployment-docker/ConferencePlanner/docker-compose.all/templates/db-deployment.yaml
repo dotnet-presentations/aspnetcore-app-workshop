@@ -1,0 +1,30 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.all.yml --chart
+    kompose.version: 1.5.0 (999278f)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: db
+  name: db
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: db
+    spec:
+      containers:
+      - env:
+        - name: {{ .Values.db.eula }}
+          value: {{ .Values.db.eulaValue }}
+        - name: {{ .Values.db.sa }}
+          value: {{ .Values.db.eulaValue }}
+        image: {{ .Values.db.image }}
+        name: {{ .Values.db.name }}
+        resources: {}
+      restartPolicy: Always
+status: {}
