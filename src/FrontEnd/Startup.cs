@@ -23,8 +23,6 @@ namespace FrontEnd
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-
             services.AddMvc(options =>
             {
                 options.Filters.AddService<RequireLoginFilter>();
@@ -32,7 +30,7 @@ namespace FrontEnd
             .AddRazorPagesOptions(options =>
             {
                 options.Conventions.AuthorizeFolder("/Admin", "Admin");
-            });
+            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddTransient<RequireLoginFilter>();
 

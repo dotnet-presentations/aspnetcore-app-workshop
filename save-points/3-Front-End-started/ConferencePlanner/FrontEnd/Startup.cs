@@ -25,7 +25,7 @@ namespace FrontEnd
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddHttpClient<IApiClient, ApiClient>(client =>
             {
@@ -45,7 +45,15 @@ namespace FrontEnd
                 app.UseExceptionHandler("/Error");
             }
 
+            app.UseHsts();
+
+            app.UseStatusCodePagesWithReExecute("/Status/{0}");
+
+            app.UseHttpsRedirection();
+
             app.UseStaticFiles();
+
+            app.UseAuthentication();
 
             app.UseMvc(routes =>
             {

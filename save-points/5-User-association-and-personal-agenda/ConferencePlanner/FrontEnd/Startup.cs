@@ -27,14 +27,14 @@ namespace FrontEnd
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc(options =>
+           services.AddMvc(options =>
                 {
                     options.Filters.AddService(typeof(RequireLoginFilter));
                 })
                 .AddRazorPagesOptions(options =>
                 {
                     options.Conventions.AuthorizeFolder("/admin", "Admin");
-                });
+                }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddTransient<RequireLoginFilter>();
 
@@ -89,6 +89,12 @@ namespace FrontEnd
             {
                 app.UseExceptionHandler("/Error");
             }
+
+            app.UseHsts();
+
+            app.UseStatusCodePagesWithReExecute("/Status/{0}");
+
+            app.UseHttpsRedirection();
 
             app.UseStaticFiles();
 
