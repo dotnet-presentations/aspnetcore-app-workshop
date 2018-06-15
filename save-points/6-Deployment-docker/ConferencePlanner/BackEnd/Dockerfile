@@ -3,12 +3,13 @@ WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-FROM microsoft/dotnet:2.1-sdk AS build
+FROM microsoft/dotnet:2.1.300-sdk AS build
 WORKDIR /src
-COPY ConferencePlanner.sln ./
+#COPY ConferencePlanner.sln ./
 COPY BackEnd/BackEnd.csproj BackEnd/
 COPY ConferenceDTO/ConferenceDTO.csproj ConferenceDTO/
-RUN dotnet restore -nowarn:msb3202,nu1503
+RUN dotnet restore BackEnd/BackEnd.csproj -nowarn:msb3202,nu1503
+RUN dotnet restore ConferenceDTO/ConferenceDTO.csproj -nowarn:msb3202,nu1503
 COPY . .
 WORKDIR /src/BackEnd
 RUN dotnet build -c Release -o /app
