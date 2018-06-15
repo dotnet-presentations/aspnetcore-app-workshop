@@ -1,5 +1,7 @@
 # ASP.NET Core - App Building Workshop
 
+![](https://msft-shayne.visualstudio.com/_apis/public/build/definitions/6bb14994-33a9-43d6-b737-dd68d09428c1/7/badge)
+
 ## Setup
 
 [Download](https://www.microsoft.com/net/download) and install the .NET Core SDK and Visual Studio.
