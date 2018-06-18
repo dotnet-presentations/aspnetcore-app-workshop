@@ -1,6 +1,10 @@
 version: '3.4'
 
 services:
+  proxy:
+    ports:
+      - "8080:80"
+
   backend:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
@@ -16,4 +20,4 @@ services:
   db:
     environment:
       SA_PASSWORD: "ConferencePlanner1234$$"
-      ACCEPT_EULA: "Y"    
+      ACCEPT_EULA: "Y"

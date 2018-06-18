@@ -1,12 +1,21 @@
 version: '3.4'
 
 services:
+  proxy:
+    image: confproxy
+    build:
+      context: .
+      dockerfile: proxy/Dockerfile
+    links:
+      - backend
+      - frontend
+
   backend:
     image: backend
     build:
       context: .
       dockerfile: BackEnd/Dockerfile
-    depends_on:
+    links:
       - db
 
   frontend:
