@@ -1,0 +1,21 @@
+version: '3.4'
+
+services:
+  proxy:
+    image: aspnetworkshopregistry.azurecr.io/confproxy:latest
+    links:
+      - backend
+      - frontend
+
+  backend:
+    image: aspnetworkshopregistry.azurecr.io/backend:latest
+    links:
+      - db
+
+  frontend:
+    image: aspnetworkshopregistry.azurecr.io/frontend:latest
+    links:
+      - backend
+
+  db:
+    image: "microsoft/mssql-server-linux"
