@@ -2,18 +2,18 @@ version: '3.3'
 
 services:
   proxy:
-    image: aspnetworkshopregistry.azurecr.io/confproxy:latest
+    image: aspnetworkshopregistry.azurecr.io/confproxy
     links:
       - backend
       - frontend
 
   backend:
-    image: aspnetworkshopregistry.azurecr.io/backend:latest
+    image: aspnetworkshopregistry.azurecr.io/backend
     links:
       - db
 
   frontend:
-    image: aspnetworkshopregistry.azurecr.io/frontend:latest
+    image: aspnetworkshopregistry.azurecr.io/frontend
     links:
       - backend
 
