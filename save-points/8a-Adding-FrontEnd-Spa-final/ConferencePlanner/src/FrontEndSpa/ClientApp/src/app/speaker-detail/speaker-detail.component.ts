@@ -7,8 +7,9 @@ import { DataService } from '../shared/data.service';
 import { Speaker } from '../shared/model';
 
 @Component({
+  // tslint:disable-next-line:component-selector
   selector: 'conf-speakerdetail',
-  templateUrl: './speakerdetail.component.html'
+  templateUrl: './speaker-detail.component.html'
 })
 export class SpeakerDetailComponent implements OnInit {
   speaker: Speaker;
@@ -21,6 +22,7 @@ export class SpeakerDetailComponent implements OnInit {
 
   ngOnInit() {
     this.route.paramMap
+      // tslint:disable-next-line:no-non-null-assertion
       .switchMap((params: ParamMap) => this.dataService.getSpeaker(+params.get('id')!))
       .subscribe(speaker => this.speaker = speaker);
   }

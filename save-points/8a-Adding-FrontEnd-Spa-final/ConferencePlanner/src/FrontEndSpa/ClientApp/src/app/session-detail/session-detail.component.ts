@@ -7,8 +7,9 @@ import { Session } from '../shared/model';
 import { DataService } from '../shared/data.service';
 
 @Component({
+  // tslint:disable-next-line:component-selector
   selector: 'session-detail',
-  templateUrl: './sessiondetail.component.html'
+  templateUrl: './session-detail.component.html'
 })
 export class SessionDetailComponent implements OnInit {
   session: Session;
@@ -22,6 +23,7 @@ export class SessionDetailComponent implements OnInit {
   ngOnInit(): void {
 
     this.route.paramMap
+      // tslint:disable-next-line:no-non-null-assertion
       .switchMap((params: ParamMap) => this.sessionService.getSession(+params.get('id')!))
       .subscribe(session => this.session = session);
   }
