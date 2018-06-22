@@ -1,6 +1,6 @@
 # ASP.NET Core - App Building Workshop
 
-[![Build status](https://dotnetfoundation.visualstudio.com/AspNetCoreWorkshop/_apis/build/status/ASP.NET Workshop-ASP.NET Core-CI-import)](https://dotnetfoundation.visualstudio.com/AspNetCoreWorkshop/_build/latest?definitionId=30)
+<a href="https://dotnetfoundation.visualstudio.com/AspNetCoreWorkshop/_build/latest?definitionId=30">![Build status](https://dotnetfoundation.visualstudio.com/AspNetCoreWorkshop/_apis/build/status/ASP.NET%20Workshop-ASP.NET%20Core-CI-import)</a>
 
 [BackEnd Web API](https://aspnetcorews-backend.azurewebsites.net)<br/> ![Release Status](https://dotnetfoundation.vsrm.visualstudio.com/_apis/public/Release/badge/a68bc2e9-c4e7-4af9-80a5-2cfdbcb4805f/1/2)
 
