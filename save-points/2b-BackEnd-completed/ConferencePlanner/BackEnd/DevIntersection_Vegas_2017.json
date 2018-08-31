@@ -1,4 +1,4 @@
-[
+﻿[
   {
     "_id": "595672306a83e8a414c21b62",
     "ID": 2605,
@@ -1857,7 +1857,7 @@
     "sessionID": 2604,
     "roomID": 110,
     "roomName": "TBD",
-    "timeSlot": 198,
+    "timeSlot": 198,  
     "startTime": "2017-11-1T10:00",
     "endTime": "2017-11-1T11:00",
     "date": "10/31/2017",
