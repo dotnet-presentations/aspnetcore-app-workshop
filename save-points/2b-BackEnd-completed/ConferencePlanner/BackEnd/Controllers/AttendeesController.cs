@@ -1,5 +1,4 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using BackEnd.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -55,7 +54,7 @@ namespace BackEnd.Controllers
 
             return CreatedAtAction(nameof(Get), new { username = result.UserName }, result);
         }
-        
+
         [HttpPost("{username}/session/{sessionId:int}")]
         public async Task<IActionResult> AddSession(string username, int sessionId)
         {
