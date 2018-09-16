@@ -9,9 +9,9 @@ using BackEnd.Models;
 
 namespace BackEnd.Controllers
 {
-    [Produces("application/json")]
-    [Route("api/Speakers")]
-    public class SpeakersController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class SpeakersController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
 
@@ -22,9 +22,9 @@ namespace BackEnd.Controllers
 
         // GET: api/Speakers
         [HttpGet]
-        public IEnumerable<Speaker> GetSpeaker()
+        public IEnumerable<Speaker> GetSpeakers()
         {
-            return _context.Speaker;
+            return _context.Speakers;
         }
 
         // GET: api/Speakers/5
@@ -36,7 +36,7 @@ namespace BackEnd.Controllers
                 return BadRequest(ModelState);
             }
 
-            var speaker = await _context.Speaker.SingleOrDefaultAsync(m => m.ID == id);
+            var speaker = await _context.Speakers.FindAsync(id);
 
             if (speaker == null)
             {
@@ -90,7 +90,7 @@ namespace BackEnd.Controllers
                 return BadRequest(ModelState);
             }
 
-            _context.Speaker.Add(speaker);
+            _context.Speakers.Add(speaker);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetSpeaker", new { id = speaker.ID }, speaker);
@@ -105,13 +105,13 @@ namespace BackEnd.Controllers
                 return BadRequest(ModelState);
             }
 
-            var speaker = await _context.Speaker.SingleOrDefaultAsync(m => m.ID == id);
+            var speaker = await _context.Speakers.FindAsync(id);
             if (speaker == null)
             {
                 return NotFound();
             }
 
-            _context.Speaker.Remove(speaker);
+            _context.Speakers.Remove(speaker);
             await _context.SaveChangesAsync();
 
             return Ok(speaker);
@@ -119,7 +119,7 @@ namespace BackEnd.Controllers
 
         private bool SpeakerExists(int id)
         {
-            return _context.Speaker.Any(e => e.ID == id);
+            return _context.Speakers.Any(e => e.ID == id);
         }
     }
 }
