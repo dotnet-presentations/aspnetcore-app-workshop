@@ -78,8 +78,8 @@ namespace BackEnd
 
             if (Configuration["RESET_DB"] != null && Configuration["RESET_DB"] == "1")
             {
-              var loader = new DevIntersectionLoader(app.ApplicationServices);
-              loader.LoadData("DevIntersection_Vegas_2017.json", "DevIntersection Vegas 2017");
+              var loader = new SessionizeLoader(app.ApplicationServices);
+              loader.LoadData("NDC_Sydney_2018.json", "NDC Sydney 2018");
             }
         }
     }
