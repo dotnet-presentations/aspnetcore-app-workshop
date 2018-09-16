@@ -18,7 +18,7 @@ If you have issues downloading the installers we may have USB sticks with offlin
 ## What you'll be building
 In this workshop, you'll learn by building a full-featured ASP.NET Core application from scratch. We'll start from File/ New and build up to an API back-end application, a web front-end application, and a common library for shared data transfer objects using .NET Standard.
 
-![Architecture Diagram](https://rawgit.com/jongalloway/aspnetcore-app-workshop/master/docs/architecture-diagram.svg)
+![Architecture Diagram](https://rawgit.com/dotnet-presentations/aspnetcore-app-workshop/master/docs/architecture-diagram.svg)
 
 ## Sessions
 
