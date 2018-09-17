@@ -1,16 +1,16 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FrontEnd.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using System.Net.Http;
-using FrontEnd.Services;
-using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace FrontEnd
 {
@@ -26,24 +26,36 @@ namespace FrontEnd
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc()
-                    .AddRazorPagesOptions(options =>
-                    {
-                        options.Conventions.AuthorizeFolder("/admin", "Admin");
-                    }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
+                options.CheckConsentNeeded = context => true;
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+            });
+
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+                .AddRazorPagesOptions(options =>
+                {
+                    options.Conventions.AuthorizeFolder("/Admin", "Admin");
+                });
+
+            services.AddHttpClient<IApiClient, ApiClient>(client =>
+            {
+                client.BaseAddress = new Uri(Configuration["serviceUrl"]);
+            });
 
             var authBuilder = services
-                .AddAuthentication(options =>
-                {
-                    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                    options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                })
-                .AddCookie(options =>
-                {
-                    options.LoginPath = "/Login";
-                    options.AccessDeniedPath = "/Denied";
-                });
+            .AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            })
+            .AddCookie(options =>
+            {
+                options.LoginPath = "/Login";
+                options.AccessDeniedPath = "/Denied";
+            });
 
             var twitterConfig = Configuration.GetSection("twitter");
             if (twitterConfig["consumerKey"] != null)
@@ -65,11 +77,6 @@ namespace FrontEnd
                           .RequireUserName(Configuration["admin"]);
                 });
             });
-
-            services.AddHttpClient<IApiClient, ApiClient>(client =>
-            {
-                client.BaseAddress = new Uri(Configuration["serviceUrl"]);
-            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -82,17 +89,14 @@ namespace FrontEnd
             else
             {
                 app.UseExceptionHandler("/Error");
+                app.UseHsts();
             }
 
-            app.UseHsts();
-
-            app.UseStatusCodePagesWithReExecute("/Status/{0}");
-
             app.UseHttpsRedirection();
-
             app.UseStaticFiles();
+            app.UseCookiePolicy();
 
-            app.UseAuthentication();;
+            app.UseAuthentication();
 
             app.UseMvc(routes =>
             {
@@ -100,6 +104,8 @@ namespace FrontEnd
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            app.UseMvc();
         }
     }
 }

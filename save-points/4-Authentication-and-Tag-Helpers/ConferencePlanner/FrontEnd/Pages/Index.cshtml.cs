@@ -2,22 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using ConferenceDTO;
 using FrontEnd.Services;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Authorization;
 
 namespace FrontEnd.Pages
 {
     public class IndexModel : PageModel
     {
-        public IEnumerable<IGrouping<DateTimeOffset?, SessionResponse>> Sessions { get; set; }
-
-        public IEnumerable<(int Offset, DayOfWeek? DayofWeek)> DayOffsets { get; set; }
-
-        public int CurrentDayOffset { get; set; }
-
         private readonly IApiClient _apiClient;
         private readonly IAuthorizationService _authzService;
 
@@ -29,8 +23,17 @@ namespace FrontEnd.Pages
 
         public bool IsAdmin { get; set; }
 
+        public IEnumerable<IGrouping<DateTimeOffset?, SessionResponse>> Sessions { get; set; }
+
+        public IEnumerable<(int Offset, DayOfWeek? DayofWeek)> DayOffsets { get; set; }
+
+        public int CurrentDayOffset { get; set; }
+
         public async Task OnGet(int day = 0)
         {
+            var authzResult = await _authzService.AuthorizeAsync(User, "Admin");
+            IsAdmin = authzResult.Succeeded;
+
             CurrentDayOffset = day;
 
             var sessions = await _apiClient.GetSessionsAsync();

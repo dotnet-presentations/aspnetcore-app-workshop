@@ -21,6 +21,11 @@ namespace FrontEnd.Pages
 
         public async Task<IActionResult> OnGet()
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToPage("/Index");
+            }
+
             AuthSchemes = await _authSchemeProvider.GetRequestHandlerSchemesAsync();
 
             return Page();

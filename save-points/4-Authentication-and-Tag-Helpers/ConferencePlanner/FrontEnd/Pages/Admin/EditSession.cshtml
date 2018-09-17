@@ -1,12 +1,16 @@
-﻿@page "{id}"
+﻿@page "{id:int}"
 @model EditSessionModel
 
-<h3>Edit Session</h3>
+@{
+}
 
-<div class="alert alert-success alert-dismissible" role="alert">
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>   </button>
-    @Model.Message
-</div>
+@if (Model.ShowMessage)
+{
+    <div class="alert alert-success alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>   </button>
+        @Model.Message
+    </div>
+}
 
 <form method="post" class="form-horizontal">
     <div asp-validation-summary="All" class="text-danger"></div>
@@ -48,4 +52,7 @@
         </div>
     </div>
 </form>
-<partial name="_ValidationScriptsPartial" />
+
+@section Scripts {
+    @Html.Partial("_ValidationScriptsPartial")
+}

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Razor.Runtime.TagHelpers;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
@@ -10,7 +6,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace FrontEnd.TagHelpers
 {
-    [HtmlTargetElement("*", Attributes ="authz")]
+    [HtmlTargetElement("*", Attributes = "authz")]
     [HtmlTargetElement("*", Attributes = "authz-policy")]
     public class AuthzTagHelper : TagHelper
     {
@@ -30,7 +26,7 @@ namespace FrontEnd.TagHelpers
         [ViewContext]
         public ViewContext ViewContext { get; set; }
 
-        public override async void Process(TagHelperContext context, TagHelperOutput output)
+        public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
             var requiresAuth = RequiresAuthentication || !string.IsNullOrEmpty(RequiredPolicy);
             var showOutput = false;
@@ -38,11 +34,6 @@ namespace FrontEnd.TagHelpers
             if (context.AllAttributes["authz"] != null && !requiresAuth && !ViewContext.HttpContext.User.Identity.IsAuthenticated)
             {
                 // authz="false" & user isn't authenticated
-                showOutput = true;
-            }
-            else if (requiresAuth && ViewContext.HttpContext.User.Identity.IsAuthenticated)
-            {
-                // auth="true" & user is authenticated
                 showOutput = true;
             }
             else if (!string.IsNullOrEmpty(RequiredPolicy))
@@ -62,6 +53,11 @@ namespace FrontEnd.TagHelpers
                 }
 
                 showOutput = authorized;
+            }
+            else if (requiresAuth && ViewContext.HttpContext.User.Identity.IsAuthenticated)
+            {
+                // auth="true" & user is authenticated
+                showOutput = true;
             }
 
             if (!showOutput)
