@@ -9,9 +9,9 @@ using BackEnd.Data;
 
 namespace BackEnd.Controllers
 {
-    [Produces("application/json")]
-    [Route("api/Speakers")]
-    public class SpeakersController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class SpeakersController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
 
@@ -22,7 +22,7 @@ namespace BackEnd.Controllers
 
         // GET: api/Speakers
         [HttpGet]
-        public IEnumerable<Speaker> GetSpeaker()
+        public IEnumerable<Speaker> GetSpeakers()
         {
             return _context.Speakers;
         }
@@ -36,7 +36,7 @@ namespace BackEnd.Controllers
                 return BadRequest(ModelState);
             }
 
-            var speaker = await _context.Speakers.SingleOrDefaultAsync(m => m.ID == id);
+            var speaker = await _context.Speakers.FindAsync(id);
 
             if (speaker == null)
             {
@@ -105,7 +105,7 @@ namespace BackEnd.Controllers
                 return BadRequest(ModelState);
             }
 
-            var speaker = await _context.Speakers.SingleOrDefaultAsync(m => m.ID == id);
+            var speaker = await _context.Speakers.FindAsync(id);
             if (speaker == null)
             {
                 return NotFound();

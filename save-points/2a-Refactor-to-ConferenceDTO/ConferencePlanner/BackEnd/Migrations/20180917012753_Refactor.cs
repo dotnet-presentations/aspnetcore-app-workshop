@@ -1,7 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
-using System;
-using System.Collections.Generic;
 
 namespace BackEnd.Migrations
 {
@@ -9,8 +8,10 @@ namespace BackEnd.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Speaker");
+            migrationBuilder.AddColumn<int>(
+                name: "ConferenceID",
+                table: "Speakers",
+                nullable: true);
 
             migrationBuilder.CreateTable(
                 name: "Attendees",
@@ -18,10 +19,10 @@ namespace BackEnd.Migrations
                 {
                     ID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    EmailAddress = table.Column<string>(maxLength: 256, nullable: true),
                     FirstName = table.Column<string>(maxLength: 200, nullable: false),
                     LastName = table.Column<string>(maxLength: 200, nullable: false),
-                    UserName = table.Column<string>(maxLength: 200, nullable: false)
+                    UserName = table.Column<string>(maxLength: 200, nullable: false),
+                    EmailAddress = table.Column<string>(maxLength: 256, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -79,28 +80,6 @@ namespace BackEnd.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Speakers",
-                columns: table => new
-                {
-                    ID = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Bio = table.Column<string>(maxLength: 4000, nullable: true),
-                    ConferenceID = table.Column<int>(nullable: true),
-                    Name = table.Column<string>(maxLength: 200, nullable: false),
-                    WebSite = table.Column<string>(maxLength: 1000, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Speakers", x => x.ID);
-                    table.ForeignKey(
-                        name: "FK_Speakers_Conferences_ConferenceID",
-                        column: x => x.ConferenceID,
-                        principalTable: "Conferences",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Tracks",
                 columns: table => new
                 {
@@ -126,13 +105,13 @@ namespace BackEnd.Migrations
                 {
                     ID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Abstract = table.Column<string>(maxLength: 4000, nullable: true),
-                    AttendeeID = table.Column<int>(nullable: true),
                     ConferenceID = table.Column<int>(nullable: false),
-                    EndTime = table.Column<DateTimeOffset>(nullable: true),
-                    StartTime = table.Column<DateTimeOffset>(nullable: true),
                     Title = table.Column<string>(maxLength: 200, nullable: false),
-                    TrackId = table.Column<int>(nullable: true)
+                    Abstract = table.Column<string>(maxLength: 4000, nullable: true),
+                    StartTime = table.Column<DateTimeOffset>(nullable: true),
+                    EndTime = table.Column<DateTimeOffset>(nullable: true),
+                    TrackId = table.Column<int>(nullable: true),
+                    AttendeeID = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -206,6 +185,11 @@ namespace BackEnd.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Speakers_ConferenceID",
+                table: "Speakers",
+                column: "ConferenceID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Attendees_UserName",
                 table: "Attendees",
                 column: "UserName",
@@ -242,18 +226,25 @@ namespace BackEnd.Migrations
                 column: "TagID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Speakers_ConferenceID",
-                table: "Speakers",
-                column: "ConferenceID");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Tracks_ConferenceID",
                 table: "Tracks",
                 column: "ConferenceID");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Speakers_Conferences_ConferenceID",
+                table: "Speakers",
+                column: "ConferenceID",
+                principalTable: "Conferences",
+                principalColumn: "ID",
+                onDelete: ReferentialAction.Restrict);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_Speakers_Conferences_ConferenceID",
+                table: "Speakers");
+
             migrationBuilder.DropTable(
                 name: "ConferenceAttendee");
 
@@ -262,9 +253,6 @@ namespace BackEnd.Migrations
 
             migrationBuilder.DropTable(
                 name: "SessionTag");
-
-            migrationBuilder.DropTable(
-                name: "Speakers");
 
             migrationBuilder.DropTable(
                 name: "Sessions");
@@ -281,20 +269,13 @@ namespace BackEnd.Migrations
             migrationBuilder.DropTable(
                 name: "Conferences");
 
-            migrationBuilder.CreateTable(
-                name: "Speaker",
-                columns: table => new
-                {
-                    ID = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Bio = table.Column<string>(maxLength: 4000, nullable: true),
-                    Name = table.Column<string>(maxLength: 200, nullable: false),
-                    WebSite = table.Column<string>(maxLength: 1000, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Speaker", x => x.ID);
-                });
+            migrationBuilder.DropIndex(
+                name: "IX_Speakers_ConferenceID",
+                table: "Speakers");
+
+            migrationBuilder.DropColumn(
+                name: "ConferenceID",
+                table: "Speakers");
         }
     }
 }
