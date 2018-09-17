@@ -1,11 +1,11 @@
 # ASP.NET Core - App Building Workshop
 
-<a href="https://dotnetfoundation.visualstudio.com/AspNetCoreWorkshop/_build/latest?definitionId=30">![Build status](https://dotnetfoundation.visualstudio.com/AspNetCoreWorkshop/_apis/build/status/ASP.NET%20Workshop-ASP.NET%20Core-CI-import)</a>
+<a href="https://dotnet.visualstudio.com/AspNetCoreWorkshop/_apis/build/status/ASP.NET%20Workshop-ASP.NET%20Core%202.1)](https://dotnet.visualstudio.com/AspNetCoreWorkshop/_build/latest?definitionId=30">![Build status](https://dotnet.visualstudio.com/AspNetCoreWorkshop/_apis/build/status/ASP.NET%20Workshop-ASP.NET%20Core%202.1?branchName=master)</a>
 
-[BackEnd Web API](https://aspnetcorews-backend.azurewebsites.net)<br/> ![Release Status](https://dotnetfoundation.vsrm.visualstudio.com/_apis/public/Release/badge/a68bc2e9-c4e7-4af9-80a5-2cfdbcb4805f/1/2)
+[BackEnd Web API](https://aspnetcorews-backend.azurewebsites.net)<br/> ![Release Status](https://dotnet.vsrm.visualstudio.com/_apis/public/Release/badge/a68bc2e9-c4e7-4af9-80a5-2cfdbcb4805f/3/5)
 
 [FrontEnd Web App](https://aspnetcorews-frontend.azurewebsites.net)
-<br/>![Release Status](https://msft-shayne.vsrm.visualstudio.com/_apis/public/Release/badge/6bb14994-33a9-43d6-b737-dd68d09428c1/2/3)
+<br/>![Release Status](https://dotnet.vsrm.visualstudio.com/_apis/public/Release/badge/a68bc2e9-c4e7-4af9-80a5-2cfdbcb4805f/3/6)
 
 ## Setup
 
