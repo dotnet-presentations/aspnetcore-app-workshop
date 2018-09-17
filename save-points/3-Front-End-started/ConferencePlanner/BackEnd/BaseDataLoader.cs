@@ -1,50 +1,48 @@
-﻿using BackEnd.Data;
+﻿using System;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Text;
+using BackEnd.Data;
 
 namespace BackEnd
 {
-	public abstract class BaseDataLoader
-	{
-		private readonly IServiceProvider _Services;
+    public abstract class BaseDataLoader
+    {
+        private readonly IServiceProvider _Services;
 
-		protected BaseDataLoader(IServiceProvider services)
-		{
-			_Services = services;
-		}
+        protected BaseDataLoader(IServiceProvider services)
+        {
+            _Services = services;
+        }
 
-		protected string Filename { get; private set; }
-		protected Conference Conference { get; private set; }
-		protected bool SaveData { get; set; } = true;
+        protected string Filename { get; private set; }
 
-		public void LoadData(string filename, string conferenceName)
-		{
+        protected Conference Conference { get; private set; }
 
-			this.Filename = filename;
+        protected bool SaveData { get; set; } = true;
 
-			using (var scope = _Services.CreateScope())
-			{
-				var db = scope.ServiceProvider.GetService<ApplicationDbContext>();
+        public void LoadData(string filename, string conferenceName)
+        {
+            Filename = filename;
 
-				db.Database.EnsureDeleted();
-				db.Database.EnsureCreated();
+            using (var scope = _Services.CreateScope())
+            {
+                var db = scope.ServiceProvider.GetService<ApplicationDbContext>();
 
-				// Conference
-				Conference = new Conference { Name = conferenceName };
-				db.Conferences.Add(Conference);
+                db.Database.EnsureDeleted();
+                db.Database.EnsureCreated();
 
-				LoadFormattedData(db);
+                // Conference
+                Conference = new Conference { Name = conferenceName };
+                db.Conferences.Add(Conference);
 
-				if (SaveData) db.SaveChanges();
+                LoadFormattedData(db);
 
-			}
+                if (SaveData)
+                {
+                    db.SaveChanges();
+                }
+            }
+        }
 
-		}
-
-		protected abstract void LoadFormattedData(ApplicationDbContext db);
-
-	}
-
+        protected abstract void LoadFormattedData(ApplicationDbContext db);
+    }
 }
-

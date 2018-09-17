@@ -1,23 +1,15 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
-    <MvcRazorCompileOnPublish>true</MvcRazorCompileOnPublish>
-    <UserSecretsId>aspnet-FrontEnd-FC7A9125-D2E6-49EC-B0A7-0A2262EC4AD2</UserSecretsId>
-    <ApplicationInsightsResourceId>/subscriptions/5ca082f3-38f2-4bb0-b0a4-c401184ae3a8/resourcegroups/spb-aspnetworkshop/providers/microsoft.insights/components/aspnetworkshop-frontend</ApplicationInsightsResourceId>
-    <ApplicationInsightsAnnotationResourceId>/subscriptions/5ca082f3-38f2-4bb0-b0a4-c401184ae3a8/resourcegroups/spb-aspnetworkshop/providers/microsoft.insights/components/aspnetworkshop-frontend</ApplicationInsightsAnnotationResourceId>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.Extensions.Http" Version="2.1.1" />
-    <PackageReference Include="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="3.19.8" />
   </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\ConferenceDTO\ConferenceDTO.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadata Include="Connected Services" />
   </ItemGroup>
 
 </Project>
