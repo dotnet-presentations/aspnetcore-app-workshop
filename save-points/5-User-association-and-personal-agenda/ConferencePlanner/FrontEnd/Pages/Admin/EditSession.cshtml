@@ -1,5 +1,8 @@
-﻿@page "{id}"
+﻿@page "{id:int}"
 @model EditSessionModel
+
+@{
+}
 
 @if (Model.ShowMessage)
 {
@@ -49,4 +52,7 @@
         </div>
     </div>
 </form>
-<partial name="_ValidationScriptsPartial" />
+
+@section Scripts {
+    @Html.Partial("_ValidationScriptsPartial")
+}

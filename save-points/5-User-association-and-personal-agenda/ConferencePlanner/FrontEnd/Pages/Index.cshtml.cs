@@ -2,37 +2,23 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using ConferenceDTO;
 using FrontEnd.Services;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace FrontEnd.Pages
 {
     public class IndexModel : PageModel
     {
-        public IEnumerable<IGrouping<DateTimeOffset?, SessionResponse>> Sessions { get; set; }
-
-        public IEnumerable<(int Offset, DayOfWeek? DayofWeek)> DayOffsets { get; set; }
-
-        public int CurrentDayOffset { get; set; }
-
-        public bool IsAdmin { get; set; }
-
-        public List<int> UserSessions { get; set; }
-
-        [TempData]
-        public string Message { get; set; }
-
-        public bool ShowMessage => !string.IsNullOrEmpty(Message);
-
         protected readonly IApiClient _apiClient;
+        private readonly IAuthorizationService _authzService;
 
-        public IndexModel(IApiClient apiClient)
+        public IndexModel(IApiClient apiClient, IAuthorizationService authzService)
         {
             _apiClient = apiClient;
+            _authzService = authzService;
         }
 
         protected virtual Task<List<SessionResponse>> GetSessionsAsync()
@@ -40,8 +26,21 @@ namespace FrontEnd.Pages
             return _apiClient.GetSessionsAsync();
         }
 
+        public bool IsAdmin { get; set; }
+
+        public IEnumerable<IGrouping<DateTimeOffset?, SessionResponse>> Sessions { get; set; }
+
+        public IEnumerable<(int Offset, DayOfWeek? DayofWeek)> DayOffsets { get; set; }
+
+        public List<int> UserSessions { get; set; }
+
+        public int CurrentDayOffset { get; set; }
+
         public async Task OnGet(int day = 0)
         {
+            var authzResult = await _authzService.AuthorizeAsync(User, "Admin");
+            IsAdmin = authzResult.Succeeded;
+
             CurrentDayOffset = day;
 
             var userSessions = await _apiClient.GetSessionsByAttendeeAsync(User.Identity.Name);

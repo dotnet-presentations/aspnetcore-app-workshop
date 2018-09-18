@@ -2,14 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using FrontEnd.Pages.Models;
+using ConferenceDTO;
+using FrontEnd.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
-namespace FrontEnd.Pages
+namespace FrontEnd.Pages.Admin
 {
-public class EditSessionModel : PageModel
+    public class EditSessionModel : PageModel
     {
         private readonly IApiClient _apiClient;
 
@@ -18,13 +18,13 @@ public class EditSessionModel : PageModel
             _apiClient = apiClient;
         }
 
+        [BindProperty]
+        public Session Session { get; set; }
+
         [TempData]
         public string Message { get; set; }
 
         public bool ShowMessage => !string.IsNullOrEmpty(Message);
-
-        [BindProperty]
-        public Session Session { get; set; }
 
         public async Task OnGetAsync(int id)
         {

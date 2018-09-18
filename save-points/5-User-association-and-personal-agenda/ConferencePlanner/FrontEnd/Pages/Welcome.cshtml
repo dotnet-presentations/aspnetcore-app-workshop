@@ -1,9 +1,10 @@
 ﻿@page
+@using ConferenceDTO
 @model WelcomeModel
 
 <h2>Welcome @User.Identity.Name</h2>
 <p>
-    Register as an atendee to get access to cool features.
+    Register as an attendee to get access to cool features.
 </p>
 
 <form method="post">
@@ -42,4 +43,7 @@
         </div>
     </div>
 </form>
-<partial name="_ValidationScriptsPartial" />
+
+@section Scripts {
+    @Html.Partial("_ValidationScriptsPartial")
+}

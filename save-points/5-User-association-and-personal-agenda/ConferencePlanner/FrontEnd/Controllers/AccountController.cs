@@ -1,4 +1,6 @@
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using FrontEnd.Filters;
 using Microsoft.AspNetCore.Authentication;
@@ -9,9 +11,9 @@ namespace FrontEnd.Controllers
 {
     public class AccountController : Controller
     {
-        [HttpPost]
         [SkipWelcome]
-        public async Task<IActionResult> LogOut()
+        [HttpPost]
+        public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return Redirect(Url.Page("/Index"));

@@ -55,23 +55,7 @@ namespace BackEnd
 
             return CreatedAtAction(nameof(Get), new { username = result.UserName }, result);
         }
-
-        [HttpDelete("{id:int}")]
-        public async Task<IActionResult> Delete([FromRoute]int id)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var attendee = new Attendee { ID = id };
-
-            _db.Attendees.Remove(attendee);
-            await _db.SaveChangesAsync();
-
-            return NoContent();
-        }
-
+        
         [HttpPost("{username}/session/{sessionId:int}")]
         public async Task<IActionResult> AddSession(string username, int sessionId)
         {

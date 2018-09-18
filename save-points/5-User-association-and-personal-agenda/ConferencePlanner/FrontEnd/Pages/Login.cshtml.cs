@@ -12,18 +12,25 @@ namespace FrontEnd.Pages
     [SkipWelcome]
     public class LoginModel : PageModel
     {
-        private readonly IAuthenticationSchemeProvider _schemeProvider;
+        private readonly IAuthenticationSchemeProvider _authSchemeProvider;
 
-        public LoginModel(IAuthenticationSchemeProvider schemeProvider)
+        public LoginModel(IAuthenticationSchemeProvider authSchemeProvider)
         {
-            _schemeProvider = schemeProvider;
+            _authSchemeProvider = authSchemeProvider;
         }
 
         public IEnumerable<AuthenticationScheme> AuthSchemes { get; set; }
 
-        public async Task OnGet()
+        public async Task<IActionResult> OnGet()
         {
-            AuthSchemes = await _schemeProvider.GetRequestHandlerSchemesAsync();
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToPage("/Index");
+            }
+
+            AuthSchemes = await _authSchemeProvider.GetRequestHandlerSchemesAsync();
+
+            return Page();
         }
 
         public IActionResult OnPost(string scheme)
