@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Newtonsoft.Json.Linq;
 
-namespace DTO
+namespace ConferenceDTO
 {
     public class SearchResult
     {

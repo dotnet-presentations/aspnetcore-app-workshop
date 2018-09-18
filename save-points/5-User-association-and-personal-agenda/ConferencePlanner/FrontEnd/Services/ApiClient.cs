@@ -5,7 +5,6 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using ConferenceDTO;
-using DTO;
 using FrontEnd.Infrastructure;
 
 namespace FrontEnd.Services
