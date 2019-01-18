@@ -9,6 +9,7 @@ using Newtonsoft.Json.Linq;
 namespace BackEnd
 {
     [Route("api/[controller]")]
+    [ApiController]
     public class SearchController : Controller
     {
         private readonly ApplicationDbContext _db;

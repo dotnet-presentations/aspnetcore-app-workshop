@@ -4,10 +4,12 @@ using System.Threading.Tasks;
 using BackEnd.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
 
 namespace BackEnd
 {
     [Route("/api/[controller]")]
+    [ApiController]
     public class AttendeesController : Controller
     {
         private readonly ApplicationDbContext _db;
@@ -18,6 +20,9 @@ namespace BackEnd
         }
 
         [HttpGet("{username}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesDefaultResponseType]
         public async Task<IActionResult> Get(string username)
         {
             var attendee = await _db.Attendees.Include(a => a.SessionsAttendees)
@@ -35,13 +40,11 @@ namespace BackEnd
         }
 
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary), StatusCodes.Status400BadRequest)]
+        [ProducesDefaultResponseType]
         public async Task<IActionResult> Post([FromBody]ConferenceDTO.Attendee input)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             var attendee = new Attendee
             {
                 FirstName = input.FirstName,
@@ -59,6 +62,10 @@ namespace BackEnd
         }
         
         [HttpPost("{username}/session/{sessionId:int}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesDefaultResponseType]
         public async Task<IActionResult> AddSession(string username, int sessionId)
         {
             var attendee = await _db.Attendees.Include(a => a.SessionsAttendees)
@@ -93,6 +100,10 @@ namespace BackEnd
         }
 
         [HttpDelete("{username}/session/{sessionId:int}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesDefaultResponseType]
         public async Task<IActionResult> RemoveSession(string username, int sessionId)
         {
             var attendee = await _db.Attendees.Include(a => a.SessionsAttendees)
