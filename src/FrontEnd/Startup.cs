@@ -25,31 +25,6 @@ namespace FrontEnd
         {
             services.AddTransient<RequireLoginFilter>();
 
-            var authBuilder =  services
-                .AddAuthentication(options =>
-                {
-                    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                    options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                })
-                .AddCookie(options =>
-                {
-                    options.LoginPath = "/Login";
-                    options.AccessDeniedPath = "/Denied";
-                });
-
-            var twitterConfig = Configuration.GetSection("twitter");
-            if (twitterConfig["consumerKey"] != null)
-            {
-                authBuilder.AddTwitter(options => twitterConfig.Bind(options));
-            }
-
-            var googleConfig = Configuration.GetSection("google");
-            if (googleConfig["clientID"] != null)
-            {
-                authBuilder.AddGoogle(options => googleConfig.Bind(options));
-            }
-
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("Admin", policy =>
