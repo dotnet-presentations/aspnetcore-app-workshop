@@ -23,15 +23,6 @@ namespace FrontEnd
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc(options =>
-            {
-                options.Filters.AddService<RequireLoginFilter>();
-            })
-            .AddRazorPagesOptions(options =>
-            {
-                options.Conventions.AuthorizeFolder("/Admin", "Admin");
-            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-
             services.AddTransient<RequireLoginFilter>();
 
             var authBuilder =  services
@@ -72,6 +63,16 @@ namespace FrontEnd
             {
                 client.BaseAddress = new Uri(Configuration["serviceUrl"]);
             });
+
+            services.AddMvc(options =>
+            {
+                options.Filters.AddService<RequireLoginFilter>();
+            })
+            .AddRazorPagesOptions(options =>
+            {
+                options.Conventions.AuthorizeFolder("/Admin", "Admin");
+            })
+            .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -82,10 +83,9 @@ namespace FrontEnd
             }
             else
             {
+                app.UseHsts();
                 app.UseExceptionHandler("/Error");
             }
-
-            app.UseHsts();
 
             app.UseStatusCodePagesWithReExecute("/Status/{0}");
 

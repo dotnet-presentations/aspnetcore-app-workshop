@@ -4,15 +4,13 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Rewrite;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using BackEnd.Data;
 using Swashbuckle.AspNetCore.Swagger;
-using Microsoft.AspNetCore.Mvc;
+using BackEnd.Data;
 
 namespace BackEnd
 {
@@ -27,7 +25,6 @@ namespace BackEnd
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddDbContext<ApplicationDbContext>(options =>
             {
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
@@ -41,12 +38,14 @@ namespace BackEnd
             });
 
             services.AddMvcCore()
+                    .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                     .AddJsonFormatters()
                     .AddApiExplorer();
 
             services.AddSwaggerGen(options =>
-                    options.SwaggerDoc("v1", new Info { Title = "Conference Planner API", Version = "v1" })
-            );
+            {
+                options.SwaggerDoc("v1", new Info { Title = "Conference Planner API", Version = "v1" });
+            });
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -61,13 +60,15 @@ namespace BackEnd
                 app.UseHsts();
             }
 
+            app.UseHttpsRedirection();
+
             app.UseSwagger();
 
             app.UseSwaggerUI(options =>
-                    options.SwaggerEndpoint("/swagger/v1/swagger.json", "Conference Planner API v1")
-            );
+            {
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "Conference Planner API v1");
+            });
 
-            app.UseHttpsRedirection();
             app.UseMvc();
 
             app.Run(context =>
@@ -78,8 +79,8 @@ namespace BackEnd
 
             if (Configuration["RESET_DB"] != null && Configuration["RESET_DB"] == "1")
             {
-              var loader = new SessionizeLoader(app.ApplicationServices);
-              loader.LoadData("NDC_Sydney_2018.json", "NDC Sydney 2018");
+                var loader = new SessionizeLoader(app.ApplicationServices);
+                loader.LoadData("NDC_Sydney_2018.json", "NDC Sydney 2018");
             }
         }
     }
