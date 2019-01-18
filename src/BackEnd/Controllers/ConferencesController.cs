@@ -4,12 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BackEnd.Data;
 using Microsoft.AspNetCore.Http;
+using ConferenceDTO;
 
 namespace BackEnd.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ConferencesController : Controller
+    public class ConferencesController : ControllerBase
     {
         private readonly ApplicationDbContext _db;
 
@@ -19,7 +20,7 @@ namespace BackEnd.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetConferences()
+        public async Task<ActionResult<ConferenceResponse>> GetConferences()
         {
             var conferences = await _db.Conferences.AsNoTracking().ToListAsync();
 
@@ -35,12 +36,9 @@ namespace BackEnd.Controllers
         }
 
         [HttpGet("{id:int}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesDefaultResponseType]
-        public async Task<IActionResult> GetConference([FromRoute] int id)
+        public async Task<ActionResult<ConferenceResponse>> GetConference(int id)
         {
-            var conference = await _db.FindAsync<Conference>(id);
+            var conference = await _db.FindAsync<Data.Conference>(id);
 
             if (conference == null)
             {
@@ -55,16 +53,13 @@ namespace BackEnd.Controllers
                 //Tracks = ??
                 //Sessions = ??
             };
-            return Ok(result);
+            return result;
         }
 
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(typeof(Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary), StatusCodes.Status400BadRequest)]
-        [ProducesDefaultResponseType]
-        public async Task<IActionResult> CreateConference([FromBody] ConferenceDTO.Conference input)
+        public async Task<ActionResult<ConferenceResponse>> CreateConference(ConferenceDTO.Conference input)
         {
-            var conference = new Conference
+            var conference = new Data.Conference
             {
                 Name = input.Name
             };
@@ -85,47 +80,26 @@ namespace BackEnd.Controllers
         }
 
         [HttpPut("{id:int}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesDefaultResponseType]
-        public async Task<IActionResult> UpdateConference([FromRoute]int id, [FromBody]ConferenceDTO.Conference input)
+        public async Task<ActionResult<ConferenceResponse>> PutConference(int id, ConferenceDTO.Conference input)
         {
-            var conference = await _db.FindAsync<Conference>(id);
+            var conference = await _db.FindAsync<Data.Conference>(id);
 
             if (conference == null)
             {
                 return NotFound();
             }
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
+            
             conference.Name = input.Name;
 
             await _db.SaveChangesAsync();
 
-            var result = new ConferenceDTO.ConferenceResponse
-            {
-                ID = conference.ID,
-                Name = conference.Name,
-                //Sessions = ??,
-                //Tracks = ??
-                //Sessions = ??
-            };
-
-            return Ok(result);
+            return NoContent();
         }
 
         [HttpDelete("{id:int}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesDefaultResponseType]
-        public async Task<IActionResult> DeleteConference([FromRoute] int id)
+        public async Task<IActionResult> DeleteConference(int id)
         {
-            var conference = await _db.FindAsync<Conference>(id);
+            var conference = await _db.FindAsync<Data.Conference>(id);
 
             if (conference == null)
             {
@@ -136,7 +110,7 @@ namespace BackEnd.Controllers
 
             await _db.SaveChangesAsync();
 
-            return NoContent();
+            return Ok();
         }
     }
 }

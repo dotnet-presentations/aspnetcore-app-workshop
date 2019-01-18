@@ -1,17 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BackEnd.Data;
-using Microsoft.AspNetCore.Http;
+using ConferenceDTO;
 
 namespace BackEnd.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class SpeakersController : Controller
+    public class SpeakersController : ControllerBase
     {
         private readonly ApplicationDbContext _db;
 
@@ -21,7 +20,7 @@ namespace BackEnd.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetSpeakers()
+        public async Task<ActionResult<List<SpeakerResponse>>> GetSpeakers()
         {
             var speakers = await _db.Speakers.AsNoTracking()
                                              .Include(s => s.SessionSpeakers)
@@ -29,14 +28,11 @@ namespace BackEnd.Controllers
                                              .ToListAsync();
 
             var result = speakers.Select(s => s.MapSpeakerResponse());
-            return Ok(result);
+            return result.ToList();
         }
 
         [HttpGet("{id:int}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesDefaultResponseType]
-        public async Task<IActionResult> GetSpeaker([FromRoute]int id)
+        public async Task<ActionResult<SpeakerResponse>> GetSpeaker(int id)
         {
             var speaker = await _db.Speakers.AsNoTracking()
                                             .Include(s => s.SessionSpeakers)
@@ -49,16 +45,13 @@ namespace BackEnd.Controllers
             }
 
             var result = speaker.MapSpeakerResponse();
-            return Ok(result);
+            return result;
         }
 
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(typeof(Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary), StatusCodes.Status400BadRequest)]
-        [ProducesDefaultResponseType]
-        public async Task<IActionResult> CreateSpeaker([FromBody]ConferenceDTO.Speaker input)
+        public async Task<IActionResult> CreateSpeaker(ConferenceDTO.Speaker input)
         {
-            var speaker = new Speaker
+            var speaker = new Data.Speaker
             {
                 Name = input.Name,
                 WebSite = input.WebSite,
@@ -74,13 +67,9 @@ namespace BackEnd.Controllers
         }
 
         [HttpPut("{id:int}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesDefaultResponseType]
-        public async Task<IActionResult> UpdateSpeaker([FromRoute]int id, [FromBody]ConferenceDTO.Speaker input)
+        public async Task<IActionResult> PutSpeaker(int id, ConferenceDTO.Speaker input)
         {
-            var speaker = await _db.FindAsync<Speaker>(id);
+            var speaker = await _db.FindAsync<Data.Speaker>(id);
 
             if (speaker == null)
             {
@@ -94,18 +83,13 @@ namespace BackEnd.Controllers
             // TODO: Handle exceptions, e.g. concurrency
             await _db.SaveChangesAsync();
 
-            var result = speaker.MapSpeakerResponse();
-
-            return Ok(result);
+            return NoContent();
         }
 
         [HttpDelete("{id:int}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesDefaultResponseType]
-        public async Task<IActionResult> DeleteSpeaker([FromRoute]int id)
+        public async Task<IActionResult> DeleteSpeaker(int id)
         {
-            var speaker = await _db.FindAsync<Speaker>(id);
+            var speaker = await _db.FindAsync<Data.Speaker>(id);
 
             if (speaker == null)
             {
@@ -117,7 +101,7 @@ namespace BackEnd.Controllers
             // TODO: Handle exceptions, e.g. concurrency
             await _db.SaveChangesAsync();
 
-            return NoContent();
+            return Ok();
         }
     }
 }

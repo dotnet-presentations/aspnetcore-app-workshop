@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BackEnd.Data;
-using Microsoft.AspNetCore.Http;
+using ConferenceDTO;
 
 namespace BackEnd.Controllers
 {
@@ -21,7 +20,7 @@ namespace BackEnd.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<ActionResult<List<SessionResponse>>> Get()
         {
             var sessions = await _db.Sessions.AsNoTracking()
                                              .Include(s => s.Track)
@@ -37,10 +36,7 @@ namespace BackEnd.Controllers
         }
 
         [HttpGet("{id:int}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesDefaultResponseType]
-        public async Task<IActionResult> Get([FromRoute]int id)
+        public async Task<ActionResult<SessionResponse>> Get(int id)
         {
             var session = await _db.Sessions.AsNoTracking()
                                             .Include(s => s.Track)
@@ -57,16 +53,13 @@ namespace BackEnd.Controllers
 
             var result = MapSessionResponse(session);
 
-            return Ok(result);
+            return result;
         }
 
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(typeof(Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary), StatusCodes.Status400BadRequest)]
-        [ProducesDefaultResponseType]
-        public async Task<IActionResult> Post([FromBody]ConferenceDTO.Session input)
+        public async Task<ActionResult<SessionResponse>> Post(ConferenceDTO.Session input)
         {
-            var session = new Session
+            var session = new Data.Session
             {
                 Title = input.Title,
                 ConferenceID = input.ConferenceID,
@@ -85,22 +78,13 @@ namespace BackEnd.Controllers
         }
 
         [HttpPut("{id:int}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesDefaultResponseType]
-        public async Task<IActionResult> Put([FromRoute]int id, [FromBody]ConferenceDTO.Session input)
+        public async Task<IActionResult> Put(int id, ConferenceDTO.Session input)
         {
             var session = await _db.Sessions.FindAsync(id);
 
             if (session == null)
             {
                 return NotFound();
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
             }
 
             session.ID = input.ID;
@@ -113,15 +97,10 @@ namespace BackEnd.Controllers
 
             await _db.SaveChangesAsync();
 
-            var result = session.MapSessionResponse();
-
-            return Ok(result);
+            return NoContent();
         }
 
         [HttpDelete("{id:int}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesDefaultResponseType]
         public async Task<IActionResult> Delete(int id)
         {
             var session = await _db.Sessions.FindAsync(id);
@@ -134,10 +113,10 @@ namespace BackEnd.Controllers
             _db.Sessions.Remove(session);
             await _db.SaveChangesAsync();
 
-            return NoContent();
+            return Ok();
         }
 
-        private static ConferenceDTO.SessionResponse MapSessionResponse(Session session)
+        private static ConferenceDTO.SessionResponse MapSessionResponse(Data.Session session)
         {
             return session.MapSessionResponse();
         }

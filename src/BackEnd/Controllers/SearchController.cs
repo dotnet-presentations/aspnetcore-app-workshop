@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BackEnd.Data;
@@ -10,7 +11,7 @@ namespace BackEnd
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class SearchController : Controller
+    public class SearchController : ControllerBase
     {
         private readonly ApplicationDbContext _db;
 
@@ -20,7 +21,7 @@ namespace BackEnd
         }
 
         [HttpPost]
-        public async Task<IActionResult> Search([FromBody]SearchTerm term)
+        public async Task<ActionResult<List<SearchResult>>> Search([FromBody]SearchTerm term)
         {
             var query = term.Query;
             var sessionResults = await _db.Sessions.Include(s => s.Track)
@@ -87,7 +88,7 @@ namespace BackEnd
                 })
             }));
 
-            return Ok(results);
+            return results.ToList();
         }
     }
 }
