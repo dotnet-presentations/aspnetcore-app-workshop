@@ -12,6 +12,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.Swagger;
 using BackEnd.Data;
 
+[assembly: ApiConventionType(typeof(DefaultApiConventions))]
+
 namespace BackEnd
 {
     public class Startup

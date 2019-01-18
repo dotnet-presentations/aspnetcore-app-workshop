@@ -5,12 +5,13 @@ using BackEnd.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
+using ConferenceDTO;
 
 namespace BackEnd
 {
     [Route("/api/[controller]")]
     [ApiController]
-    public class AttendeesController : Controller
+    public class AttendeesController : ControllerBase
     {
         private readonly ApplicationDbContext _db;
 
@@ -20,14 +21,11 @@ namespace BackEnd
         }
 
         [HttpGet("{username}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesDefaultResponseType]
-        public async Task<IActionResult> Get(string username)
+        public async Task<ActionResult<AttendeeResponse>> Get(string id)
         {
             var attendee = await _db.Attendees.Include(a => a.SessionsAttendees)
                                                 .ThenInclude(sa => sa.Session)
-                                              .SingleOrDefaultAsync(a => a.UserName == username);
+                                              .SingleOrDefaultAsync(a => a.UserName == id);
 
             if (attendee == null)
             {
@@ -36,16 +34,13 @@ namespace BackEnd
 
             var result = attendee.MapAttendeeResponse();
 
-            return Ok(result);
+            return result;
         }
 
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(typeof(Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary), StatusCodes.Status400BadRequest)]
-        [ProducesDefaultResponseType]
-        public async Task<IActionResult> Post([FromBody]ConferenceDTO.Attendee input)
+        public async Task<ActionResult<AttendeeResponse>> Post(ConferenceDTO.Attendee input)
         {
-            var attendee = new Attendee
+            var attendee = new Data.Attendee
             {
                 FirstName = input.FirstName,
                 LastName = input.LastName,
@@ -66,7 +61,7 @@ namespace BackEnd
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesDefaultResponseType]
-        public async Task<IActionResult> AddSession(string username, int sessionId)
+        public async Task<ActionResult<SessionResponse>> AddSession(string username, int sessionId)
         {
             var attendee = await _db.Attendees.Include(a => a.SessionsAttendees)
                                                 .ThenInclude(sa => sa.Session)
