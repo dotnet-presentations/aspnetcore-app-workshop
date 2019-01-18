@@ -20,7 +20,7 @@ namespace FrontEnd.Services
 
         public async Task AddAttendeeAsync(Attendee attendee)
         {
-            var response = await _httpClient.PostJsonAsync($"/api/attendees", attendee);
+            var response = await _httpClient.PostAsJsonAsync($"/api/attendees", attendee);
 
             response.EnsureSuccessStatusCode();
         }
@@ -41,7 +41,7 @@ namespace FrontEnd.Services
 
             response.EnsureSuccessStatusCode();
 
-            return await response.Content.ReadAsJsonAsync<AttendeeResponse>();
+            return await response.Content.ReadAsAsync<AttendeeResponse>();
         }
 
         public async Task<SessionResponse> GetSessionAsync(int id)
@@ -55,7 +55,7 @@ namespace FrontEnd.Services
 
             response.EnsureSuccessStatusCode();
 
-            return await response.Content.ReadAsJsonAsync<SessionResponse>();
+            return await response.Content.ReadAsAsync<SessionResponse>();
         }
 
         public async Task<List<SessionResponse>> GetSessionsAsync()
@@ -64,7 +64,7 @@ namespace FrontEnd.Services
 
             response.EnsureSuccessStatusCode();
 
-            return await response.Content.ReadAsJsonAsync<List<SessionResponse>>();
+            return await response.Content.ReadAsAsync<List<SessionResponse>>();
         }
 
         public async Task DeleteSessionAsync(int id)
@@ -90,7 +90,7 @@ namespace FrontEnd.Services
 
             response.EnsureSuccessStatusCode();
 
-            return await response.Content.ReadAsJsonAsync<SpeakerResponse>();
+            return await response.Content.ReadAsAsync<SpeakerResponse>();
         }
 
         public async Task<List<SpeakerResponse>> GetSpeakersAsync()
@@ -99,12 +99,12 @@ namespace FrontEnd.Services
 
             response.EnsureSuccessStatusCode();
 
-            return await response.Content.ReadAsJsonAsync<List<SpeakerResponse>>();
+            return await response.Content.ReadAsAsync<List<SpeakerResponse>>();
         }
 
         public async Task PutSessionAsync(Session session)
         {
-            var response = await _httpClient.PutJsonAsync($"/api/sessions/{session.ID}", session);
+            var response = await _httpClient.PutAsJsonAsync($"/api/sessions/{session.ID}", session);
 
             response.EnsureSuccessStatusCode();
         }
@@ -116,11 +116,11 @@ namespace FrontEnd.Services
                 Query = query
             };
 
-            var response = await _httpClient.PostJsonAsync($"/api/search", term);
+            var response = await _httpClient.PostAsJsonAsync($"/api/search", term);
 
             response.EnsureSuccessStatusCode();
 
-            return await response.Content.ReadAsJsonAsync<List<SearchResult>>();
+            return await response.Content.ReadAsAsync<List<SearchResult>>();
         }
 
         public async Task AddSessionToAttendeeAsync(string name, int sessionId)
