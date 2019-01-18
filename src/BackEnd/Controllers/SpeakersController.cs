@@ -5,10 +5,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BackEnd.Data;
+using Microsoft.AspNetCore.Http;
 
 namespace BackEnd.Controllers
 {
     [Route("api/[controller]")]
+    [ApiController]
     public class SpeakersController : Controller
     {
         private readonly ApplicationDbContext _db;
@@ -31,6 +33,9 @@ namespace BackEnd.Controllers
         }
 
         [HttpGet("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesDefaultResponseType]
         public async Task<IActionResult> GetSpeaker([FromRoute]int id)
         {
             var speaker = await _db.Speakers.AsNoTracking()
@@ -48,13 +53,11 @@ namespace BackEnd.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary), StatusCodes.Status400BadRequest)]
+        [ProducesDefaultResponseType]
         public async Task<IActionResult> CreateSpeaker([FromBody]ConferenceDTO.Speaker input)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             var speaker = new Speaker
             {
                 Name = input.Name,
@@ -71,6 +74,10 @@ namespace BackEnd.Controllers
         }
 
         [HttpPut("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesDefaultResponseType]
         public async Task<IActionResult> UpdateSpeaker([FromRoute]int id, [FromBody]ConferenceDTO.Speaker input)
         {
             var speaker = await _db.FindAsync<Speaker>(id);
@@ -78,11 +85,6 @@ namespace BackEnd.Controllers
             if (speaker == null)
             {
                 return NotFound();
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
             }
 
             speaker.Name = input.Name;
@@ -98,6 +100,9 @@ namespace BackEnd.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesDefaultResponseType]
         public async Task<IActionResult> DeleteSpeaker([FromRoute]int id)
         {
             var speaker = await _db.FindAsync<Speaker>(id);

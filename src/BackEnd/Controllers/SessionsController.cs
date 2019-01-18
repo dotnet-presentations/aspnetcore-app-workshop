@@ -5,10 +5,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BackEnd.Data;
+using Microsoft.AspNetCore.Http;
 
 namespace BackEnd.Controllers
 {
     [Route("api/[controller]")]
+    [ApiController]
     public class SessionsController : Controller
     {
         private readonly ApplicationDbContext _db;
@@ -35,6 +37,9 @@ namespace BackEnd.Controllers
         }
 
         [HttpGet("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesDefaultResponseType]
         public async Task<IActionResult> Get([FromRoute]int id)
         {
             var session = await _db.Sessions.AsNoTracking()
@@ -56,13 +61,11 @@ namespace BackEnd.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary), StatusCodes.Status400BadRequest)]
+        [ProducesDefaultResponseType]
         public async Task<IActionResult> Post([FromBody]ConferenceDTO.Session input)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             var session = new Session
             {
                 Title = input.Title,
@@ -82,6 +85,10 @@ namespace BackEnd.Controllers
         }
 
         [HttpPut("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesDefaultResponseType]
         public async Task<IActionResult> Put([FromRoute]int id, [FromBody]ConferenceDTO.Session input)
         {
             var session = await _db.Sessions.FindAsync(id);
@@ -112,6 +119,9 @@ namespace BackEnd.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesDefaultResponseType]
         public async Task<IActionResult> Delete(int id)
         {
             var session = await _db.Sessions.FindAsync(id);
