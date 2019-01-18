@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using FrontEnd.Infrastructure;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -14,6 +15,8 @@ namespace FrontEnd
     {
         public static void Main(string[] args)
         {
+            CurrentDirectoryHelpers.SetCurrentDirectory();
+
             CreateWebHostBuilder(args).Build().Run();
         }
 
