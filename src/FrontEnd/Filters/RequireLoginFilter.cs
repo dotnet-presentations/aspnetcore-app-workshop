@@ -11,12 +11,10 @@ namespace FrontEnd
 {
     public class RequireLoginFilter : IAsyncResourceFilter
     {
-        private readonly IApiClient _apiClient;
         private readonly IUrlHelperFactory _urlHelperFactory;
 
-        public RequireLoginFilter(IApiClient apiClient, IUrlHelperFactory urlHelperFactory)
+        public RequireLoginFilter(IUrlHelperFactory urlHelperFactory)
         {
-            _apiClient = apiClient;
             _urlHelperFactory = urlHelperFactory;
         }
 
