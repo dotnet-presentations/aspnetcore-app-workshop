@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FrontEnd.Data
 {
-    public class IdentityDbContext : IdentityDbContext<IdentityUser>
+    public class IdentityDbContext : IdentityDbContext<User>
     {
         public IdentityDbContext(DbContextOptions<IdentityDbContext> options)
             : base(options)

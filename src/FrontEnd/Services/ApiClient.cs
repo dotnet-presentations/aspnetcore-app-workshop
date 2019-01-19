@@ -18,11 +18,18 @@ namespace FrontEnd.Services
             _httpClient = httpClient;
         }
 
-        public async Task AddAttendeeAsync(Attendee attendee)
+        public async Task<bool> AddAttendeeAsync(Attendee attendee)
         {
             var response = await _httpClient.PostAsJsonAsync($"/api/attendees", attendee);
 
+            if (response.StatusCode == HttpStatusCode.Conflict)
+            {
+                return false;
+            }
+
             response.EnsureSuccessStatusCode();
+
+            return true;
         }
 
         public async Task<AttendeeResponse> GetAttendeeAsync(string name)

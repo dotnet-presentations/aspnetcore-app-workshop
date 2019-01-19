@@ -20,7 +20,7 @@ namespace BackEnd
             _db = db;
         }
 
-        [HttpGet("{username}")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<AttendeeResponse>> Get(string id)
         {
             var attendee = await _db.Attendees.Include(a => a.SessionsAttendees)
@@ -38,8 +38,20 @@ namespace BackEnd
         }
 
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<ActionResult<AttendeeResponse>> Post(ConferenceDTO.Attendee input)
         {
+            // Check if the attendee already exists
+            var existingAttendee = await _db.Attendees
+                .Where(a => a.UserName == input.UserName)
+                .FirstOrDefaultAsync();
+
+            if (existingAttendee != null)
+            {
+                return Conflict(input);
+            }
+
             var attendee = new Data.Attendee
             {
                 FirstName = input.FirstName,
@@ -53,7 +65,7 @@ namespace BackEnd
 
             var result = attendee.MapAttendeeResponse();
 
-            return CreatedAtAction(nameof(Get), new { username = result.UserName }, result);
+            return CreatedAtAction(nameof(Get), new { id = result.UserName }, result);
         }
         
         [HttpPost("{username}/session/{sessionId:int}")]

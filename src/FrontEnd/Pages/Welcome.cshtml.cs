@@ -4,6 +4,11 @@ using FrontEnd.Pages.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using FrontEnd.Filters;
+using System.Net.Http;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Identity;
+using System.Linq;
 
 namespace FrontEnd
 {
@@ -20,14 +25,12 @@ namespace FrontEnd
         [BindProperty]
         public Attendee Attendee { get; set; }
 
-        public async Task<IActionResult> OnGetAsync()
+        public IActionResult OnGet()
         {
             // Redirect to home page if user is anonymous or already registered as attendee
-            var attendee = User.Identity.IsAuthenticated
-                ? await _apiClient.GetAttendeeAsync(HttpContext.User.Identity.Name)
-                : null;
+            var isAttendee = User.HasClaim("IsAttendee", "true");
 
-            if (!User.Identity.IsAuthenticated || attendee != null)
+            if (!User.Identity.IsAuthenticated || isAttendee)
             {
                 return RedirectToPage("/Index");
             }
@@ -37,7 +40,17 @@ namespace FrontEnd
 
         public async Task<IActionResult> OnPostAsync()
         {
-            await _apiClient.AddAttendeeAsync(Attendee);
+            var success = await _apiClient.AddAttendeeAsync(Attendee);
+
+            if (!success)
+            {
+                ModelState.AddModelError("", "There was an issue creating the attendee for this user.");
+                return Page();
+            }
+
+            // Reissue auth cookie with new claim
+            User.Identities.First().AddClaim(new Claim("IsAttendee", "true"));
+            await HttpContext.SignInAsync(IdentityConstants.ApplicationScheme, User);
 
             return RedirectToPage("/Index");
         }

@@ -14,21 +14,25 @@ namespace FrontEnd.Areas.Identity
     {
         public void Configure(IWebHostBuilder builder)
         {
-            builder.ConfigureServices((context, services) => {
+            builder.ConfigureServices((context, services) =>
+            {
                 services.AddDbContext<IdentityDbContext>(options =>
+                {
                     options.UseSqlServer(
-                        context.Configuration.GetConnectionString("IdentityDbContextConnection")));
+                        context.Configuration.GetConnectionString("IdentityDbContextConnection"));
+                });
 
-                services.AddDefaultIdentity<IdentityUser>(options =>
-                    {
-                        options.Password.RequireDigit = false;
-                        options.Password.RequiredLength = 1;
-                        options.Password.RequiredUniqueChars = 0;
-                        options.Password.RequireLowercase = false;
-                        options.Password.RequireUppercase = false;
-                        options.Password.RequireNonAlphanumeric = false;
-                    })
-                    .AddEntityFrameworkStores<IdentityDbContext>();
+                services.AddDefaultIdentity<User>(options =>
+                {
+                    options.Password.RequireDigit = false;
+                    options.Password.RequiredLength = 1;
+                    options.Password.RequiredUniqueChars = 0;
+                    options.Password.RequireLowercase = false;
+                    options.Password.RequireUppercase = false;
+                    options.Password.RequireNonAlphanumeric = false;
+                })
+                .AddEntityFrameworkStores<IdentityDbContext>()
+                .AddClaimsPrincipalFactory<ClaimsPrincipalFactory>();
             });
         }
     }

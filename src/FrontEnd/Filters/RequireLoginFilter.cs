@@ -29,9 +29,9 @@ namespace FrontEnd
             if (context.HttpContext.User.Identity.IsAuthenticated &&
                 !context.Filters.OfType<SkipWelcomeAttribute>().Any())
             {
-                var attendee = await _apiClient.GetAttendeeAsync(context.HttpContext.User.Identity.Name);
+                var isAttendee = context.HttpContext.User.HasClaim("IsAttendee", "true");
 
-                if (attendee == null)
+                if (!isAttendee)
                 {
                     // No attendee registerd for this user
                     context.HttpContext.Response.Redirect(urlHelper.Page("/Welcome"));

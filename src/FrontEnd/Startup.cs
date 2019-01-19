@@ -1,10 +1,14 @@
 ﻿    using System;
 using System.Net.Http;
+using FrontEnd.Areas.Identity;
+using FrontEnd.Data;
+using FrontEnd.Filters;
 using FrontEnd.Infrastructure;
 using FrontEnd.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
@@ -30,7 +34,7 @@ namespace FrontEnd
                 options.AddPolicy("Admin", policy =>
                 {
                     policy.RequireAuthenticatedUser()
-                          .RequireUserName(Configuration["admin"]);
+                          .RequireClaim("IsAdmin", "true");
                 });
             });
 
@@ -46,6 +50,15 @@ namespace FrontEnd
             .AddRazorPagesOptions(options =>
             {
                 options.Conventions.AuthorizeFolder("/Admin", "Admin");
+                // TODO: Log issue to add overload for path-based filter conventions
+                options.Conventions.ConfigureFilter(appModel =>
+                {
+                    if (appModel.PageType == typeof(Microsoft.AspNetCore.Identity.UI.V3.Pages.Internal.Account.Areas_Identity_Pages_Account_Logout))
+                    {
+                        return new SkipWelcomeAttribute();
+                    }
+                    return new NoOpFilter();
+                });
             })
             .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
