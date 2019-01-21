@@ -41,7 +41,7 @@ namespace BackEnd
                 }
             });
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddSwaggerGen(options =>
                 options.SwaggerDoc("v1", new Info { Title = "Conference Planner API", Version = "v1" })
