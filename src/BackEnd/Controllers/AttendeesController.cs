@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
 using ConferenceDTO;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BackEnd
 {
+    [Authorize]
     [Route("/api/[controller]")]
     [ApiController]
     public class AttendeesController : ControllerBase

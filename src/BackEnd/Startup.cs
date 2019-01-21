@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.Swagger;
 using BackEnd.Data;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 [assembly: ApiConventionType(typeof(DefaultApiConventions))]
 
@@ -39,15 +40,31 @@ namespace BackEnd
                 }
             });
 
-            services.AddMvcCore()
-                    .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
-                    .AddJsonFormatters()
-                    .AddApiExplorer();
+            services.AddMvc();
 
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new Info { Title = "Conference Planner API", Version = "v1" });
             });
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+                {
+                    options.Authority = Configuration["IdentityProvider:Authority"];
+                    options.RequireHttpsMetadata = false;
+                    options.Audience = Configuration["IdentityProvider:Auidence"];
+                    options.Events = new JwtBearerEvents
+                    {
+                        OnMessageReceived = context =>
+                        {
+                            return Task.CompletedTask;
+                        },
+                        OnTokenValidated = context =>
+                        {
+                            return Task.CompletedTask;
+                        }
+                    };
+                });
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -70,6 +87,8 @@ namespace BackEnd
             {
                 options.SwaggerEndpoint("/swagger/v1/swagger.json", "Conference Planner API v1");
             });
+
+            app.UseAuthentication();
 
             app.UseMvc();
 

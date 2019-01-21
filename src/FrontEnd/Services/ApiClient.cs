@@ -5,16 +5,20 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using ConferenceDTO;
+using IdentityModel.Client;
+using Microsoft.Extensions.Configuration;
 
 namespace FrontEnd.Services
 {
     public class ApiClient : IApiClient
     {
         private readonly HttpClient _httpClient;
+        private readonly IConfiguration _configuration;
 
-        public ApiClient(HttpClient httpClient)
+        public ApiClient(HttpClient httpClient, IConfiguration configuration)
         {
             _httpClient = httpClient;
+            _configuration = configuration;
         }
 
         public async Task<bool> AddAttendeeAsync(Attendee attendee)
@@ -52,6 +56,9 @@ namespace FrontEnd.Services
 
         public async Task<SessionResponse> GetSessionAsync(int id)
         {
+            var request = new HttpRequestMessage(HttpMethod.Get, $"/api/sessions/{id}");
+            request.SetBearerToken()
+
             var response = await _httpClient.GetAsync($"/api/sessions/{id}");
 
             if (response.StatusCode == HttpStatusCode.NotFound)
@@ -146,7 +153,6 @@ namespace FrontEnd.Services
         public async Task<List<SessionResponse>> GetSessionsByAttendeeAsync(string name)
         {
             // TODO: Would be better to add backend API for this
-            
             var sessionsTask = GetSessionsAsync();
             var attendeeTask = GetAttendeeAsync(name);
 

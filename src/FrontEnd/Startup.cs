@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Net.Http;
+using System.Threading.Tasks;
 using FrontEnd.Services;
+using IdentityModel.Client;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -31,9 +34,12 @@ namespace FrontEnd
                 });
             });
 
+            var token = GetAccessToken().Result;
+
             services.AddHttpClient<IApiClient, ApiClient>(client =>
             {
                 client.BaseAddress = new Uri(Configuration["serviceUrl"]);
+                client.SetBearerToken(token);
             });
 
             services.AddMvc(options =>
@@ -70,6 +76,38 @@ namespace FrontEnd
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+        }
+
+        private async Task<string> GetAccessToken()
+        {
+            using (var client = new HttpClient())
+            {
+                var url = Configuration["IdentityProvider:Url"];
+                var clientId = Configuration["IdentityProvider:ClientId"];
+                var clientSecret = Configuration["IdentityProvider:ClientSecret"];
+
+                var disco = await client.GetDiscoveryDocumentAsync(url);
+                if (disco.IsError)
+                {
+                    throw new InvalidOperationException(disco.Error);
+                }
+
+                // request token
+                var tokenResponse = await client.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
+                {
+                    Address = disco.TokenEndpoint,
+                    ClientId = clientId,
+                    ClientSecret = clientSecret,
+                    Scope = "api"
+                });
+
+                if (tokenResponse.IsError)
+                {
+                    throw new InvalidOperationException(tokenResponse.Error);
+                }
+
+                return tokenResponse.AccessToken;
+            }
         }
     }
 }
