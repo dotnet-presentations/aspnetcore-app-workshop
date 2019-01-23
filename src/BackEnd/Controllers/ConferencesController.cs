@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BackEnd.Data;
-using Microsoft.AspNetCore.Http;
 using ConferenceDTO;
 
 namespace BackEnd.Controllers
@@ -24,7 +23,7 @@ namespace BackEnd.Controllers
         {
             var conferences = await _db.Conferences.AsNoTracking().ToListAsync();
 
-            var result = conferences.Select(s => new ConferenceDTO.ConferenceResponse
+            var result = conferences.Select(s => new ConferenceResponse
             {
                 ID = s.ID,
                 Name = s.Name,
@@ -45,7 +44,7 @@ namespace BackEnd.Controllers
                 return NotFound();
             }
             
-            var result = new ConferenceDTO.ConferenceResponse
+            var result = new ConferenceResponse
             {
                 ID = conference.ID,
                 Name = conference.Name,
