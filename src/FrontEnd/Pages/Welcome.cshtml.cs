@@ -48,8 +48,8 @@ namespace FrontEnd
                 return Page();
             }
 
-            // Reissue auth cookie with new claim
-                User.MakeAttendee();
+            // Re-issue the auth cookie with the new IsAttendee claim
+            User.MakeAttendee();
             await HttpContext.SignInAsync(IdentityConstants.ApplicationScheme, User);
 
             return RedirectToPage("/Index");
