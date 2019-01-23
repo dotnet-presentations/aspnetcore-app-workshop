@@ -21,7 +21,7 @@ namespace BackEnd
         }
 
         [HttpPost]
-        public async Task<ActionResult<List<SearchResult>>> Search([FromBody]SearchTerm term)
+        public async Task<ActionResult<List<SearchResult>>> Search(SearchTerm term)
         {
             var query = term.Query;
             var sessionResults = await _db.Sessions.Include(s => s.Track)
