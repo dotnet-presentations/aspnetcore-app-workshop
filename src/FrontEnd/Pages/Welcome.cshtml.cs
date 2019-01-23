@@ -28,7 +28,7 @@ namespace FrontEnd
         public IActionResult OnGet()
         {
             // Redirect to home page if user is anonymous or already registered as attendee
-            var isAttendee = User.HasClaim("IsAttendee", "true");
+            var isAttendee = User.IsAttendee();
 
             if (!User.Identity.IsAuthenticated || isAttendee)
             {
@@ -49,7 +49,7 @@ namespace FrontEnd
             }
 
             // Reissue auth cookie with new claim
-            User.Identities.First().AddClaim(new Claim("IsAttendee", "true"));
+                User.MakeAttendee();
             await HttpContext.SignInAsync(IdentityConstants.ApplicationScheme, User);
 
             return RedirectToPage("/Index");

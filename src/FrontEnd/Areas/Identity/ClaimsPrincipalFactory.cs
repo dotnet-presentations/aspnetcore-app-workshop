@@ -26,13 +26,13 @@ namespace FrontEnd.Areas.Identity
 
             if (user.IsAdmin)
             {
-                identity.AddClaim(new Claim("IsAdmin", "true"));
+                identity.MakeAdmin();
             }
 
             var attendee = await _apiClient.GetAttendeeAsync(user.UserName);
             if (attendee != null)
             {
-                identity.AddClaim(new Claim("IsAttendee", "true"));
+                identity.MakeAttendee();
             }
 
             return identity;

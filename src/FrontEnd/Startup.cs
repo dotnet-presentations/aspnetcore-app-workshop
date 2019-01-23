@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.Claims;
 using FrontEnd.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -27,7 +28,7 @@ namespace FrontEnd
                 options.AddPolicy("Admin", policy =>
                 {
                     policy.RequireAuthenticatedUser()
-                          .RequireClaim("IsAdmin", "true");
+                          .RequireIsAdminClaim();
                 });
             });
 

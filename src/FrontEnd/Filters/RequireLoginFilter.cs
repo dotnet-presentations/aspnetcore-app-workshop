@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using FrontEnd.Filters;
 using FrontEnd.Services;
@@ -27,7 +28,7 @@ namespace FrontEnd
             if (context.HttpContext.User.Identity.IsAuthenticated &&
                 !context.Filters.OfType<SkipWelcomeAttribute>().Any())
             {
-                var isAttendee = context.HttpContext.User.HasClaim("IsAttendee", "true");
+                var isAttendee = context.HttpContext.User.IsAttendee();
 
                 if (!isAttendee)
                 {
