@@ -10,19 +10,17 @@ namespace FrontEnd.Services
 {
     public class AdminService : IAdminService
     {
-        private static readonly object _sync = new object();
+        private readonly Lazy<long> _creationKey = new Lazy<long>(() => BitConverter.ToInt64(Guid.NewGuid().ToByteArray(), 7));
+        private readonly IServiceProvider _serviceProvider;
 
-        private readonly IdentityDbContext _dbContext;
         private bool _adminExists;
 
         public AdminService(IServiceProvider serviceProvider)
         {
-            _dbContext = serviceProvider.CreateScope()
-                .ServiceProvider
-                .GetRequiredService<IdentityDbContext>();
+            _serviceProvider = serviceProvider;
         }
 
-        public long CreationKey { get; set; }
+        public long CreationKey => _creationKey.Value;
 
         public async Task<bool> AllowAdminUserCreationAsync()
         {
@@ -30,26 +28,22 @@ namespace FrontEnd.Services
             {
                 return false;
             }
-            else if (await _dbContext.Users.AnyAsync(user => user.IsAdmin))
-            {
-                // There are already admin users so disable admin creation
-                _adminExists = true;
-                return false;
-            }
             else
             {
-                // There are no admin users so enable admin creation
-                if (CreationKey == 0)
+                using (var scope = _serviceProvider.CreateScope())
                 {
-                    lock (_sync)
+                    var dbContext = scope.ServiceProvider.GetRequiredService<IdentityDbContext>();
+
+                    if (await dbContext.Users.AnyAsync(user => user.IsAdmin))
                     {
-                        if (CreationKey == 0)
-                        {
-                            CreationKey = BitConverter.ToInt64(Guid.NewGuid().ToByteArray(), 7);
-                        }
+                        // There are already admin users so disable admin creation
+                        _adminExists = true;
+                        return false;
                     }
+
+                    // There are no admin users so enable admin creation
+                    return true;
                 }
-                return true;
             }
         }
     }

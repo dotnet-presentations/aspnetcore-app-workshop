@@ -4,7 +4,7 @@ namespace FrontEnd.Services
 {
     public interface IAdminService
     {
-        long CreationKey { get; set; }
+        long CreationKey { get; }
 
         Task<bool> AllowAdminUserCreationAsync();
     }
