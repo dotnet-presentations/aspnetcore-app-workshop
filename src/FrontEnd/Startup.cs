@@ -42,6 +42,8 @@ namespace FrontEnd
                 options.Filters.AddService<RequireLoginFilter>();
             })
             .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            services.AddSingleton<IAdminService, AdminService>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

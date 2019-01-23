@@ -13,18 +13,16 @@ using Microsoft.Extensions.Logging;
 using System.Threading;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using FrontEnd.Services;
 
 namespace FrontEnd.Areas.Identity.Pages.Account
 {
     [AllowAnonymous]
     public class RegisterModel : PageModel
     {
-        // -1 = uninitialized, 0 = not allowed, 1 = allowed
-        private static long _allowAdminCreation = -1;
-        private static long _adminCreationKey = 0;
-
         private readonly IdentityDbContext _dbContext;
         private readonly SignInManager<User> _signInManager;
+        private readonly IAdminService _adminService;
         private readonly UserManager<User> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
@@ -33,12 +31,14 @@ namespace FrontEnd.Areas.Identity.Pages.Account
             IdentityDbContext dbContext,
             UserManager<User> userManager,
             SignInManager<User> signInManager,
+            IAdminService adminService,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender)
         {
             _dbContext = dbContext;
             _userManager = userManager;
             _signInManager = signInManager;
+            _adminService = adminService;
             _logger = logger;
             _emailSender = emailSender;
         }
@@ -77,29 +77,10 @@ namespace FrontEnd.Areas.Identity.Pages.Account
         {
             ReturnUrl = returnUrl;
 
-            // Determine if there is an admin already, and if not, generate a single-use admin creation key
-            if (Interlocked.Read(ref _allowAdminCreation) == -1)
-            {
-                if (await _dbContext.Users.AnyAsync(user => user.IsAdmin))
-                {
-                    // There are already admin users so disable admin creation
-                    Interlocked.Exchange(ref _allowAdminCreation, 0);
-                }
-                else
-                {
-                    // There are no admin users so enable admin creation
-                    Interlocked.Exchange(ref _allowAdminCreation, 1);
-
-                    var adminKey = BitConverter.ToInt64(Guid.NewGuid().ToByteArray(), 7);
-                    Interlocked.CompareExchange(ref _adminCreationKey, adminKey, 0);
-                }
-            }
-
-            if (Interlocked.Read(ref _allowAdminCreation) == 1)
+            if (await _adminService.AllowAdminUserCreationAsync())
             {
                 AllowAdminCreation = true;
-
-                _logger.LogInformation("Admin creation is enabled. Use the following key to create an admin user: {adminKey}", _adminCreationKey);
+                _logger.LogInformation("Admin creation is enabled. Use the following key to create an admin user: {adminKey}", _adminService.CreationKey);
             }
         }
 
@@ -110,7 +91,7 @@ namespace FrontEnd.Areas.Identity.Pages.Account
             {
                 var user = new User { UserName = Input.Email, Email = Input.Email };
 
-                if (_adminCreationKey != 0 && Interlocked.Read(ref _allowAdminCreation) == 1 && Input.AdminCreationKey == _adminCreationKey)
+                if (await _adminService.AllowAdminUserCreationAsync() && Input.AdminCreationKey == _adminService.CreationKey)
                 {
                     // Set as admin user
                     user.IsAdmin = true;
@@ -123,9 +104,6 @@ namespace FrontEnd.Areas.Identity.Pages.Account
                     if (user.IsAdmin)
                     {
                         _logger.LogInformation("Admin user created a new account with password.");
-
-                        // Disable admin creation
-                        Interlocked.Exchange(ref _allowAdminCreation, 0);
                     }
                     else
                     {
