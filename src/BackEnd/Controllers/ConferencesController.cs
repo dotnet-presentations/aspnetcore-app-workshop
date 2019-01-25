@@ -79,7 +79,7 @@ namespace BackEnd.Controllers
         }
 
         [HttpPut("{id:int}")]
-        public async Task<ActionResult<ConferenceResponse>> PutConference(int id, ConferenceDTO.Conference input)
+        public async Task<IActionResult> PutConference(int id, ConferenceDTO.Conference input)
         {
             var conference = await _db.FindAsync<Data.Conference>(id);
 
@@ -96,7 +96,7 @@ namespace BackEnd.Controllers
         }
 
         [HttpDelete("{id:int}")]
-        public async Task<IActionResult> DeleteConference(int id)
+        public async Task<ActionResult<ConferenceResponse>> DeleteConference(int id)
         {
             var conference = await _db.FindAsync<Data.Conference>(id);
 
@@ -109,7 +109,15 @@ namespace BackEnd.Controllers
 
             await _db.SaveChangesAsync();
 
-            return Ok();
+            var result = new ConferenceDTO.ConferenceResponse
+            {
+                ID = conference.ID,
+                Name = conference.Name,
+                //Sessions = ??,
+                //Tracks = ??
+                //Sessions = ??
+            };
+            return result;
         }
     }
 }

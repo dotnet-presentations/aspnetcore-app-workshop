@@ -101,7 +101,7 @@ namespace BackEnd.Controllers
         }
 
         [HttpDelete("{id:int}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<ActionResult<SessionResponse>> Delete(int id)
         {
             var session = await _db.Sessions.FindAsync(id);
 
@@ -113,7 +113,7 @@ namespace BackEnd.Controllers
             _db.Sessions.Remove(session);
             await _db.SaveChangesAsync();
 
-            return Ok();
+            return session.MapSessionResponse();
         }
 
         private static ConferenceDTO.SessionResponse MapSessionResponse(Data.Session session)
