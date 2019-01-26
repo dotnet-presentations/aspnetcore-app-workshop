@@ -146,7 +146,7 @@ namespace FrontEnd.Services
         public async Task<List<SessionResponse>> GetSessionsByAttendeeAsync(string name)
         {
             // TODO: Would be better to add backend API for this
-            
+
             var sessionsTask = GetSessionsAsync();
             var attendeeTask = GetAttendeeAsync(name);
 
@@ -165,6 +165,20 @@ namespace FrontEnd.Services
             sessions.RemoveAll(s => !sessionIds.Contains(s.ID));
 
             return sessions;
+        }
+
+        public async Task<bool> PingAsync()
+        {
+            try
+            {
+                var response = await _httpClient.GetAsync("/swagger/v1/swagger.json");
+
+                return response.IsSuccessStatusCode;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }
