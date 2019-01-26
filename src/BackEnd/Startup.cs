@@ -27,7 +27,7 @@ namespace BackEnd
 
         public void ConfigureServices(IServiceCollection services)
         {
-            string dataLoader = Configuration.GetValue<string>("DataLoader");
+            var dataLoader = Configuration["DataLoader"];
             if (dataLoader == "Sessionize")
             {
                 services.AddSingleton<IDataLoader, SessionizeLoader>();

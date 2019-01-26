@@ -65,7 +65,6 @@ namespace BackEnd
                                     Name = speaker.name
                                 };
                                 builder.Entity<Speaker>().HasData(thisSpeaker);
-                                Console.WriteLine(speaker.name);
                             }
                         }
 
@@ -76,7 +75,6 @@ namespace BackEnd
                                 var thisTag = new Tag { ID = category.id, Name = category.name };
                                 builder.Entity<Tag>().HasData(thisTag);
                                 addedTags.Add(thisTag.ID, thisTag);
-                                Console.WriteLine(thisTag.Name);
                             }
                         }
 
