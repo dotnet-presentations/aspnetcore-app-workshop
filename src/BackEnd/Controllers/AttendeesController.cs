@@ -73,7 +73,7 @@ namespace BackEnd
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesDefaultResponseType]
-        public async Task<ActionResult<SessionResponse>> AddSession(string username, int sessionId)
+        public async Task<ActionResult<AttendeeResponse>> AddSession(string username, int sessionId)
         {
             var attendee = await _db.Attendees.Include(a => a.SessionsAttendees)
                                                 .ThenInclude(sa => sa.Session)
@@ -103,7 +103,7 @@ namespace BackEnd
 
             var result = attendee.MapAttendeeResponse();
 
-            return Ok(result);
+            return result;
         }
 
         [HttpDelete("{username}/session/{sessionId:int}")]

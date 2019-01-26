@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -19,19 +20,21 @@ namespace BackEnd.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<ConferenceResponse>> GetConferences()
+        public async Task<ActionResult<List<ConferenceResponse>>> GetConferences()
         {
             var conferences = await _db.Conferences.AsNoTracking().ToListAsync();
 
-            var result = conferences.Select(s => new ConferenceResponse
+            var results = conferences.Select(s => new ConferenceResponse
             {
                 ID = s.ID,
                 Name = s.Name,
                 //Sessions = ??,
                 //Tracks = ??
                 //Sessions = ??
-            });
-            return Ok(result);
+            })
+            .ToList();
+
+            return results;
         }
 
         [HttpGet("{id:int}")]

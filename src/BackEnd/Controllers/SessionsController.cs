@@ -30,9 +30,9 @@ namespace BackEnd.Controllers
                                                 .ThenInclude(st => st.Tag)
                                              .ToListAsync();
 
-            var results = sessions.Select(s => MapSessionResponse(s));
+            var results = sessions.Select(s => MapSessionResponse(s)).ToList();
 
-            return Ok(results);
+            return results;
         }
 
         [HttpGet("{id:int}")]
