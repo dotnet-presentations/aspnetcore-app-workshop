@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using BackEnd.Data;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
@@ -10,9 +11,9 @@ namespace BackEnd
 {
     public class SessionizeLoader : IDataLoader
     {
-        public SessionizeLoader(IConfiguration configuration)
+        public SessionizeLoader(IConfiguration configuration, IHostingEnvironment hostingEnvironment)
         {
-            Filename = configuration["DataFile"];
+            Filename = Path.Combine(hostingEnvironment.ContentRootPath, configuration["DataFile"]);
             var conferenceName = configuration["ConferenceName"];
             Conference = new Conference { ID = 1, Name = conferenceName };
         }
