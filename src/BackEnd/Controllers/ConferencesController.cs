@@ -135,5 +135,11 @@ namespace BackEnd.Controllers
             }
             return new DevIntersectionLoader();
         }
+
+        public enum ConferenceFormat
+        {
+            Sessionize,
+            DevIntersections
+        }
     }
 }

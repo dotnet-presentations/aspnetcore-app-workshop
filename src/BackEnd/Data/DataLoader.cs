@@ -9,10 +9,4 @@ namespace BackEnd.Data
         public abstract Task LoadDataAsync(string conferenceName, Stream fileStream, ApplicationDbContext db);
     }
 
-    public enum ConferenceFormat
-    {
-        Sessionize,
-        DevIntersections
-    }
-
 }
