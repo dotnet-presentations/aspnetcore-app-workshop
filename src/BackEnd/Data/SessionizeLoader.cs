@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using BackEnd.Data;
-using BackEnd.ImportMapping;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
@@ -105,58 +104,55 @@ namespace BackEnd
                 }
             }
         }
-    }
-}
 
-namespace BackEnd.ImportMapping
-{
-    public class RootObject
-    {
-        public DateTime date { get; set; }
-        public List<Room> rooms { get; set; }
-        public List<TimeSlot> timeSlots { get; set; }
-    }
+        private class RootObject
+        {
+            public DateTime date { get; set; }
+            public List<Room> rooms { get; set; }
+            public List<TimeSlot> timeSlots { get; set; }
+        }
 
-    public class ImportSpeaker
-    {
-        public string id { get; set; }
-        public string name { get; set; }
-    }
+        private class ImportSpeaker
+        {
+            public string id { get; set; }
+            public string name { get; set; }
+        }
 
-    public class Category
-    {
-        public int id { get; set; }
-        public string name { get; set; }
-        public List<object> categoryItems { get; set; }
-        public int sort { get; set; }
-    }
+        private class Category
+        {
+            public int id { get; set; }
+            public string name { get; set; }
+            public List<object> categoryItems { get; set; }
+            public int sort { get; set; }
+        }
 
-    public class ImportSession
-    {
-        public int id { get; set; }
-        public string title { get; set; }
-        public string description { get; set; }
-        public DateTime startsAt { get; set; }
-        public DateTime endsAt { get; set; }
-        public bool isServiceSession { get; set; }
-        public bool isPlenumSession { get; set; }
-        public List<ImportSpeaker> speakers { get; set; }
-        public List<Category> categories { get; set; }
-        public int roomId { get; set; }
-        public string room { get; set; }
-    }
+        private class ImportSession
+        {
+            public int id { get; set; }
+            public string title { get; set; }
+            public string description { get; set; }
+            public DateTime startsAt { get; set; }
+            public DateTime endsAt { get; set; }
+            public bool isServiceSession { get; set; }
+            public bool isPlenumSession { get; set; }
+            public List<ImportSpeaker> speakers { get; set; }
+            public List<Category> categories { get; set; }
+            public int roomId { get; set; }
+            public string room { get; set; }
+        }
 
-    public class Room
-    {
-        public int id { get; set; }
-        public string name { get; set; }
-        public List<ImportSession> sessions { get; set; }
-        public bool hasOnlyPlenumSessions { get; set; }
-    }
+        private class Room
+        {
+            public int id { get; set; }
+            public string name { get; set; }
+            public List<ImportSession> sessions { get; set; }
+            public bool hasOnlyPlenumSessions { get; set; }
+        }
 
-    public class TimeSlot
-    {
-        public string slotStart { get; set; }
-        public List<Room> rooms { get; set; }
+        private class TimeSlot
+        {
+            public string slotStart { get; set; }
+            public List<Room> rooms { get; set; }
+        }
     }
 }
