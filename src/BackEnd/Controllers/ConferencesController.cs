@@ -54,7 +54,7 @@ namespace BackEnd.Controllers
 
         [HttpPost("upload")]
         [Consumes("multipart/form-data")]
-        public async Task<IActionResult> UploadConference([FromForm]string conferenceName, [FromForm]string format, IFormFile file)
+        public async Task<IActionResult> UploadConference([FromForm]string conferenceName, [FromForm]ConferenceFormat format, IFormFile file)
         {
             var loader = DataLoader.GetLoader(format);
 

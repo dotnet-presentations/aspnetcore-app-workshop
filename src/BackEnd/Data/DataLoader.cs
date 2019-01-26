@@ -8,13 +8,20 @@ namespace BackEnd.Data
     {
         public abstract Task LoadDataAsync(string conferenceName, Stream fileStream, ApplicationDbContext db);
 
-        public static DataLoader GetLoader(string format)
+        public static DataLoader GetLoader(ConferenceFormat format)
         {
-            if (string.Equals(format, "sessionize", StringComparison.OrdinalIgnoreCase))
+            if (format == ConferenceFormat.Sessionize)
             {
                 return new SessionizeLoader();
             }
             return new DevIntersectionLoader();
         }
     }
+
+    public enum ConferenceFormat
+    {
+        Sessionize,
+        DevIntersections
+    }
+
 }
