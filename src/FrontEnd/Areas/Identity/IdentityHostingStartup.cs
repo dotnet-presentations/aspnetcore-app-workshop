@@ -1,8 +1,6 @@
-﻿using System;
+﻿using System.Runtime.InteropServices;
 using FrontEnd.Data;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,8 +16,15 @@ namespace FrontEnd.Areas.Identity
             {
                 services.AddDbContext<IdentityDbContext>(options =>
                 {
-                    options.UseSqlServer(
-                        context.Configuration.GetConnectionString("IdentityDbContextConnection"));
+                    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                    {
+                        options.UseSqlServer(
+                            context.Configuration.GetConnectionString("IdentityDbContextConnection"));
+                    }
+                    else
+                    {
+                        options.UseSqlite("Data Source=identity.db");
+                    }
                 });
 
                 services.AddDefaultIdentity<User>(options =>
