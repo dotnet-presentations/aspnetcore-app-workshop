@@ -49,10 +49,11 @@ namespace BackEnd
                 }
             });
 
-            services.AddMvcCore()
-                    .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
-                    .AddJsonFormatters()
-                    .AddApiExplorer();
+            services.AddMvc()
+                    .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            services.AddHealthChecks()
+                    .AddDbContextCheck<ApplicationDbContext>();
 
             services.AddSwaggerGen(options =>
             {
@@ -73,6 +74,8 @@ namespace BackEnd
             }
 
             app.UseHttpsRedirection();
+
+            app.UseHealthChecks("/health");
 
             app.UseSwagger();
 

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Security.Claims;
+using FrontEnd.Data;
+using FrontEnd.HealthChecks;
 using FrontEnd.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -43,6 +45,10 @@ namespace FrontEnd
             })
             .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
+            services.AddHealthChecks()
+                    .AddCheck<BackendHealthCheck>("backend")
+                    .AddDbContextCheck<IdentityDbContext>();
+
             services.AddSingleton<IAdminService, AdminService>();
         }
 
@@ -66,6 +72,8 @@ namespace FrontEnd
             app.UseStaticFiles();
 
             app.UseAuthentication();
+
+            app.UseHealthChecks("/health");
 
             app.UseMvc(routes =>
             {

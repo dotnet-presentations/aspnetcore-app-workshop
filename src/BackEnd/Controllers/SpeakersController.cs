@@ -87,7 +87,7 @@ namespace BackEnd.Controllers
         }
 
         [HttpDelete("{id:int}")]
-        public async Task<IActionResult> DeleteSpeaker(int id)
+        public async Task<ActionResult<SpeakerResponse>> DeleteSpeaker(int id)
         {
             var speaker = await _db.FindAsync<Data.Speaker>(id);
 
@@ -101,7 +101,7 @@ namespace BackEnd.Controllers
             // TODO: Handle exceptions, e.g. concurrency
             await _db.SaveChangesAsync();
 
-            return Ok();
+            return speaker.MapSpeakerResponse();
         }
     }
 }
