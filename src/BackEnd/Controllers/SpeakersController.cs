@@ -25,10 +25,10 @@ namespace BackEnd.Controllers
             var speakers = await _db.Speakers.AsNoTracking()
                                              .Include(s => s.SessionSpeakers)
                                                 .ThenInclude(ss => ss.Session)
+                                             .Select(s => s.MapSpeakerResponse())
                                              .ToListAsync();
 
-            var result = speakers.Select(s => s.MapSpeakerResponse());
-            return result.ToList();
+            return speakers;
         }
 
         [HttpGet("{id:int}")]

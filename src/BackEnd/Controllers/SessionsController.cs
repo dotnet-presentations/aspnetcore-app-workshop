@@ -28,11 +28,9 @@ namespace BackEnd.Controllers
                                                 .ThenInclude(ss => ss.Speaker)
                                              .Include(s => s.SessionTags)
                                                 .ThenInclude(st => st.Tag)
+                                             .Select(m => m.MapSessionResponse())
                                              .ToListAsync();
-
-            var results = sessions.Select(s => MapSessionResponse(s)).ToList();
-
-            return results;
+            return sessions;
         }
 
         [HttpGet("{id:int}")]
@@ -51,9 +49,7 @@ namespace BackEnd.Controllers
                 return NotFound();
             }
 
-            var result = MapSessionResponse(session);
-
-            return result;
+            return session.MapSessionResponse();
         }
 
         [HttpPost]
@@ -113,11 +109,6 @@ namespace BackEnd.Controllers
             _db.Sessions.Remove(session);
             await _db.SaveChangesAsync();
 
-            return session.MapSessionResponse();
-        }
-
-        private static ConferenceDTO.SessionResponse MapSessionResponse(Data.Session session)
-        {
             return session.MapSessionResponse();
         }
     }

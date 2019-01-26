@@ -22,19 +22,14 @@ namespace BackEnd.Controllers
         [HttpGet]
         public async Task<ActionResult<List<ConferenceResponse>>> GetConferences()
         {
-            var conferences = await _db.Conferences.AsNoTracking().ToListAsync();
-
-            var results = conferences.Select(s => new ConferenceResponse
+            var conferences = await _db.Conferences.AsNoTracking().Select(s => new ConferenceResponse
             {
                 ID = s.ID,
-                Name = s.Name,
-                //Sessions = ??,
-                //Tracks = ??
-                //Sessions = ??
+                Name = s.Name
             })
-            .ToList();
+            .ToListAsync();
 
-            return results;
+            return conferences;
         }
 
         [HttpGet("{id:int}")]
@@ -50,10 +45,7 @@ namespace BackEnd.Controllers
             var result = new ConferenceResponse
             {
                 ID = conference.ID,
-                Name = conference.Name,
-                //Sessions = ??,
-                //Tracks = ??
-                //Sessions = ??
+                Name = conference.Name
             };
             return result;
         }
@@ -72,10 +64,7 @@ namespace BackEnd.Controllers
             var result = new ConferenceDTO.ConferenceResponse
             {
                 ID = conference.ID,
-                Name = conference.Name,
-                //Sessions = ??,
-                //Tracks = ??
-                //Sessions = ??
+                Name = conference.Name
             };
 
             return CreatedAtAction(nameof(GetConference), new { id = conference.ID }, result);
@@ -115,10 +104,7 @@ namespace BackEnd.Controllers
             var result = new ConferenceDTO.ConferenceResponse
             {
                 ID = conference.ID,
-                Name = conference.Name,
-                //Sessions = ??,
-                //Tracks = ??
-                //Sessions = ??
+                Name = conference.Name
             };
             return result;
         }
