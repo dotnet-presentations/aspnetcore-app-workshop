@@ -1,4 +1,6 @@
 ﻿using BackEnd.Data;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -7,17 +9,19 @@ using System.IO;
 
 namespace BackEnd
 {
-    public class DevIntersectionLoader : BaseDataLoader
+    public class DevIntersectionLoader : IDataLoader
     {
 
-        public DevIntersectionLoader(IServiceProvider services) : base(services)
+        public DevIntersectionLoader(IConfiguration configuration)
         {
-
-            // this.SaveData = false;
-
+            Filename = "Data/Import/DevIntersection_Vegas_2017.json";
+            Conference = new Conference { ID = 1, Name = "DevIntersection Las Vegas 2017" };
         }
 
-        protected override void LoadFormattedData(ApplicationDbContext db)
+        public string Filename { get; set; }
+        public Conference Conference { get; set; }
+
+        public void LoadData(ModelBuilder builder, string filename, string conferenceName)
         {
 
             var re = File.OpenText(Filename);
@@ -36,7 +40,7 @@ namespace BackEnd
                     if (!speakerNames.ContainsKey(thisSpeakerName.Value<string>()))
                     {
                         var thisSpeaker = new Speaker { Name = thisSpeakerName.Value<string>() };
-                        db.Speakers.Add(thisSpeaker);
+                        builder.Entity<Speaker>().HasData(thisSpeaker);
                         speakerNames.Add(thisSpeakerName.Value<string>(), thisSpeaker);
                         Console.WriteLine(thisSpeakerName.Value<string>());
                     }
@@ -49,7 +53,7 @@ namespace BackEnd
                     if (!tracks.ContainsKey(thisTrackName.Value<string>()))
                     {
                         var thisTrack = new Track { Name = thisTrackName.Value<string>(), Conference = this.Conference };
-                        db.Tracks.Add(thisTrack);
+                        builder.Entity<Track>().HasData(thisTrack);
                         tracks.Add(thisTrackName.Value<string>(), thisTrack);
                     }
                     theseTracks.Add(tracks[thisTrackName.Value<string>()]);
@@ -75,9 +79,8 @@ namespace BackEnd
                     });
                 }
 
-                db.Sessions.Add(session);
-
-
+                builder.Entity<Session>()
+                    .HasData(session);
             }
 
         }

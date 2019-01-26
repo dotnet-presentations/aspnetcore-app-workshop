@@ -27,6 +27,16 @@ namespace BackEnd
 
         public void ConfigureServices(IServiceCollection services)
         {
+            string dataLoader = Configuration.GetValue<string>("DataLoader");
+            if (dataLoader == "Sessionize")
+            {
+                services.AddSingleton<IDataLoader, SessionizeLoader>();
+            }
+            else
+            {
+                services.AddSingleton<IDataLoader, DevIntersectionLoader>();
+            }
+
             services.AddDbContext<ApplicationDbContext>(options =>
             {
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
@@ -78,12 +88,6 @@ namespace BackEnd
                 context.Response.Redirect("/swagger");
                 return Task.CompletedTask;
             });
-
-            if (Configuration["RESET_DB"] != null && Configuration["RESET_DB"] == "1")
-            {
-                var loader = new SessionizeLoader(app.ApplicationServices);
-                loader.LoadData("NDC_Sydney_2018.json", "NDC Sydney 2018");
-            }
         }
     }
 }

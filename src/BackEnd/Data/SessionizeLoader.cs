@@ -1,5 +1,7 @@
 ﻿using BackEnd.Data;
 using BackEnd.ImportMapping;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -7,82 +9,100 @@ using System.IO;
 
 namespace BackEnd
 {
-    public class SessionizeLoader : BaseDataLoader
+    public class SessionizeLoader : IDataLoader
     {
-
-        public SessionizeLoader(IServiceProvider services) : base(services)
+        public SessionizeLoader(IConfiguration configuration)
         {
-            // this.SaveData = false;
+            Filename = configuration.GetValue<string>("DataFile");
+            string conferenceName = configuration.GetValue<string>("ConferenceName");
+            Conference = new Conference { ID = 1, Name = conferenceName };
         }
 
-        protected override void LoadFormattedData(ApplicationDbContext db)
+        public string Filename { get; set; }
+        public Conference Conference { get; set; }
+
+        public void LoadData(ModelBuilder builder, string filename, string conferenceName)
         {
             string json = File.ReadAllText(Filename);
 
             //var blah = new RootObject().rooms[0].sessions[0].speakers[0].name;
 
-            var addedSpeakers = new Dictionary<string, Speaker>();
-            var addedTracks = new Dictionary<string, Track>();
-            var addedTags = new Dictionary<string, Tag>();
+            var speakerIds = new List<string>(); //Maps Sessionize GUID to int ID
+            var addedTracks = new Dictionary<int, Track>();
+            var addedTags = new Dictionary<int, Tag>();
 
             var root = JsonConvert.DeserializeObject<List<RootObject>>(json);
+
+            builder.Entity<Conference>().HasData(this.Conference);
 
             foreach (var date in root)
             {
                 foreach (var room in date.rooms)
                 {
-                    if (!addedTracks.ContainsKey(room.name))
+                    if (!addedTracks.ContainsKey(room.id))
                     {
-                        var thisTrack = new Track { Name = room.name, Conference = this.Conference };
-                        db.Tracks.Add(thisTrack);
-                        addedTracks.Add(thisTrack.Name, thisTrack);
+                        var thisTrack = new Track
+                        {
+                            TrackID = room.id,
+                            Name = room.name,
+                            ConferenceID = this.Conference.ID
+                        };
+                        builder.Entity<Track>().HasData(thisTrack);
+
+                        addedTracks.Add(thisTrack.TrackID, thisTrack);
                     }
 
                     foreach (var thisSession in room.sessions)
                     {
                         foreach (var speaker in thisSession.speakers)
                         {
-                            if (!addedSpeakers.ContainsKey(speaker.name))
+                            if (!speakerIds.Contains(speaker.id))
                             {
-                                var thisSpeaker = new Speaker { Name = speaker.name };
-                                db.Speakers.Add(thisSpeaker);
-                                addedSpeakers.Add(thisSpeaker.Name, thisSpeaker);
-                                Console.WriteLine(thisSpeaker.Name);
+                                speakerIds.Add(speaker.id);
+                                var thisSpeaker = new Speaker
+                                    {
+                                        ID = speakerIds.IndexOf(speaker.id) + 1,
+                                        Name = speaker.name
+                                    };
+                                builder.Entity<Speaker>().HasData(thisSpeaker);
+                                Console.WriteLine(speaker.name);
                             }
                         }
 
                         foreach (var category in thisSession.categories)
                         {
-                            if (!addedTags.ContainsKey(category.name))
+                            if (!addedTags.ContainsKey(category.id))
                             {
-                                var thisTag = new Tag { Name = category.name };
-                                db.Tags.Add(thisTag);
-                                addedTags.Add(thisTag.Name, thisTag);
+                                var thisTag = new Tag { ID = category.id, Name = category.name };
+                                builder.Entity<Tag>().HasData(thisTag);
+                                addedTags.Add(thisTag.ID, thisTag);
                                 Console.WriteLine(thisTag.Name);
                             }
                         }
 
                         var session = new Session
                         {
-                            Conference = Conference,
+                            ID = thisSession.id,
+                            ConferenceID = this.Conference.ID,
+                            TrackId = addedTracks[room.id].TrackID,
                             Title = thisSession.title,
                             StartTime = thisSession.startsAt,
                             EndTime = thisSession.endsAt,
-                            Track = addedTracks[room.name],
                             Abstract = thisSession.description
                         };
 
-                        session.SessionSpeakers = new List<SessionSpeaker>();
+                        builder.Entity<Session>()
+                            .HasData(session);
+
                         foreach (var sp in thisSession.speakers)
                         {
-                            session.SessionSpeakers.Add(new SessionSpeaker
-                            {
-                                Session = session,
-                                Speaker = addedSpeakers[sp.name]
-                            });
+                            builder.Entity<SessionSpeaker>().HasData(
+                                new SessionSpeaker
+                                {
+                                    SessionId = session.ID,
+                                    SpeakerId = speakerIds.IndexOf(sp.id) + 1
+                                });
                         }
-
-                        db.Sessions.Add(session);
                     }
                 }
             }
@@ -117,7 +137,7 @@ namespace BackEnd.ImportMapping
 
     public class ImportSession
     {
-        public string id { get; set; }
+        public int id { get; set; }
         public string title { get; set; }
         public string description { get; set; }
         public DateTime startsAt { get; set; }

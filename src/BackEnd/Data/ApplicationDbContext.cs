@@ -10,10 +10,12 @@ namespace BackEnd.Data
 {
     public class ApplicationDbContext : DbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        private readonly IDataLoader _loader;
+
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IDataLoader loader)
             : base(options)
         {
-
+            _loader = loader;
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -41,6 +43,8 @@ namespace BackEnd.Data
             // Many-to-many: Session <-> Tag
             modelBuilder.Entity<SessionTag>()
                 .HasKey(st => new { st.SessionID, st.TagID });
+
+            _loader.LoadData(modelBuilder, "NDC_Sydney_2018.json", "NDC Sydney 2018");
         }
 
         public DbSet<Conference> Conferences { get; set; }
