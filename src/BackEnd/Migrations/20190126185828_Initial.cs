@@ -1,23 +1,150 @@
 ﻿using System;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace BackEnd.Migrations
 {
-    public partial class SeedData : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Sessions_Attendees_AttendeeID",
-                table: "Sessions");
+            migrationBuilder.CreateTable(
+                name: "Attendees",
+                columns: table => new
+                {
+                    ID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    FirstName = table.Column<string>(maxLength: 200, nullable: false),
+                    LastName = table.Column<string>(maxLength: 200, nullable: false),
+                    UserName = table.Column<string>(maxLength: 200, nullable: false),
+                    EmailAddress = table.Column<string>(maxLength: 256, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Attendees", x => x.ID);
+                });
 
-            migrationBuilder.DropIndex(
-                name: "IX_Sessions_AttendeeID",
-                table: "Sessions");
+            migrationBuilder.CreateTable(
+                name: "Conferences",
+                columns: table => new
+                {
+                    ID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(maxLength: 200, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Conferences", x => x.ID);
+                });
 
-            migrationBuilder.DropColumn(
-                name: "AttendeeID",
-                table: "Sessions");
+            migrationBuilder.CreateTable(
+                name: "Tags",
+                columns: table => new
+                {
+                    ID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(maxLength: 32, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tags", x => x.ID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ConferenceAttendee",
+                columns: table => new
+                {
+                    ConferenceID = table.Column<int>(nullable: false),
+                    AttendeeID = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ConferenceAttendee", x => new { x.ConferenceID, x.AttendeeID });
+                    table.ForeignKey(
+                        name: "FK_ConferenceAttendee_Attendees_AttendeeID",
+                        column: x => x.AttendeeID,
+                        principalTable: "Attendees",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ConferenceAttendee_Conferences_ConferenceID",
+                        column: x => x.ConferenceID,
+                        principalTable: "Conferences",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Speakers",
+                columns: table => new
+                {
+                    ID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(maxLength: 200, nullable: false),
+                    Bio = table.Column<string>(maxLength: 4000, nullable: true),
+                    WebSite = table.Column<string>(maxLength: 1000, nullable: true),
+                    ConferenceID = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Speakers", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Speakers_Conferences_ConferenceID",
+                        column: x => x.ConferenceID,
+                        principalTable: "Conferences",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Tracks",
+                columns: table => new
+                {
+                    TrackID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    ConferenceID = table.Column<int>(nullable: false),
+                    Name = table.Column<string>(maxLength: 200, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tracks", x => x.TrackID);
+                    table.ForeignKey(
+                        name: "FK_Tracks_Conferences_ConferenceID",
+                        column: x => x.ConferenceID,
+                        principalTable: "Conferences",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Sessions",
+                columns: table => new
+                {
+                    ID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    ConferenceID = table.Column<int>(nullable: false),
+                    Title = table.Column<string>(maxLength: 200, nullable: false),
+                    Abstract = table.Column<string>(maxLength: 4000, nullable: true),
+                    StartTime = table.Column<DateTimeOffset>(nullable: true),
+                    EndTime = table.Column<DateTimeOffset>(nullable: true),
+                    TrackId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Sessions", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Sessions_Conferences_ConferenceID",
+                        column: x => x.ConferenceID,
+                        principalTable: "Conferences",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Sessions_Tracks_TrackId",
+                        column: x => x.TrackId,
+                        principalTable: "Tracks",
+                        principalColumn: "TrackID",
+                        onDelete: ReferentialAction.Restrict);
+                });
 
             migrationBuilder.CreateTable(
                 name: "SessionAttendee",
@@ -39,6 +166,54 @@ namespace BackEnd.Migrations
                         name: "FK_SessionAttendee_Sessions_SessionID",
                         column: x => x.SessionID,
                         principalTable: "Sessions",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SessionSpeaker",
+                columns: table => new
+                {
+                    SessionId = table.Column<int>(nullable: false),
+                    SpeakerId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SessionSpeaker", x => new { x.SessionId, x.SpeakerId });
+                    table.ForeignKey(
+                        name: "FK_SessionSpeaker_Sessions_SessionId",
+                        column: x => x.SessionId,
+                        principalTable: "Sessions",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_SessionSpeaker_Speakers_SpeakerId",
+                        column: x => x.SpeakerId,
+                        principalTable: "Speakers",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SessionTag",
+                columns: table => new
+                {
+                    SessionID = table.Column<int>(nullable: false),
+                    TagID = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SessionTag", x => new { x.SessionID, x.TagID });
+                    table.ForeignKey(
+                        name: "FK_SessionTag_Sessions_SessionID",
+                        column: x => x.SessionID,
+                        principalTable: "Sessions",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_SessionTag_Tags_TagID",
+                        column: x => x.TagID,
+                        principalTable: "Tags",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -729,1593 +904,83 @@ namespace BackEnd.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Attendees_UserName",
+                table: "Attendees",
+                column: "UserName",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ConferenceAttendee_AttendeeID",
+                table: "ConferenceAttendee",
+                column: "AttendeeID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_SessionAttendee_AttendeeID",
                 table: "SessionAttendee",
                 column: "AttendeeID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Sessions_ConferenceID",
+                table: "Sessions",
+                column: "ConferenceID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Sessions_TrackId",
+                table: "Sessions",
+                column: "TrackId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SessionSpeaker_SpeakerId",
+                table: "SessionSpeaker",
+                column: "SpeakerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SessionTag_TagID",
+                table: "SessionTag",
+                column: "TagID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Speakers_ConferenceID",
+                table: "Speakers",
+                column: "ConferenceID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tracks_ConferenceID",
+                table: "Tracks",
+                column: "ConferenceID");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "ConferenceAttendee");
+
+            migrationBuilder.DropTable(
                 name: "SessionAttendee");
 
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 56795, 50 });
+            migrationBuilder.DropTable(
+                name: "SessionSpeaker");
 
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 57079, 55 });
+            migrationBuilder.DropTable(
+                name: "SessionTag");
 
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 57812, 51 });
+            migrationBuilder.DropTable(
+                name: "Attendees");
 
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 58138, 87 });
+            migrationBuilder.DropTable(
+                name: "Speakers");
 
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 58161, 76 });
+            migrationBuilder.DropTable(
+                name: "Sessions");
 
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 58551, 12 });
+            migrationBuilder.DropTable(
+                name: "Tags");
 
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 58654, 18 });
+            migrationBuilder.DropTable(
+                name: "Tracks");
 
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 58982, 30 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 59563, 67 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 59857, 26 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 61211, 49 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 61516, 2 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 61516, 12 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 61516, 13 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 61516, 14 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 61516, 15 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 62178, 22 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 62532, 81 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 63252, 24 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 63671, 39 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 63675, 42 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 64248, 59 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 65854, 63 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 66322, 68 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 66433, 25 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 66437, 15 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 66448, 10 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 66459, 34 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 66591, 2 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 66591, 3 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 66592, 2 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 66592, 3 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 66632, 53 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 66715, 23 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 66768, 29 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 66791, 89 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 66795, 13 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 66814, 79 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 66866, 64 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 66952, 13 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 67078, 62 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 67079, 62 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 67087, 85 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 67138, 80 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 67163, 21 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 67163, 33 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 67271, 54 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 67372, 88 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 67422, 28 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 67872, 84 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 67909, 32 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 67965, 47 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 67993, 74 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 67994, 74 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 67996, 48 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 68009, 65 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 68161, 57 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 68212, 58 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 68282, 86 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 68440, 41 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 68493, 20 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 68493, 21 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 68521, 72 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 68532, 91 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 68546, 16 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 68607, 60 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 68608, 14 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 68611, 69 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 68678, 61 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 68734, 19 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 68736, 56 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 68745, 17 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 68804, 5 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 68814, 44 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 68826, 27 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 68882, 83 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 68887, 46 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 68894, 82 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 68938, 9 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 68939, 9 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 68940, 11 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 68994, 37 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 69004, 71 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 69010, 73 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 69052, 38 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 69170, 7 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 69170, 8 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 69174, 6 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 69228, 52 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 69229, 1 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 69230, 75 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 69230, 76 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 69231, 75 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 69232, 70 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 69233, 70 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 69239, 43 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 69240, 36 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 69240, 43 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 69253, 31 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 69255, 31 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 69266, 40 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 69301, 4 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 69307, 77 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 69332, 16 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 69332, 35 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 69332, 45 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 69333, 35 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 69344, 36 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 69345, 2 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 69354, 66 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 69366, 78 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 69938, 3 });
-
-            migrationBuilder.DeleteData(
-                table: "SessionSpeaker",
-                keyColumns: new[] { "SessionId", "SpeakerId" },
-                keyValues: new object[] { 76427, 90 });
-
-            migrationBuilder.DeleteData(
-                table: "Tags",
-                keyColumn: "ID",
-                keyValue: 2223);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 56795);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 57079);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 57812);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 58138);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 58161);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 58551);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 58654);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 58982);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 59563);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 59857);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 61211);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 61516);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 62178);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 62532);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 63252);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 63671);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 63675);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 64248);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 65854);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 66322);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 66433);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 66437);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 66448);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 66459);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 66591);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 66592);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 66632);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 66715);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 66768);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 66791);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 66795);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 66814);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 66866);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 66952);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 67078);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 67079);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 67087);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 67138);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 67163);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 67271);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 67372);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 67422);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 67872);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 67909);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 67965);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 67993);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 67994);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 67996);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 68009);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 68161);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 68212);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 68282);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 68440);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 68493);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 68521);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 68532);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 68546);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 68607);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 68608);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 68611);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 68678);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 68734);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 68736);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 68745);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 68804);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 68814);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 68826);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 68882);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 68887);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 68894);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 68938);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 68939);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 68940);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 68994);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 69004);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 69010);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 69052);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 69170);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 69174);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 69228);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 69229);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 69230);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 69231);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 69232);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 69233);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 69239);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 69240);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 69253);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 69255);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 69266);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 69301);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 69307);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 69332);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 69333);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 69344);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 69345);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 69354);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 69366);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 69938);
-
-            migrationBuilder.DeleteData(
-                table: "Sessions",
-                keyColumn: "ID",
-                keyValue: 76427);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 1);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 2);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 3);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 4);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 5);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 6);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 7);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 8);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 9);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 10);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 11);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 12);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 13);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 14);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 15);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 16);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 17);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 18);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 19);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 20);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 21);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 22);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 23);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 24);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 25);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 26);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 27);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 28);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 29);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 30);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 31);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 32);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 33);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 34);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 35);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 36);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 37);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 38);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 39);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 40);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 41);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 42);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 43);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 44);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 45);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 46);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 47);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 48);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 49);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 50);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 51);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 52);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 53);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 54);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 55);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 56);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 57);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 58);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 59);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 60);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 61);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 62);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 63);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 64);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 65);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 66);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 67);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 68);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 69);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 70);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 71);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 72);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 73);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 74);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 75);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 76);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 77);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 78);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 79);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 80);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 81);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 82);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 83);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 84);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 85);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 86);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 87);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 88);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 89);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 90);
-
-            migrationBuilder.DeleteData(
-                table: "Speakers",
-                keyColumn: "ID",
-                keyValue: 91);
-
-            migrationBuilder.DeleteData(
-                table: "Tracks",
-                keyColumn: "TrackID",
-                keyValue: 2775);
-
-            migrationBuilder.DeleteData(
-                table: "Tracks",
-                keyColumn: "TrackID",
-                keyValue: 2776);
-
-            migrationBuilder.DeleteData(
-                table: "Tracks",
-                keyColumn: "TrackID",
-                keyValue: 2777);
-
-            migrationBuilder.DeleteData(
-                table: "Tracks",
-                keyColumn: "TrackID",
-                keyValue: 2778);
-
-            migrationBuilder.DeleteData(
-                table: "Tracks",
-                keyColumn: "TrackID",
-                keyValue: 2779);
-
-            migrationBuilder.DeleteData(
-                table: "Tracks",
-                keyColumn: "TrackID",
-                keyValue: 2780);
-
-            migrationBuilder.DeleteData(
-                table: "Conferences",
-                keyColumn: "ID",
-                keyValue: 1);
-
-            migrationBuilder.AddColumn<int>(
-                name: "AttendeeID",
-                table: "Sessions",
-                nullable: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Sessions_AttendeeID",
-                table: "Sessions",
-                column: "AttendeeID");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Sessions_Attendees_AttendeeID",
-                table: "Sessions",
-                column: "AttendeeID",
-                principalTable: "Attendees",
-                principalColumn: "ID",
-                onDelete: ReferentialAction.Restrict);
+            migrationBuilder.DropTable(
+                name: "Conferences");
         }
     }
 }
