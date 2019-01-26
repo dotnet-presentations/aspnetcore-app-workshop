@@ -22,7 +22,7 @@ In this workshop, you'll learn by building a full-featured ASP.NET Core applicat
 ![Architecture Diagram](/docs/images/ConferencePlannerArchitectureDiagram.svg)
 
 ### Database Schema
-![Database Schema Diagram](/docs/images/ConferencePlannerERD.svg)
+![Database Schema Diagram](/docs/conference-planner-db-diagram.png)
 
 ## Sessions
 
