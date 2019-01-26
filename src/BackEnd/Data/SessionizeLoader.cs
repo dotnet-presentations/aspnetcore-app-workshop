@@ -1,11 +1,11 @@
-﻿using BackEnd.Data;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using BackEnd.Data;
 using BackEnd.ImportMapping;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.IO;
 
 namespace BackEnd
 {
@@ -13,8 +13,8 @@ namespace BackEnd
     {
         public SessionizeLoader(IConfiguration configuration)
         {
-            Filename = configuration.GetValue<string>("DataFile");
-            string conferenceName = configuration.GetValue<string>("ConferenceName");
+            Filename = configuration["DataFile"];
+            var conferenceName = configuration["ConferenceName"];
             Conference = new Conference { ID = 1, Name = conferenceName };
         }
 
@@ -60,10 +60,10 @@ namespace BackEnd
                             {
                                 speakerIds.Add(speaker.id);
                                 var thisSpeaker = new Speaker
-                                    {
-                                        ID = speakerIds.IndexOf(speaker.id) + 1,
-                                        Name = speaker.name
-                                    };
+                                {
+                                    ID = speakerIds.IndexOf(speaker.id) + 1,
+                                    Name = speaker.name
+                                };
                                 builder.Entity<Speaker>().HasData(thisSpeaker);
                                 Console.WriteLine(speaker.name);
                             }
@@ -112,8 +112,6 @@ namespace BackEnd
 
 namespace BackEnd.ImportMapping
 {
-    //[Browsable(false)]
-    //[EditorBrowsable(EditorBrowsableState.Never)]
     public class RootObject
     {
         public DateTime date { get; set; }
