@@ -56,7 +56,7 @@ namespace BackEnd.Controllers
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> UploadConference([FromForm]string conferenceName, [FromForm]ConferenceFormat format, IFormFile file)
         {
-            var loader = DataLoader.GetLoader(format);
+            var loader = GetLoader(format);
 
             using (var stream = file.OpenReadStream())
             {
@@ -125,6 +125,15 @@ namespace BackEnd.Controllers
                 Name = conference.Name
             };
             return result;
+        }
+
+        private static DataLoader GetLoader(ConferenceFormat format)
+        {
+            if (format == ConferenceFormat.Sessionize)
+            {
+                return new SessionizeLoader();
+            }
+            return new DevIntersectionLoader();
         }
     }
 }
