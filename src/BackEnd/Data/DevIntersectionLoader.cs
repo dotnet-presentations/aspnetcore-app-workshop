@@ -14,14 +14,15 @@ namespace BackEnd
 
         public DevIntersectionLoader(IConfiguration configuration)
         {
-            Filename = "Data/Import/DevIntersection_Vegas_2017.json";
-            Conference = new Conference { ID = 1, Name = "DevIntersection Las Vegas 2017" };
+            Filename = configuration.GetValue<string>("DataFile");
+            string conferenceName = configuration.GetValue<string>("ConferenceName");
+            Conference = new Conference { ID = 1, Name = conferenceName };
         }
 
         public string Filename { get; set; }
         public Conference Conference { get; set; }
 
-        public void LoadData(ModelBuilder builder, string filename, string conferenceName)
+        public void LoadData(ModelBuilder builder)
         {
 
             var re = File.OpenText(Filename);

@@ -21,7 +21,7 @@ namespace BackEnd
         public string Filename { get; set; }
         public Conference Conference { get; set; }
 
-        public void LoadData(ModelBuilder builder, string filename, string conferenceName)
+        public void LoadData(ModelBuilder builder)
         {
             string json = File.ReadAllText(Filename);
 

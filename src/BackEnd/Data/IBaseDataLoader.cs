@@ -8,6 +8,6 @@ namespace BackEnd.Data
 
         Conference Conference { get; set; }
 
-        void LoadData(ModelBuilder builder, string filename, string conferenceName);
+        void LoadData(ModelBuilder builder);
     }
 }

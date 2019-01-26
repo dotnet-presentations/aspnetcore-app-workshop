@@ -44,7 +44,7 @@ namespace BackEnd.Data
             modelBuilder.Entity<SessionTag>()
                 .HasKey(st => new { st.SessionID, st.TagID });
 
-            _loader.LoadData(modelBuilder, "NDC_Sydney_2018.json", "NDC Sydney 2018");
+            _loader.LoadData(modelBuilder);
         }
 
         public DbSet<Conference> Conferences { get; set; }
