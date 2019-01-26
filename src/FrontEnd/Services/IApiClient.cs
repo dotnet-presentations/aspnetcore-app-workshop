@@ -20,6 +20,6 @@ namespace FrontEnd.Services
         Task DeleteSessionAsync(int id);
         Task AddSessionToAttendeeAsync(string name, int sessionId);
         Task RemoveSessionFromAttendeeAsync(string name, int sessionId);
-        Task<bool> PingAsync();
+        Task<bool> CheckHealthAsync();
     }
 }

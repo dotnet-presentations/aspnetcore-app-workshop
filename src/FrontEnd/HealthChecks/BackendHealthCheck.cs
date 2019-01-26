@@ -19,7 +19,7 @@ namespace FrontEnd.HealthChecks
 
         public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (await _client.PingAsync())
+            if (await _client.CheckHealthAsync())
             {
                 return HealthCheckResult.Healthy();
             }

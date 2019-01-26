@@ -167,7 +167,7 @@ namespace FrontEnd.Services
             return sessions;
         }
 
-        public async Task<bool> PingAsync()
+        public async Task<bool> CheckHealthAsync()
         {
             try
             {
