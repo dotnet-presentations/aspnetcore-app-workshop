@@ -171,9 +171,9 @@ namespace FrontEnd.Services
         {
             try
             {
-                var response = await _httpClient.GetAsync("/swagger/v1/swagger.json");
+                var response = await _httpClient.GetStringAsync("/health");
 
-                return response.IsSuccessStatusCode;
+                return string.Equals(response, "Healthy", StringComparison.OrdinalIgnoreCase);
             }
             catch
             {

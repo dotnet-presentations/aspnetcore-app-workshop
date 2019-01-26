@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Security.Claims;
+using FrontEnd.Data;
 using FrontEnd.HealthChecks;
 using FrontEnd.Services;
 using Microsoft.AspNetCore.Builder;
@@ -45,7 +46,8 @@ namespace FrontEnd
             .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddHealthChecks()
-                    .AddCheck<BackendHealthCheck>("backend");
+                    .AddCheck<BackendHealthCheck>("backend")
+                    .AddDbContextCheck<IdentityDbContext>();
 
             services.AddSingleton<IAdminService, AdminService>();
         }

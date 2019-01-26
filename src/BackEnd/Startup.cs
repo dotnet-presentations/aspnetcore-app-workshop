@@ -44,6 +44,9 @@ namespace BackEnd
                     .AddJsonFormatters()
                     .AddApiExplorer();
 
+            services.AddHealthChecks()
+                    .AddDbContextCheck<ApplicationDbContext>();
+
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new Info { Title = "Conference Planner API", Version = "v1" });
@@ -63,6 +66,8 @@ namespace BackEnd
             }
 
             app.UseHttpsRedirection();
+
+            app.UseHealthChecks("/health");
 
             app.UseSwagger();
 
