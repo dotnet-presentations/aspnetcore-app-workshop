@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BackEnd.Data;
 using ConferenceDTO;
+using Microsoft.AspNetCore.Http;
 
 namespace BackEnd.Controllers
 {
@@ -41,13 +42,30 @@ namespace BackEnd.Controllers
             {
                 return NotFound();
             }
-            
+
             var result = new ConferenceResponse
             {
                 ID = conference.ID,
                 Name = conference.Name
             };
+
             return result;
+        }
+
+        [HttpPost("upload")]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> UploadConference([FromForm]string conferenceName, [FromForm]string format, IFormFile file)
+        {
+            var loader = DataLoader.GetLoader(format);
+
+            using (var stream = file.OpenReadStream())
+            {
+                await loader.LoadDataAsync(conferenceName, stream, _db);
+            }
+
+            await _db.SaveChangesAsync();
+
+            return Ok();
         }
 
         [HttpPost]
@@ -79,7 +97,7 @@ namespace BackEnd.Controllers
             {
                 return NotFound();
             }
-            
+
             conference.Name = input.Name;
 
             await _db.SaveChangesAsync();

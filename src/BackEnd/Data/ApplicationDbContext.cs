@@ -4,12 +4,9 @@ namespace BackEnd.Data
 {
     public class ApplicationDbContext : DbContext
     {
-        private readonly IDataLoader _loader;
-
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IDataLoader loader)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
-            _loader = loader;
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -37,8 +34,6 @@ namespace BackEnd.Data
             // Many-to-many: Session <-> Tag
             modelBuilder.Entity<SessionTag>()
                 .HasKey(st => new { st.SessionID, st.TagID });
-
-            _loader.LoadData(modelBuilder);
         }
 
         public DbSet<Conference> Conferences { get; set; }

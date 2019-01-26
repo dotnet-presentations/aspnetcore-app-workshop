@@ -27,16 +27,6 @@ namespace BackEnd
 
         public void ConfigureServices(IServiceCollection services)
         {
-            var dataLoader = Configuration["DataLoader"];
-            if (dataLoader == "Sessionize")
-            {
-                services.AddSingleton<IDataLoader, SessionizeLoader>();
-            }
-            else
-            {
-                services.AddSingleton<IDataLoader, DevIntersectionLoader>();
-            }
-
             services.AddDbContext<ApplicationDbContext>(options =>
             {
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
