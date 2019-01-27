@@ -67,7 +67,7 @@ namespace BackEnd
 
             return CreatedAtAction(nameof(Get), new { id = result.UserName }, result);
         }
-        
+
         [HttpPost("{username}/session/{sessionId:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

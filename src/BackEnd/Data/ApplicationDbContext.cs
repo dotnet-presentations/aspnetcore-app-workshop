@@ -29,7 +29,7 @@ namespace BackEnd.Data
 
             // Many-to-many: Speaker <-> Session
             modelBuilder.Entity<SessionSpeaker>()
-                .HasKey(ss => new { ss.SessionId, ss.SpeakerId});
+                .HasKey(ss => new { ss.SessionId, ss.SpeakerId });
 
             // Many-to-many: Session <-> Tag
             modelBuilder.Entity<SessionTag>()
