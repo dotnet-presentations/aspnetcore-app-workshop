@@ -2,22 +2,28 @@
 @using ConferenceDTO
 @model SearchModel
 
-<div class="row">
+<div class="search">
     <h1>Search</h1>
     <form method="get">
-        <div class="input-group">
-            <input asp-for="Term" class="form-control" />
-            <span class="input-group-btn">
-                <button class="btn btn-default" type="submit">Go!</button>
-            </span>
+        <div class="form-group">
+            <div class="input-group">
+                <input asp-for="Term" placeholder="Search for sessions or speakers..." class="form-control" />
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="submit">Go!</button>
+                </span>
+            </div>
+            @if (Model.SearchResults?.Count > 0)
+            {
+                <p class="help-block">@Model.SearchResults.Count results</p>
+            }
         </div>
     </form>
 </div>
-<br />
+
 <div class="row">
     @foreach (var result in Model.SearchResults)
     {
-        <div>
+        <div class="col-md-12">
             @switch (result)
             {
                 case SpeakerResponse speaker:
