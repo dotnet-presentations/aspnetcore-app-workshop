@@ -27,44 +27,45 @@
     @foreach (var timeSlot in Model.Sessions)
     {
         <h4>@timeSlot.Key?.ToString("HH:mm")</h4>
-        <div class="container mt-3">
-            <div class="row">
-                <div class="card-deck">
-                    @foreach (var session in timeSlot)
-                    {
-                        <div class="card mb-4 session">
-                            <div class="card-header">@session.Track?.Name</div>
-                            <div class="card-body">
-                                <h5 class="card-title"><a asp-page="Session" asp-route-id="@session.ID">@session.Title</a></h5>
-                            </div>
-                            <div class="card-footer">
+        <div class="row">
+            @foreach (var session in timeSlot)
+            {
+                <div class="col-md-3 mb-4">
+                    <div class="card speaker h-100">
+                        <div class="card-header">@session.Track?.Name</div>
+                        <div class="card-body">
+                            <h5 class="card-title"><a asp-page="Session" asp-route-id="@session.ID">@session.Title</a></h5>
+                        </div>
+                        <div class="card-footer">
+                            <ul class="list-inline mb-0">
                                 @foreach (var speaker in session.Speakers)
                                 {
-                                <a asp-page="Speaker" asp-route-id="@speaker.ID">@speaker.Name</a>
+                                <li class="list-inline-item">
+                                    <a asp-page="Speaker" asp-route-id="@speaker.ID">@speaker.Name</a>
+                                </li>
                                 }
-                                <form authz="true" method="post">
-                                    <input type="hidden" name="sessionId" value="@session.ID" />
-                                    <p>
-                                        <a authz-policy="Admin" asp-page="/Admin/EditSession" asp-route-id="@session.ID" class="btn btn-default btn-sm">Edit</a>
-                                        @if (Model.UserSessions.Contains(session.ID))
-                                        {
-                                            <button type="submit" asp-page-handler="Remove" class="btn btn-default btn-sm" title="Remove from my personal agenda">
-                                                <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
-                                            </button>
-                                        }
-                                        else
-                                        {
-                                            <button type="submit" class="btn btn-default btn-sm" title="Add to my personal agenda">
-                                                <span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span>
-                                            </button>
-                                        }
-                                    </p>
-                                </form>
-                            </div>
+                            </ul>
+                            <form authz="true" method="post">
+                                <input type="hidden" name="sessionId" value="@session.ID" />
+                                <p>
+                                    <a authz-policy="Admin" asp-page="/Admin/EditSession" asp-route-id="@session.ID" class="btn btn-default btn-sm">Edit</a>
+                                    @if (Model.UserSessions.Contains(session.ID))
+                                    {
+                                        <button type="submit" asp-page-handler="Remove" class="btn btn-default btn-sm bg-transparent" title="Remove from my personal agenda">
+                                            <i class="icon ion-md-star" aria-hidden="true"></i>
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button type="submit" class="btn btn-default btn-sm bg-transparent" title="Add to my personal agenda">
+                                            <i class="icon ion-md-star-outline" aria-hidden="true"></i>
+                                        </button>
+                                    }
+                                </p>
+                            </form>
                         </div>
-                    }
+                    </div>
                 </div>
-            </div>
+            }
         </div>
     }
-</div>
