@@ -1,10 +1,12 @@
 @page "{id}"
 @model SpeakerModel
 
-<ol class="breadcrumb">
-    <li><a asp-page="/Speakers">Speakers</a></li>
-    <li class="active">@Model.Speaker.Name</li>
-</ol>
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-page="/Speakers">Speakers</a></li>
+        <li class="breadcrumb-item active" aria-current="page">@Model.Speaker.Name</li>
+    </ol>
+</nav>
 
 <h2>@Model.Speaker.Name</h2>
 
