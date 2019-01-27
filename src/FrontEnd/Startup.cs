@@ -61,8 +61,8 @@ namespace FrontEnd
             }
             else
             {
-                app.UseHsts();
                 app.UseExceptionHandler("/Error");
+                app.UseHsts();
             }
 
             app.UseStatusCodePagesWithReExecute("/Status/{0}");
