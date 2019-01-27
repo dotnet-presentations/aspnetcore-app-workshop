@@ -40,7 +40,7 @@
                             <div class="card-footer">
                                 @foreach (var speaker in session.Speakers)
                                 {
-                                <button type="button" class="btn btn-outline-secondary btn-sm" asp-page="Speaker" asp-route-id="@speaker.ID">@speaker.Name</button>
+                                <a asp-page="Speaker" asp-route-id="@speaker.ID">@speaker.Name</a>
                                 }
                                 <form authz="true" method="post">
                                     <input type="hidden" name="sessionId" value="@session.ID" />
