@@ -13,9 +13,9 @@
 }
 
 <div class="agenda">
-    <h1>My Conference @System.DateTime.Now.Year</h1>
+    <h1 class="mb-4">My Conference @System.DateTime.Now.Year</h1>
 
-    <ul class="nav nav-pills">
+    <ul class="nav nav-pills mb-3">
         @foreach (var day in Model.DayOffsets)
         {
             <li role="presentation" class="nav-item">
