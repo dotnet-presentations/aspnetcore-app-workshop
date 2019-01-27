@@ -2,12 +2,12 @@
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using FrontEnd.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using FrontEnd.Data;
 using FrontEnd.Services;
 
 namespace FrontEnd.Areas.Identity.Pages.Account
@@ -15,27 +15,27 @@ namespace FrontEnd.Areas.Identity.Pages.Account
     [AllowAnonymous]
     public class RegisterModel : PageModel
     {
-        private readonly IdentityDbContext _dbContext;
-        private readonly SignInManager<User> _signInManager;
-        private readonly IAdminService _adminService;
+        private readonly SignInManager<User> _signInManager;        
         private readonly UserManager<User> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly IAdminService _adminService;
+        private readonly IdentityDbContext _dbContext;
 
         public RegisterModel(
-            IdentityDbContext dbContext,
             UserManager<User> userManager,
             SignInManager<User> signInManager,
-            IAdminService adminService,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            IAdminService adminService,
+            IdentityDbContext dbContext)
         {
-            _dbContext = dbContext;
             _userManager = userManager;
             _signInManager = signInManager;
-            _adminService = adminService;
             _logger = logger;
             _emailSender = emailSender;
+            _adminService = adminService;
+            _dbContext = dbContext;
         }
 
         [BindProperty]
@@ -68,7 +68,7 @@ namespace FrontEnd.Areas.Identity.Pages.Account
             public long? AdminCreationKey { get; set; }
         }
 
-        public async Task OnGet(string returnUrl = null)
+        public async Task OnGetAsync(string returnUrl = null)
         {
             ReturnUrl = returnUrl;
 

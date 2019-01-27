@@ -43,6 +43,10 @@ namespace FrontEnd
             {
                 options.Filters.AddService<RequireLoginFilter>();
             })
+            .AddRazorPagesOptions(options =>
+            {
+                options.Conventions.AuthorizeFolder("/Admin", "Admin");
+            })
             .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddHealthChecks()
