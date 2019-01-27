@@ -10,15 +10,15 @@
     <div class="row">
         @foreach (var speaker in Model.Speakers)
         {
-            <div class="col-md-3">
-                <div class="panel panel-default speaker">
-                    <div class="panel-body">
-                        <h3 class="panel-title"><a asp-page="Speaker" asp-route-id="@speaker.ID">@speaker.Name</a></h3>
+            <div class="col-md-3 mb-4">
+                <div class="card speaker h-100">
+                    <div class="card-header"><a asp-page="Speaker" asp-route-id="@speaker.ID">@speaker.Name</a></div>
+                    <ul class="list-group list-group-flush">
                         @foreach (var session in speaker.Sessions)
                         {
-                            <em><a asp-page="Session" asp-route-id="@session.ID">@session.Title</a></em>
+                            <li class="list-group-item"><a asp-page="Session" asp-route-id="@session.ID">@session.Title</a></li>
                         }
-                    </div>
+                    </ul>
                 </div>
             </div>
         }
