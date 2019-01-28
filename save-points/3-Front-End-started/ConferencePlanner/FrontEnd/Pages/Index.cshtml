@@ -4,17 +4,17 @@
     ViewData["Title"] = "Home page";
 }
 
+<ul class="nav nav-pills mb-3">
+    @foreach (var day in Model.DayOffsets)
+    {
+        <li role="presentation" class="nav-item">
+            <a class="nav-link @(Model.CurrentDayOffset == day.Offset ? "active" : null)" asp-route-day="@day.Offset">@day.DayofWeek?.ToString()</a>
+        </li>
+    }
+</ul>
+
 <div class="agenda">
     <h1>My Conference @System.DateTime.Now.Year</h1>
-
-    <ul class="nav nav-pills">
-        @foreach (var day in Model.DayOffsets)
-        {
-            <li role="presentation" class="@(Model.CurrentDayOffset == day.Offset ? "active" : null)">
-                <a asp-route-day="@day.Offset">@day.DayofWeek?.ToString()</a>
-            </li>
-        }
-    </ul>
 
     @foreach (var timeSlot in Model.Sessions)
     {
@@ -22,20 +22,25 @@
         <div class="row">
             @foreach (var session in timeSlot)
             {
-                <div class="col-md-3">
-                    <div class="panel panel-default session">
-                        <div class="panel-body">
-                            <p>@session.Track?.Name</p>
-                            <h3 class="panel-title"><a asp-page="Session" asp-route-id="@session.ID">@session.Title</a></h3>
-                            <p>
+                <div class="col-md-3 mb-4">
+                    <div class="card speaker h-100">
+                        <div class="card-header">@session.Track?.Name</div>
+                        <div class="card-body">
+                            <h5 class="card-title"><a asp-page="Session" asp-route-id="@session.ID">@session.Title</a></h5>
+                        </div>
+                        <div class="card-footer">
+                            <ul class="list-inline mb-0">
                                 @foreach (var speaker in session.Speakers)
                                 {
-                                    <em><a asp-page="Speaker" asp-route-id="@speaker.ID">@speaker.Name</a></em>
+                                    <li class="list-inline-item">
+                                        <a asp-page="Speaker" asp-route-id="@speaker.ID">@speaker.Name</a>
+                                    </li>
                                 }
-                            </p>
+                            </ul>
                         </div>
                     </div>
                 </div>
             }
         </div>
     }
+</div>
