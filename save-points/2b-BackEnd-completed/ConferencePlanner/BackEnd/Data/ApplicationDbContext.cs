@@ -25,11 +25,15 @@ namespace BackEnd.Data
 
             // Ignore the computed property
             modelBuilder.Entity<Session>()
-                 .Ignore(s => s.Duration);
+                .Ignore(s => s.Duration);
 
             // Many-to-many: Conference <-> Attendee
             modelBuilder.Entity<ConferenceAttendee>()
                 .HasKey(ca => new { ca.ConferenceID, ca.AttendeeID });
+
+            // Many-to-many: Session <-> Attendee
+            modelBuilder.Entity<SessionAttendee>()
+                .HasKey(ca => new { ca.SessionID, ca.AttendeeID });
 
             // Many-to-many: Speaker <-> Session
             modelBuilder.Entity<SessionSpeaker>()
