@@ -31,6 +31,10 @@ namespace BackEnd.Data
             modelBuilder.Entity<ConferenceAttendee>()
                 .HasKey(ca => new { ca.ConferenceID, ca.AttendeeID });
 
+            // Many-to-many: Session <-> Attendee
+            modelBuilder.Entity<SessionAttendee>()
+                .HasKey(ca => new { ca.SessionID, ca.AttendeeID });
+
             // Many-to-many: Speaker <-> Session
             modelBuilder.Entity<SessionSpeaker>()
                 .HasKey(ss => new { ss.SessionId, ss.SpeakerId });
