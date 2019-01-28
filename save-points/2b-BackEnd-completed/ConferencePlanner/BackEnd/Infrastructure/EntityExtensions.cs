@@ -63,14 +63,14 @@ namespace BackEnd.Data
                 FirstName = attendee.FirstName,
                 LastName = attendee.LastName,
                 UserName = attendee.UserName,
-                Sessions = attendee.Sessions?
+                Sessions = attendee.SessionsAttendees?
                     .Select(s =>
                         new ConferenceDTO.Session
                         {
-                            ID = s.ID,
-                            Title = s.Title,
-                            StartTime = s.StartTime,
-                            EndTime = s.EndTime
+                            ID = s.SessionID,
+                            Title = s.Session.Title,
+                            StartTime = s.Session.StartTime,
+                            EndTime = s.Session.EndTime
                         })
                     .ToList(),
                 Conferences = attendee.ConferenceAttendees?
