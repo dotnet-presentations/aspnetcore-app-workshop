@@ -23,7 +23,7 @@
             @foreach (var session in timeSlot)
             {
                 <div class="col-md-3 mb-4">
-                    <div class="card speaker h-100">
+                    <div class="card shadow session h-100">
                         <div class="card-header">@session.Track?.Name</div>
                         <div class="card-body">
                             <h5 class="card-title"><a asp-page="Session" asp-route-id="@session.ID">@session.Title</a></h5>
