@@ -1,42 +1,43 @@
-﻿using FrontEnd.Filters;
-using FrontEnd.Services;
+﻿using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using FrontEnd.Filters;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Routing;
-using System.Linq;
-using System.Threading.Tasks;
 
-public class RequireLoginFilter : IAsyncResourceFilter
+namespace FrontEnd
 {
-    private readonly IApiClient _apiClient;
-    private readonly IUrlHelperFactory _urlHelperFactory;
-
-    public RequireLoginFilter(IApiClient apiClient, IUrlHelperFactory urlHelperFactory)
+    public class RequireLoginFilter : IAsyncResourceFilter
     {
-        _apiClient = apiClient;
-        _urlHelperFactory = urlHelperFactory;
-    }
+        private readonly IUrlHelperFactory _urlHelperFactory;
 
-    public async Task OnResourceExecutionAsync(ResourceExecutingContext context, ResourceExecutionDelegate next)
-    {
-        var urlHelper = _urlHelperFactory.GetUrlHelper(context);
-
-        // If the user is authenticated but not a known attendee *and* we've not marked this page
-        // to skip attendee welcome, then redirect to the Welcome page
-        if (context.HttpContext.User.Identity.IsAuthenticated &&
-            !context.Filters.OfType<SkipWelcomeAttribute>().Any())
+        public RequireLoginFilter(IUrlHelperFactory urlHelperFactory)
         {
-            var attendee = await _apiClient.GetAttendeeAsync(context.HttpContext.User.Identity.Name);
-
-            if (attendee == null)
-            {
-                // No attendee registerd for this user
-                context.HttpContext.Response.Redirect(urlHelper.Page("/Welcome"));
-
-                return;
-            }
+            _urlHelperFactory = urlHelperFactory;
         }
 
-        await next();
+        public async Task OnResourceExecutionAsync(ResourceExecutingContext context, ResourceExecutionDelegate next)
+        {
+            var urlHelper = _urlHelperFactory.GetUrlHelper(context);
+
+            // If the user is authenticated but not a known attendee *and* we've not marked this page
+            // to skip attendee welcome, then redirect to the Welcome page
+            if (context.HttpContext.User.Identity.IsAuthenticated &&
+                !context.Filters.OfType<SkipWelcomeAttribute>().Any())
+            {
+                var isAttendee = context.HttpContext.User.IsAttendee();
+
+                if (!isAttendee)
+                {
+                    // No attendee registerd for this user
+                    context.HttpContext.Response.Redirect(urlHelper.Page("/Welcome"));
+
+                    return;
+                }
+            }
+
+            await next();
+        }
     }
 }

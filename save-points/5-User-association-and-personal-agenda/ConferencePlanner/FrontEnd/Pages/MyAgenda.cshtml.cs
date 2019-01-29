@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,10 +8,11 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace FrontEnd.Pages
 {
+    [Authorize]
     public class MyAgendaModel : IndexModel
     {
-        public MyAgendaModel(IApiClient client, IAuthorizationService authz)
-            : base(client, authz)
+        public MyAgendaModel(IApiClient client)
+            : base(client)
         {
 
         }

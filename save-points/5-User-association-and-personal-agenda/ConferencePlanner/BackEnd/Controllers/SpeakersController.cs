@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BackEnd.Data;
+using ConferenceDTO;
 
 namespace BackEnd.Controllers
 {
@@ -15,49 +16,44 @@ namespace BackEnd.Controllers
     {
         private readonly ApplicationDbContext _db;
 
-        public SpeakersController(ApplicationDbContext context)
+        public SpeakersController(ApplicationDbContext db)
         {
-            _db = context;
+            _db = db;
         }
 
-        // GET: api/Speakers
         [HttpGet]
-        public async Task<IActionResult> GetSpeakers()
+        public async Task<ActionResult<List<SpeakerResponse>>> GetSpeakers()
         {
             var speakers = await _db.Speakers.AsNoTracking()
-                                            .Include(s => s.SessionSpeakers)
+                                             .Include(s => s.SessionSpeakers)
                                                 .ThenInclude(ss => ss.Session)
-                                            .ToListAsync();
+                                             .Select(s => s.MapSpeakerResponse())
+                                             .ToListAsync();
 
-            var result = speakers.Select(s => s.MapSpeakerResponse());
-            return Ok(result);
+            return speakers;
         }
 
-        // GET: api/Speakers/5
         [HttpGet("{id:int}")]
-        public async Task<IActionResult> GetSpeaker([FromRoute]int id)
+        public async Task<ActionResult<SpeakerResponse>> GetSpeaker(int id)
         {
             var speaker = await _db.Speakers.AsNoTracking()
                                             .Include(s => s.SessionSpeakers)
                                                 .ThenInclude(ss => ss.Session)
                                             .SingleOrDefaultAsync(s => s.ID == id);
+
             if (speaker == null)
             {
                 return NotFound();
             }
+
             var result = speaker.MapSpeakerResponse();
-            return Ok(result);
+            return result;
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateSpeaker([FromBody]ConferenceDTO.Speaker input)
+        public async Task<IActionResult> CreateSpeaker(ConferenceDTO.Speaker input)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var speaker = new Speaker
+            var speaker = new Data.Speaker
             {
                 Name = input.Name,
                 WebSite = input.WebSite,
@@ -73,18 +69,13 @@ namespace BackEnd.Controllers
         }
 
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> UpdateSpeaker([FromRoute]int id, [FromBody]ConferenceDTO.Speaker input)
+        public async Task<IActionResult> PutSpeaker(int id, ConferenceDTO.Speaker input)
         {
-            var speaker = await _db.FindAsync<Speaker>(id);
+            var speaker = await _db.FindAsync<Data.Speaker>(id);
 
             if (speaker == null)
             {
                 return NotFound();
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
             }
 
             speaker.Name = input.Name;
@@ -94,15 +85,13 @@ namespace BackEnd.Controllers
             // TODO: Handle exceptions, e.g. concurrency
             await _db.SaveChangesAsync();
 
-            var result = speaker.MapSpeakerResponse();
-
-            return Ok(result);
+            return NoContent();
         }
 
         [HttpDelete("{id:int}")]
-        public async Task<IActionResult> DeleteSpeaker([FromRoute]int id)
+        public async Task<ActionResult<SpeakerResponse>> DeleteSpeaker(int id)
         {
-            var speaker = await _db.FindAsync<Speaker>(id);
+            var speaker = await _db.FindAsync<Data.Speaker>(id);
 
             if (speaker == null)
             {
@@ -114,11 +103,7 @@ namespace BackEnd.Controllers
             // TODO: Handle exceptions, e.g. concurrency
             await _db.SaveChangesAsync();
 
-            return NoContent();
-        }
-        private bool SpeakerExists(int id)
-        {
-            return _db.Speakers.Any(e => e.ID == id);
+            return speaker.MapSpeakerResponse();
         }
     }
 }

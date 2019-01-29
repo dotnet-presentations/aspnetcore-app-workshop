@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Encodings.Web;
@@ -16,6 +16,8 @@ namespace FrontEnd.Pages
 
         private readonly HtmlEncoder _htmlEncoder;
 
+        public bool IsInPersonalAgenda { get; set; }
+
         public SessionModel(IApiClient apiClient, HtmlEncoder htmlEncoder)
         {
             _apiClient = apiClient;
@@ -26,8 +28,6 @@ namespace FrontEnd.Pages
 
         public int? DayOffset { get; set; }
 
-        public bool IsInPersonalAgenda { get; set; }
-
         public async Task<IActionResult> OnGetAsync(int id)
         {
             Session = await _apiClient.GetSessionAsync(id);
@@ -36,6 +36,10 @@ namespace FrontEnd.Pages
             {
                 return RedirectToPage("/Index");
             }
+
+            var sessions = await _apiClient.GetSessionsByAttendeeAsync(User.Identity.Name);
+
+            IsInPersonalAgenda = sessions.Any(s => s.ID == id);
 
             var allSessions = await _apiClient.GetSessionsAsync();
 
@@ -49,10 +53,6 @@ namespace FrontEnd.Pages
                 var encodedAbstract = _htmlEncoder.Encode(Session.Abstract);
                 Session.Abstract = "<p>" + String.Join("</p><p>", encodedAbstract.Split(encodedCrLf, StringSplitOptions.RemoveEmptyEntries)) + "</p>";
             }
-
-            var sessions = await _apiClient.GetSessionsByAttendeeAsync(User.Identity.Name);
-
-            IsInPersonalAgenda = sessions.Any(s => s.ID == id);
 
             return Page();
         }

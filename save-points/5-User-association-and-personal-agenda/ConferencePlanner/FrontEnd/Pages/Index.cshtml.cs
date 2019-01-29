@@ -7,44 +7,46 @@ using FrontEnd.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace FrontEnd.Pages
 {
     public class IndexModel : PageModel
     {
         protected readonly IApiClient _apiClient;
-        private readonly IAuthorizationService _authzService;
 
-        public IndexModel(IApiClient apiClient, IAuthorizationService authzService)
+        public IEnumerable<IGrouping<DateTimeOffset?, SessionResponse>> Sessions { get; set; }
+
+        public IEnumerable<(int Offset, DayOfWeek? DayofWeek)> DayOffsets { get; set; }
+
+        public int CurrentDayOffset { get; set; }
+
+        public bool IsAdmin { get; set; }
+
+        public List<int> UserSessions { get; set; }
+
+        public IndexModel(IApiClient apiClient)
         {
             _apiClient = apiClient;
-            _authzService = authzService;
         }
+
+        [TempData]
+        public string Message { get; set; }
+
+        public bool ShowMessage => !string.IsNullOrEmpty(Message);
 
         protected virtual Task<List<SessionResponse>> GetSessionsAsync()
         {
             return _apiClient.GetSessionsAsync();
         }
 
-        public bool IsAdmin { get; set; }
-
-        public IEnumerable<IGrouping<DateTimeOffset?, SessionResponse>> Sessions { get; set; }
-
-        public IEnumerable<(int Offset, DayOfWeek? DayofWeek)> DayOffsets { get; set; }
-
-        public List<int> UserSessions { get; set; }
-
-        public int CurrentDayOffset { get; set; }
-
-        public async Task OnGet(int day = 0)
+        public async Task OnGetAsync(int day = 0)
         {
-            var authzResult = await _authzService.AuthorizeAsync(User, "Admin");
-            IsAdmin = authzResult.Succeeded;
+            IsAdmin = User.IsAdmin();
 
             CurrentDayOffset = day;
 
             var userSessions = await _apiClient.GetSessionsByAttendeeAsync(User.Identity.Name);
-
             UserSessions = userSessions.Select(u => u.ID).ToList();
 
             var sessions = await GetSessionsAsync();
