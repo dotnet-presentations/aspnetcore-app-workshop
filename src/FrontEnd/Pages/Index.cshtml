@@ -24,6 +24,8 @@
         }
     </ul>
 
+    <h1>My Conference @System.DateTime.Now.Year</h1>
+
     @foreach (var timeSlot in Model.Sessions)
     {
         <h4>@timeSlot.Key?.ToString("HH:mm")</h4>
@@ -31,7 +33,7 @@
             @foreach (var session in timeSlot)
             {
                 <div class="col-md-3 mb-4">
-                    <div class="card speaker h-100">
+                    <div class="card shadow session h-100">
                         <div class="card-header">@session.Track?.Name</div>
                         <div class="card-body">
                             <h5 class="card-title"><a asp-page="Session" asp-route-id="@session.ID">@session.Title</a></h5>
@@ -40,14 +42,14 @@
                             <ul class="list-inline mb-0">
                                 @foreach (var speaker in session.Speakers)
                                 {
-                                <li class="list-inline-item">
-                                    <a asp-page="Speaker" asp-route-id="@speaker.ID">@speaker.Name</a>
-                                </li>
+                                    <li class="list-inline-item">
+                                        <a asp-page="Speaker" asp-route-id="@speaker.ID">@speaker.Name</a>
+                                    </li>
                                 }
                             </ul>
                             <form authz="true" method="post">
                                 <input type="hidden" name="sessionId" value="@session.ID" />
-                                <p>
+                                <p class="mb-0">
                                     <a authz-policy="Admin" asp-page="/Admin/EditSession" asp-route-id="@session.ID" class="btn btn-default btn-sm">Edit</a>
                                     @if (Model.UserSessions.Contains(session.ID))
                                     {
