@@ -7,21 +7,13 @@ using FrontEnd.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace FrontEnd.Pages
 {
     public class IndexModel : PageModel
     {
-        private readonly IApiClient _apiClient;
-        private readonly IAuthorizationService _authzService;
-
-        public IndexModel(IApiClient apiClient, IAuthorizationService authzService)
-        {
-            _apiClient = apiClient;
-            _authzService = authzService;
-        }
-
-        public bool IsAdmin { get; set; }
+        protected readonly IApiClient _apiClient;
 
         public IEnumerable<IGrouping<DateTimeOffset?, SessionResponse>> Sessions { get; set; }
 
@@ -29,10 +21,16 @@ namespace FrontEnd.Pages
 
         public int CurrentDayOffset { get; set; }
 
-        public async Task OnGet(int day = 0)
+        public bool IsAdmin { get; set; }
+
+        public IndexModel(IApiClient apiClient)
         {
-            var authzResult = await _authzService.AuthorizeAsync(User, "Admin");
-            IsAdmin = authzResult.Succeeded;
+            _apiClient = apiClient;
+        }
+
+        public async Task OnGetAsync(int day = 0)
+        {
+            IsAdmin = User.IsAdmin();
 
             CurrentDayOffset = day;
 

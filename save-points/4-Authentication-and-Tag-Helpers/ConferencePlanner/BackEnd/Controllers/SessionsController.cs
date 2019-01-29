@@ -5,10 +5,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BackEnd.Data;
+using ConferenceDTO;
 
 namespace BackEnd.Controllers
 {
     [Route("api/[controller]")]
+    [ApiController]
     public class SessionsController : Controller
     {
         private readonly ApplicationDbContext _db;
@@ -19,7 +21,7 @@ namespace BackEnd.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<ActionResult<List<SessionResponse>>> Get()
         {
             var sessions = await _db.Sessions.AsNoTracking()
                                              .Include(s => s.Track)
@@ -27,15 +29,13 @@ namespace BackEnd.Controllers
                                                 .ThenInclude(ss => ss.Speaker)
                                              .Include(s => s.SessionTags)
                                                 .ThenInclude(st => st.Tag)
+                                             .Select(m => m.MapSessionResponse())
                                              .ToListAsync();
-
-            var results = sessions.Select(s => MapSessionResponse(s));
-
-            return Ok(results);
+            return sessions;
         }
 
         [HttpGet("{id:int}")]
-        public async Task<IActionResult> Get([FromRoute]int id)
+        public async Task<ActionResult<SessionResponse>> Get(int id)
         {
             var session = await _db.Sessions.AsNoTracking()
                                             .Include(s => s.Track)
@@ -50,20 +50,13 @@ namespace BackEnd.Controllers
                 return NotFound();
             }
 
-            var result = MapSessionResponse(session);
-
-            return Ok(result);
+            return session.MapSessionResponse();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody]ConferenceDTO.Session input)
+        public async Task<ActionResult<SessionResponse>> Post(ConferenceDTO.Session input)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var session = new Session
+            var session = new Data.Session
             {
                 Title = input.Title,
                 ConferenceID = input.ConferenceID,
@@ -82,18 +75,13 @@ namespace BackEnd.Controllers
         }
 
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> Put([FromRoute]int id, [FromBody]ConferenceDTO.Session input)
+        public async Task<IActionResult> Put(int id, ConferenceDTO.Session input)
         {
             var session = await _db.Sessions.FindAsync(id);
 
             if (session == null)
             {
                 return NotFound();
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
             }
 
             session.ID = input.ID;
@@ -106,13 +94,11 @@ namespace BackEnd.Controllers
 
             await _db.SaveChangesAsync();
 
-            var result = session.MapSessionResponse();
-
-            return Ok(result);
+            return NoContent();
         }
 
         [HttpDelete("{id:int}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<ActionResult<SessionResponse>> Delete(int id)
         {
             var session = await _db.Sessions.FindAsync(id);
 
@@ -124,11 +110,6 @@ namespace BackEnd.Controllers
             _db.Sessions.Remove(session);
             await _db.SaveChangesAsync();
 
-            return NoContent();
-        }
-
-        private static ConferenceDTO.SessionResponse MapSessionResponse(Session session)
-        {
             return session.MapSessionResponse();
         }
     }

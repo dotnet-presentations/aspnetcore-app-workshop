@@ -23,9 +23,17 @@ namespace BackEnd.Data
                 .HasIndex(a => a.UserName)
                 .IsUnique();
 
+            // Ignore the computed property
+            modelBuilder.Entity<Session>()
+                 .Ignore(s => s.Duration);
+
             // Many-to-many: Conference <-> Attendee
             modelBuilder.Entity<ConferenceAttendee>()
                 .HasKey(ca => new { ca.ConferenceID, ca.AttendeeID });
+
+            // Many-to-many: Session <-> Attendee
+            modelBuilder.Entity<SessionAttendee>()
+                .HasKey(ca => new { ca.SessionID, ca.AttendeeID });
 
             // Many-to-many: Speaker <-> Session
             modelBuilder.Entity<SessionSpeaker>()
@@ -47,11 +55,5 @@ namespace BackEnd.Data
         public DbSet<Speaker> Speakers { get; set; }
 
         public DbSet<Attendee> Attendees { get; set; }
-    }
-
-    public class ApplicationDbContextFactory : IDesignTimeDbContextFactory<ApplicationDbContext>
-    {
-        public ApplicationDbContext CreateDbContext(string[] args) =>
-            Program.CreateWebHostBuilder(args).Build().Services.CreateScope().ServiceProvider.GetRequiredService<ApplicationDbContext>();
     }
 }

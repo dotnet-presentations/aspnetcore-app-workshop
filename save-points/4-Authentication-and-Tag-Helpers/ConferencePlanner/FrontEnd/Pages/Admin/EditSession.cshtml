@@ -1,8 +1,10 @@
-﻿@page "{id:int}"
-@model EditSessionModel
-
+﻿@page "{id}"
+@model FrontEnd.Pages.Admin.EditSessionModel
 @{
+    ViewData["Title"] = "EditSession";
 }
+
+<h3>EditSession</h3>
 
 @if (Model.ShowMessage)
 {
@@ -52,7 +54,4 @@
         </div>
     </div>
 </form>
-
-@section Scripts {
-    @Html.Partial("_ValidationScriptsPartial")
-}
+<partial name="_ValidationScriptsPartial" />

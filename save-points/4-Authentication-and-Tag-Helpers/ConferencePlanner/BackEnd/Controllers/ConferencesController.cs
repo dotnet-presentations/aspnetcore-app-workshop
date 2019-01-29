@@ -1,15 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using BackEnd.Data;
+using ConferenceDTO;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using BackEnd.Data;
 
 namespace BackEnd.Controllers
 {
     [Route("api/[controller]")]
-    public class ConferencesController : Controller
+    [ApiController]
+    public class ConferencesController : ControllerBase
     {
         private readonly ApplicationDbContext _db;
 
@@ -19,51 +22,57 @@ namespace BackEnd.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetConferences()
+        public async Task<ActionResult<List<ConferenceResponse>>> GetConferences()
         {
-            var conferences = await _db.Conferences.AsNoTracking().ToListAsync();
-
-            var result = conferences.Select(s => new ConferenceDTO.ConferenceResponse
+            var conferences = await _db.Conferences.AsNoTracking().Select(s => new ConferenceResponse
             {
                 ID = s.ID,
-                Name = s.Name,
-                //Sessions = ??,
-                //Tracks = ??
-                //Sessions = ??
-            });
-            return Ok(result);
+                Name = s.Name
+            })
+            .ToListAsync();
+
+            return conferences;
         }
 
         [HttpGet("{id:int}")]
-        public async Task<IActionResult> GetConference([FromRoute] int id)
+        public async Task<ActionResult<ConferenceResponse>> GetConference(int id)
         {
-            var conference = await _db.FindAsync<Conference>(id);
+            var conference = await _db.FindAsync<Data.Conference>(id);
 
             if (conference == null)
             {
                 return NotFound();
             }
-            
-            var result = new ConferenceDTO.ConferenceResponse
+
+            var result = new ConferenceResponse
             {
                 ID = conference.ID,
-                Name = conference.Name,
-                //Sessions = ??,
-                //Tracks = ??
-                //Sessions = ??
+                Name = conference.Name
             };
-            return Ok(result);
+
+            return result;
+        }
+
+        [HttpPost("upload")]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> UploadConference([Required, FromForm]string conferenceName, [FromForm]ConferenceFormat format, IFormFile file)
+        {
+            var loader = GetLoader(format);
+
+            using (var stream = file.OpenReadStream())
+            {
+                await loader.LoadDataAsync(conferenceName, stream, _db);
+            }
+
+            await _db.SaveChangesAsync();
+
+            return Ok();
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateConference([FromBody] ConferenceDTO.Conference input)
+        public async Task<ActionResult<ConferenceResponse>> CreateConference(ConferenceDTO.Conference input)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var conference = new Conference
+            var conference = new Data.Conference
             {
                 Name = input.Name
             };
@@ -74,50 +83,33 @@ namespace BackEnd.Controllers
             var result = new ConferenceDTO.ConferenceResponse
             {
                 ID = conference.ID,
-                Name = conference.Name,
-                //Sessions = ??,
-                //Tracks = ??
-                //Sessions = ??
+                Name = conference.Name
             };
 
             return CreatedAtAction(nameof(GetConference), new { id = conference.ID }, result);
         }
 
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> UpdateConference([FromRoute]int id, [FromBody]ConferenceDTO.Conference input)
+        public async Task<IActionResult> PutConference(int id, ConferenceDTO.Conference input)
         {
-            var conference = await _db.FindAsync<Conference>(id);
+            var conference = await _db.FindAsync<Data.Conference>(id);
 
             if (conference == null)
             {
                 return NotFound();
             }
 
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             conference.Name = input.Name;
 
             await _db.SaveChangesAsync();
 
-            var result = new ConferenceDTO.ConferenceResponse
-            {
-                ID = conference.ID,
-                Name = conference.Name,
-                //Sessions = ??,
-                //Tracks = ??
-                //Sessions = ??
-            };
-
-            return Ok(result);
+            return NoContent();
         }
 
         [HttpDelete("{id:int}")]
-        public async Task<IActionResult> DeleteConference([FromRoute] int id)
+        public async Task<ActionResult<ConferenceResponse>> DeleteConference(int id)
         {
-            var conference = await _db.FindAsync<Conference>(id);
+            var conference = await _db.FindAsync<Data.Conference>(id);
 
             if (conference == null)
             {
@@ -128,7 +120,27 @@ namespace BackEnd.Controllers
 
             await _db.SaveChangesAsync();
 
-            return NoContent();
+            var result = new ConferenceDTO.ConferenceResponse
+            {
+                ID = conference.ID,
+                Name = conference.Name
+            };
+            return result;
+        }
+
+        private static DataLoader GetLoader(ConferenceFormat format)
+        {
+            if (format == ConferenceFormat.Sessionize)
+            {
+                return new SessionizeLoader();
+            }
+            return new DevIntersectionLoader();
+        }
+
+        public enum ConferenceFormat
+        {
+            Sessionize,
+            DevIntersections
         }
     }
 }

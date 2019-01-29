@@ -2,30 +2,36 @@
 @using ConferenceDTO
 @model SearchModel
 
-<div class="row">
+<div class="search">
     <h1>Search</h1>
     <form method="get">
-        <div class="input-group">
-            <input asp-for="Term" class="form-control" />
-            <span class="input-group-btn">
-                <button class="btn btn-default" type="submit">Go!</button>
-            </span>
+        <div class="input-group mb-3">
+            <input asp-for="Term" placeholder="Search for sessions or speakers..." class="form-control" />
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="submit">Go!</button>
+            </div>
         </div>
+        @if (Model.SearchResults?.Count > 0)
+        {
+            <p>
+                @Model.SearchResults.Count result(s)
+            </p>
+        }
     </form>
 </div>
-<br />
+
 <div class="row">
     @foreach (var result in Model.SearchResults)
     {
-        <div>
+        <div class="col-md-12">
             @switch (result)
             {
                 case SpeakerResponse speaker:
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h3 class="panel-title">Speaker: <a asp-page="Speaker" asp-route-id="@speaker.ID">@speaker.Name</a></h3>
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <h3 class="card-title">Speaker: <a asp-page="Speaker" asp-route-id="@speaker.ID">@speaker.Name</a></h3>
                         </div>
-                        <div class="panel-body">
+                        <div class="card-body">
                             <p>
                                 @foreach (var session in speaker.Sessions)
                                 {
@@ -40,15 +46,15 @@
                     break;
 
                 case SessionResponse session:
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h3 class="panel-title">Session: <a asp-page="Session" asp-route-id="@session.ID">@session.Title</a></h3>
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <h3 class="card-title">Session: <a asp-page="Session" asp-route-id="@session.ID">@session.Title</a></h3>
                             @foreach (var speaker in session.Speakers)
                             {
                                 <a asp-page="/Speaker" asp-route-id="@speaker.ID"><em>@speaker.Name</em></a>
                             }
                         </div>
-                        <div class="panel-body">
+                        <div class="card-body">
                             <p>
                                 @session.Abstract
                             </p>
