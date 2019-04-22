@@ -15,8 +15,6 @@ namespace FrontEnd
     {
         public static void Main(string[] args)
         {
-            CurrentDirectoryHelpers.SetCurrentDirectory();
-
             CreateWebHostBuilder(args).Build().Run();
         }
 
