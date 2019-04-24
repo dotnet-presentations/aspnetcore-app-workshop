@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -6,7 +5,6 @@ using BackEnd.Data;
 using ConferenceDTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Linq;
 
 namespace BackEnd
@@ -15,21 +13,22 @@ namespace BackEnd
     [ApiController]
     public class SearchController : ControllerBase
     {
-        private readonly IServiceProvider _serviceProvider;
+        private readonly ApplicationDbContext _db1;
+        private readonly ApplicationDbContext _db2;
 
-        public SearchController(IServiceProvider serviceProvider)
+        public SearchController(ApplicationDbContext db1, ApplicationDbContext db2)
         {
-            _serviceProvider = serviceProvider;
+            _db1 = db1;
+            _db2 = db1;
         }
 
         [HttpPost]
         public async Task<ActionResult<List<SearchResult>>> Search(SearchTerm term)
         {
-            using var dbContext1 = _serviceProvider.GetRequiredService<ApplicationDbContext>();
-            using var dbContext2 = _serviceProvider.GetRequiredService<ApplicationDbContext>();
-
             var query = term.Query;
-            var sessionResultsTask = dbContext1.Sessions.Include(s => s.Track)
+
+            // Don't use the same ApplicationDbContext for parallel queries.
+            var sessionTask = _db1.Sessions.Include(s => s.Track)
                                                    .Include(s => s.SessionSpeakers)
                                                      .ThenInclude(ss => ss.Speaker)
                                                    .Where(s =>
@@ -38,7 +37,7 @@ namespace BackEnd
                                                    )
                                                    .ToListAsync();
 
-            var speakerResultsTask = dbContext2.Speakers.Include(s => s.SessionSpeakers)
+            var speakerTask = _db2.Speakers.Include(s => s.SessionSpeakers)
                                                      .ThenInclude(ss => ss.Session)
                                                    .Where(s =>
                                                        s.Name.Contains(query) ||
@@ -47,8 +46,8 @@ namespace BackEnd
                                                    )
                                                    .ToListAsync();
 
-            var sessionResults = await sessionResultsTask;
-            var speakerResults = await speakerResultsTask;
+            var sessionResults = await sessionTask;
+            var speakerResults = await speakerTask;
 
             var results = sessionResults.Select(s => new SearchResult
             {
