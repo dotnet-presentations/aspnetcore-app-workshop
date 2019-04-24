@@ -37,7 +37,7 @@ namespace BackEnd
                 {
                     options.UseSqlite("Data Source=conferences.db");
                 }
-            });
+            }, ServiceLifetime.Transient);
 
             services.AddMvc()
                     .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
