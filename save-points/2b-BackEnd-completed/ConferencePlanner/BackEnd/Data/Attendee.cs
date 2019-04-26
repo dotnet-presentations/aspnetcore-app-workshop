@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace BackEnd.Data
@@ -7,6 +7,6 @@ namespace BackEnd.Data
     {
         public virtual ICollection<ConferenceAttendee> ConferenceAttendees { get; set; }
 
-        public virtual ICollection<Session> Sessions { get; set; }
+        public virtual ICollection<SessionAttendee> SessionsAttendees { get; set; }
     }
 }

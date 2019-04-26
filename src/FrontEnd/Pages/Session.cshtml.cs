@@ -42,7 +42,7 @@ namespace FrontEnd.Pages
 
             var startDate = allSessions.Min(s => s.StartTime?.Date);
 
-            DayOffset = Session.StartTime?.DateTime.Subtract(startDate ?? DateTime.MinValue).Days;
+            DayOffset = Session.StartTime?.Subtract(startDate ?? DateTimeOffset.MinValue).Days;
 
             if (!string.IsNullOrEmpty(Session.Abstract))
             {

@@ -1,15 +1,17 @@
+using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Linq;
+using System.Threading.Tasks;
 using ConferenceDTO;
 using FrontEnd.Services;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace FrontEnd.Pages
 {
     public class SearchModel : PageModel
     {
-        private IApiClient _apiClient;
+        private readonly IApiClient _apiClient;
 
         public SearchModel(IApiClient apiClient)
         {
@@ -25,18 +27,17 @@ namespace FrontEnd.Pages
             Term = term;
             var results = await _apiClient.SearchAsync(term);
             SearchResults = results.Select(sr =>
-                                    {
-                                        switch (sr.Type)
-                                        {
-                                            case SearchResultType.Session:
-                                                return (object)sr.Value.ToObject<SessionResponse>();
-                                            case SearchResultType.Speaker:
-                                                return (object)sr.Value.ToObject<SpeakerResponse>();
-                                            default:
-                                                return (object)sr;
-                                        }
-                                    })
-                                    .ToList();
+            {
+                switch (sr.Type)
+                {
+                    case SearchResultType.Session:
+                        return (object)sr.Value.ToObject<SessionResponse>();
+                    case SearchResultType.Speaker:
+                        return (object)sr.Value.ToObject<SpeakerResponse>();
+                    default:
+                        return (object)sr;
+                }
+            }).ToList();
         }
     }
 }

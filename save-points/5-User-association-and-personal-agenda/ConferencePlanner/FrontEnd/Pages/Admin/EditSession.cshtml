@@ -1,5 +1,10 @@
 ﻿@page "{id}"
-@model EditSessionModel
+@model FrontEnd.Pages.Admin.EditSessionModel
+@{
+    ViewData["Title"] = "EditSession";
+}
+
+<h3>EditSession</h3>
 
 @if (Model.ShowMessage)
 {
@@ -47,9 +52,6 @@
             <button type="submit" class="btn btn-primary">Save</button>
             <button type="submit" asp-page-handler="Delete" class="btn btn-danger">Delete</button>
         </div>
-    </div>  
+    </div>
 </form>
-
-@section Scripts {
-    @Html.Partial("_ValidationScriptsPartial")
-}
+<partial name="_ValidationScriptsPartial" />

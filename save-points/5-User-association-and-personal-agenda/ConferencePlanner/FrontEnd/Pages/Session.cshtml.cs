@@ -1,11 +1,12 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using ConferenceDTO;
+using FrontEnd.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using ConferenceDTO;
-using System.Text.Encodings.Web;
 
 namespace FrontEnd.Pages
 {
@@ -15,6 +16,7 @@ namespace FrontEnd.Pages
 
         private readonly HtmlEncoder _htmlEncoder;
 
+        public bool IsInPersonalAgenda { get; set; }
 
         public SessionModel(IApiClient apiClient, HtmlEncoder htmlEncoder)
         {
@@ -26,9 +28,7 @@ namespace FrontEnd.Pages
 
         public int? DayOffset { get; set; }
 
-        public bool IsInPersonalAgenda { get; set; }
-
-        public async Task<IActionResult> OnGet(int id)
+        public async Task<IActionResult> OnGetAsync(int id)
         {
             Session = await _apiClient.GetSessionAsync(id);
 
@@ -37,15 +37,16 @@ namespace FrontEnd.Pages
                 return RedirectToPage("/Index");
             }
 
-            var userSessions = await _apiClient.GetSessionsByAttendeeAsync(User.Identity.Name);
+            var sessions = await _apiClient.GetSessionsByAttendeeAsync(User.Identity.Name);
 
-            IsInPersonalAgenda = userSessions.Any(u => u.ID == id);
+            IsInPersonalAgenda = sessions.Any(s => s.ID == id);
 
             var allSessions = await _apiClient.GetSessionsAsync();
 
             var startDate = allSessions.Min(s => s.StartTime?.Date);
 
-            DayOffset = Session.StartTime?.DateTime.Subtract(startDate ?? DateTime.MinValue).Days;
+            DayOffset = Session.StartTime?.Subtract(startDate ?? DateTimeOffset.MinValue).Days;
+
             if (!string.IsNullOrEmpty(Session.Abstract))
             {
                 var encodedCrLf = _htmlEncoder.Encode("\r\n");

@@ -1,11 +1,14 @@
 @page "{id}"
 @model SessionModel
 
-<ol class="breadcrumb">
-    <li><a asp-page="/Index">Agenda</a></li>
-    <li><a asp-page="/Index" asp-route-day="@Model.DayOffset">Day @(Model.DayOffset + 1)</a></li>
-    <li class="active">@Model.Session.Title</li>
-</ol>
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-page="/Index">Agenda</a></li>
+        <li class="breadcrumb-item"><a asp-page="/Index" asp-route-day="@Model.DayOffset">Day @(Model.DayOffset + 1)</a></li>
+        <li class="breadcrumb-item active">@Model.Session.Title</li>
+    </ol>
+</nav>
+
 
 <h1>@Model.Session.Title</h1>
 <span class="label label-default">@Model.Session.Track?.Name</span>
@@ -23,15 +26,15 @@
         <a authz-policy="Admin" asp-page="/Admin/EditSession" asp-route-id="@Model.Session.ID" class="btn btn-default btn-sm">Edit</a>
         @if (Model.IsInPersonalAgenda)
         {
-            <button authz="true" type="submit" asp-page-handler="Remove" class="btn btn-default btn-sm" title="Remove from my personal agenda">
-                <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
-            </button>
+        <button authz="true" type="submit" asp-page-handler="Remove" class="btn btn-default btn-sm" title="Remove from my personal agenda">
+            <i class="icon ion-md-star" aria-hidden="true"></i>
+        </button>
         }
         else
         {
-            <button authz="true" type="submit" class="btn btn-default btn-sm" title="Add to my personal agenda">
-                <span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span>
-            </button>
+        <button authz="true" type="submit" class="btn btn-default btn-sm bg-transparent" title="Add to my personal agenda">
+            <i class="icon ion-md-star-outline" aria-hidden="true"></i>
+        </button>
         }
     </p>
 </form>

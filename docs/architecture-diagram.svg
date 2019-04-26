@@ -42,13 +42,13 @@
 <line marker-end="url(#triangle)" x1="504" x2="500" y1="72" y2="72"/>
 <line marker-end="url(#triangle)" x1="748" x2="748" y1="208" y2="192"/>
 <text x="50" y="28">
-.NET Core 2.0
+.NET Core 2.1
 </text>
 <text x="330" y="28">
 .NET Standard 2.0
 </text>
 <text x="634" y="28">
-.NET Core 2.0
+.NET Core 2.1
 </text>
 <text x="642" y="76">
 Back End

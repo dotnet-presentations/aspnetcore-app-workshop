@@ -9,9 +9,9 @@ using BackEnd.Models;
 
 namespace BackEnd.Controllers
 {
-    [Produces("application/json")]
-    [Route("api/Speakers")]
-    public class SpeakersController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class SpeakersController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
 
@@ -22,39 +22,29 @@ namespace BackEnd.Controllers
 
         // GET: api/Speakers
         [HttpGet]
-        public IEnumerable<Speaker> GetSpeaker()
+        public async Task<ActionResult<IEnumerable<Speaker>>> GetSpeakers()
         {
-            return _context.Speaker;
+            return await _context.Speakers.ToListAsync();
         }
 
         // GET: api/Speakers/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetSpeaker([FromRoute] int id)
+        public async Task<ActionResult<Speaker>> GetSpeaker(int id)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var speaker = await _context.Speaker.SingleOrDefaultAsync(m => m.ID == id);
+            var speaker = await _context.Speakers.FindAsync(id);
 
             if (speaker == null)
             {
                 return NotFound();
             }
 
-            return Ok(speaker);
+            return speaker;
         }
 
         // PUT: api/Speakers/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutSpeaker([FromRoute] int id, [FromBody] Speaker speaker)
+        public async Task<IActionResult> PutSpeaker(int id, Speaker speaker)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             if (id != speaker.ID)
             {
                 return BadRequest();
@@ -83,14 +73,9 @@ namespace BackEnd.Controllers
 
         // POST: api/Speakers
         [HttpPost]
-        public async Task<IActionResult> PostSpeaker([FromBody] Speaker speaker)
+        public async Task<ActionResult<Speaker>> PostSpeaker(Speaker speaker)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            _context.Speaker.Add(speaker);
+            _context.Speakers.Add(speaker);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetSpeaker", new { id = speaker.ID }, speaker);
@@ -98,28 +83,23 @@ namespace BackEnd.Controllers
 
         // DELETE: api/Speakers/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteSpeaker([FromRoute] int id)
+        public async Task<ActionResult<Speaker>> DeleteSpeaker(int id)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var speaker = await _context.Speaker.SingleOrDefaultAsync(m => m.ID == id);
+            var speaker = await _context.Speakers.FindAsync(id);
             if (speaker == null)
             {
                 return NotFound();
             }
 
-            _context.Speaker.Remove(speaker);
+            _context.Speakers.Remove(speaker);
             await _context.SaveChangesAsync();
 
-            return Ok(speaker);
+            return speaker;
         }
 
         private bool SpeakerExists(int id)
         {
-            return _context.Speaker.Any(e => e.ID == id);
+            return _context.Speakers.Any(e => e.ID == id);
         }
     }
 }

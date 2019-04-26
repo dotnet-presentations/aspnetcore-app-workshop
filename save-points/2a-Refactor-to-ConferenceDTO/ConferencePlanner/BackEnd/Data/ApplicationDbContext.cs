@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BackEnd.Data
 {
@@ -19,8 +20,12 @@ namespace BackEnd.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Attendee>()
-               .HasIndex(a => a.UserName)
-               .IsUnique();
+                .HasIndex(a => a.UserName)
+                .IsUnique();
+
+            // Ignore the computed property
+            modelBuilder.Entity<Session>()
+                 .Ignore(s => s.Duration);
 
             // Many-to-many: Conference <-> Attendee
             modelBuilder.Entity<ConferenceAttendee>()
@@ -28,7 +33,7 @@ namespace BackEnd.Data
 
             // Many-to-many: Speaker <-> Session
             modelBuilder.Entity<SessionSpeaker>()
-                .HasKey(ss => new { ss.SessionId, ss.SpeakerId});
+                .HasKey(ss => new { ss.SessionId, ss.SpeakerId });
 
             // Many-to-many: Session <-> Tag
             modelBuilder.Entity<SessionTag>()
@@ -46,11 +51,5 @@ namespace BackEnd.Data
         public DbSet<Speaker> Speakers { get; set; }
 
         public DbSet<Attendee> Attendees { get; set; }
-    }
-
-    public class ApplicationDbContextFactory : IDesignTimeDbContextFactory<ApplicationDbContext>
-    {
-        public ApplicationDbContext CreateDbContext(string[] args) =>
-            Program.BuildWebHost(args).Services.CreateScope().ServiceProvider.GetRequiredService<ApplicationDbContext>();
     }
 }

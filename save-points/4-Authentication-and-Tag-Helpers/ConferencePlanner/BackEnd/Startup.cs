@@ -6,11 +6,13 @@ using System.Threading.Tasks;
 using BackEnd.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Microsoft.EntityFrameworkCore;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace BackEnd
@@ -27,31 +29,27 @@ namespace BackEnd
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-             services.AddDbContext<ApplicationDbContext>(options =>
-             {
-                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                 {
-                     options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
-                 }
-                 else
-                 {
-                     options.UseSqlite("Data Source=conferences.db");
-                 }
-             });
+            services.AddDbContext<ApplicationDbContext>(options =>
+            {
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+                }
+                else
+                {
+                    options.UseSqlite("Data Source=conferences.db");
+                }
+            });
 
-            services.AddMvcCore()
-                .AddJsonFormatters()
-                .AddApiExplorer();
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddSwaggerGen(options =>
                 options.SwaggerDoc("v1", new Info { Title = "Conference Planner API", Version = "v1" })
             );
-
-            services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             app.UseSwagger();
 
@@ -59,6 +57,17 @@ namespace BackEnd
                 options.SwaggerEndpoint("/swagger/v1/swagger.json", "Conference Planner API v1")
             );
 
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                app.UseHsts();
+            }
+
+            app.UseHttpsRedirection();
             app.UseMvc();
 
             app.Run(context =>
@@ -66,10 +75,6 @@ namespace BackEnd
                 context.Response.Redirect("/swagger");
                 return Task.CompletedTask;
             });
-
-            // Comment out the following line to avoid resetting the database each time
-            var loader = new DevIntersectionLoader(app.ApplicationServices);
-            loader.LoadData("DevIntersection_Vegas_2017.json", "DevIntersection Vegas 2017");
         }
     }
 }

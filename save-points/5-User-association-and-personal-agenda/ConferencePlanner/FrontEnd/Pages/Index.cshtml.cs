@@ -2,17 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using ConferenceDTO;
 using FrontEnd.Services;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using System.Security.Claims;
 
 namespace FrontEnd.Pages
 {
     public class IndexModel : PageModel
     {
+        protected readonly IApiClient _apiClient;
+
         public IEnumerable<IGrouping<DateTimeOffset?, SessionResponse>> Sessions { get; set; }
 
         public IEnumerable<(int Offset, DayOfWeek? DayofWeek)> DayOffsets { get; set; }
@@ -23,29 +25,28 @@ namespace FrontEnd.Pages
 
         public List<int> UserSessions { get; set; }
 
-        [TempData]
-        public string Message { get; set; }
-
-        public bool ShowMessage => !string.IsNullOrEmpty(Message);
-
-        protected readonly IApiClient _apiClient;
-
         public IndexModel(IApiClient apiClient)
         {
             _apiClient = apiClient;
         }
+
+        [TempData]
+        public string Message { get; set; }
+
+        public bool ShowMessage => !string.IsNullOrEmpty(Message);
 
         protected virtual Task<List<SessionResponse>> GetSessionsAsync()
         {
             return _apiClient.GetSessionsAsync();
         }
 
-        public async Task OnGet(int day = 0)
+        public async Task OnGetAsync(int day = 0)
         {
+            IsAdmin = User.IsAdmin();
+
             CurrentDayOffset = day;
 
             var userSessions = await _apiClient.GetSessionsByAttendeeAsync(User.Identity.Name);
-
             UserSessions = userSessions.Select(u => u.ID).ToList();
 
             var sessions = await GetSessionsAsync();

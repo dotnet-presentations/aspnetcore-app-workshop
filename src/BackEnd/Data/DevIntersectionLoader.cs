@@ -1,35 +1,28 @@
-﻿using BackEnd.Data;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
+using BackEnd.Data;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace BackEnd
 {
-    public class DevIntersectionLoader : BaseDataLoader
+    public class DevIntersectionLoader : DataLoader
     {
-
-        public DevIntersectionLoader(IServiceProvider services) : base(services)
+        public override async Task LoadDataAsync(string conferenceName, Stream fileStream, ApplicationDbContext db)
         {
+            var reader = new JsonTextReader(new StreamReader(fileStream));
 
-            // this.SaveData = false;
-
-        }
-
-        protected override void LoadFormattedData(ApplicationDbContext db)
-        {
-
-            var re = File.OpenText(Filename);
-            var reader = new JsonTextReader(re);
+            var conference = new Conference { Name = conferenceName };
 
             var speakerNames = new Dictionary<string, Speaker>();
             var tracks = new Dictionary<string, Track>();
 
-            JArray doc = JArray.Load(reader);
+            JArray doc = await JArray.LoadAsync(reader);
+
             foreach (JObject item in doc)
             {
-
                 var theseSpeakers = new List<Speaker>();
                 foreach (var thisSpeakerName in item["speakerNames"])
                 {
@@ -48,7 +41,7 @@ namespace BackEnd
                 {
                     if (!tracks.ContainsKey(thisTrackName.Value<string>()))
                     {
-                        var thisTrack = new Track { Name = thisTrackName.Value<string>(), Conference = this.Conference };
+                        var thisTrack = new Track { Name = thisTrackName.Value<string>(), Conference = conference };
                         db.Tracks.Add(thisTrack);
                         tracks.Add(thisTrackName.Value<string>(), thisTrack);
                     }
@@ -57,7 +50,7 @@ namespace BackEnd
 
                 var session = new Session
                 {
-                    Conference = Conference,
+                    Conference = conference,
                     Title = item["title"].Value<string>(),
                     StartTime = item["startTime"].Value<DateTime>(),
                     EndTime = item["endTime"].Value<DateTime>(),
@@ -76,12 +69,8 @@ namespace BackEnd
                 }
 
                 db.Sessions.Add(session);
-
-
             }
-
         }
     }
-
 }
 

@@ -1,8 +1,7 @@
-using System;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using FrontEnd.Filters;
-using FrontEnd.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Routing;
@@ -11,12 +10,10 @@ namespace FrontEnd
 {
     public class RequireLoginFilter : IAsyncResourceFilter
     {
-        private readonly IApiClient _apiClient;
         private readonly IUrlHelperFactory _urlHelperFactory;
 
-        public RequireLoginFilter(IApiClient apiClient, IUrlHelperFactory urlHelperFactory)
+        public RequireLoginFilter(IUrlHelperFactory urlHelperFactory)
         {
-            _apiClient = apiClient;
             _urlHelperFactory = urlHelperFactory;
         }
 
@@ -29,9 +26,9 @@ namespace FrontEnd
             if (context.HttpContext.User.Identity.IsAuthenticated &&
                 !context.Filters.OfType<SkipWelcomeAttribute>().Any())
             {
-                var attendee = await _apiClient.GetAttendeeAsync(context.HttpContext.User.Identity.Name);
+                var isAttendee = context.HttpContext.User.IsAttendee();
 
-                if (attendee == null)
+                if (!isAttendee)
                 {
                     // No attendee registerd for this user
                     context.HttpContext.Response.Redirect(urlHelper.Page("/Welcome"));

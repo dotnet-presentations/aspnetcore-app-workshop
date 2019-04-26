@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Net.Http;
-using FrontEnd.Infrastructure;
+using System.Security.Claims;
+using FrontEnd.Data;
+using FrontEnd.HealthChecks;
 using FrontEnd.Services;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -23,48 +23,14 @@ namespace FrontEnd
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc(options =>
-            {
-                options.Filters.AddService<RequireLoginFilter>();
-            })
-            .AddRazorPagesOptions(options =>
-            {
-                options.Conventions.AuthorizeFolder("/Admin", "Admin");
-            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-
             services.AddTransient<RequireLoginFilter>();
-
-            var authBuilder =  services
-                .AddAuthentication(options =>
-                {
-                    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                    options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                })
-                .AddCookie(options =>
-                {
-                    options.LoginPath = "/Login";
-                    options.AccessDeniedPath = "/Denied";
-                });
-
-            var twitterConfig = Configuration.GetSection("twitter");
-            if (twitterConfig["consumerKey"] != null)
-            {
-                authBuilder.AddTwitter(options => twitterConfig.Bind(options));
-            }
-
-            var googleConfig = Configuration.GetSection("google");
-            if (googleConfig["clientID"] != null)
-            {
-                authBuilder.AddGoogle(options => googleConfig.Bind(options));
-            }
 
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("Admin", policy =>
                 {
                     policy.RequireAuthenticatedUser()
-                          .RequireUserName(Configuration["admin"]);
+                          .RequireIsAdminClaim();
                 });
             });
 
@@ -72,6 +38,22 @@ namespace FrontEnd
             {
                 client.BaseAddress = new Uri(Configuration["serviceUrl"]);
             });
+
+            services.AddMvc(options =>
+            {
+                options.Filters.AddService<RequireLoginFilter>();
+            })
+            .AddRazorPagesOptions(options =>
+            {
+                options.Conventions.AuthorizeFolder("/Admin", "Admin");
+            })
+            .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            services.AddHealthChecks()
+                    .AddCheck<BackendHealthCheck>("backend")
+                    .AddDbContextCheck<IdentityDbContext>();
+
+            services.AddSingleton<IAdminService, AdminService>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -79,13 +61,13 @@ namespace FrontEnd
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseDatabaseErrorPage();
             }
             else
             {
                 app.UseExceptionHandler("/Error");
+                app.UseHsts();
             }
-
-            app.UseHsts();
 
             app.UseStatusCodePagesWithReExecute("/Status/{0}");
 
@@ -94,6 +76,8 @@ namespace FrontEnd
             app.UseStaticFiles();
 
             app.UseAuthentication();
+
+            app.UseHealthChecks("/health");
 
             app.UseMvc(routes =>
             {

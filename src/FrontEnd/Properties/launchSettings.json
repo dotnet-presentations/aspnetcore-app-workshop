@@ -18,6 +18,9 @@
     },
     "FrontEnd": {
       "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "",
+      "applicationUrl": "https://localhost:44374;http://localhost:55994",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
