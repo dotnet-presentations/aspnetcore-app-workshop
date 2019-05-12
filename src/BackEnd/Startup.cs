@@ -9,8 +9,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Swashbuckle.AspNetCore.Swagger;
+using Microsoft.Extensions.Hosting;
 using BackEnd.Data;
+using Microsoft.OpenApi.Models;
 
 [assembly: ApiConventionType(typeof(DefaultApiConventions))]
 
@@ -39,33 +40,28 @@ namespace BackEnd
                 }
             });
 
-            services.AddMvc()
-                    .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddControllers()
+                    .AddNewtonsoftJson()
+                    .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             services.AddHealthChecks()
                     .AddDbContextCheck<ApplicationDbContext>();
 
             services.AddSwaggerGen(options =>
             {
-                options.SwaggerDoc("v1", new Info { Title = "Conference Planner API", Version = "v1" });
+                options.SwaggerDoc("v1", new OpenApiInfo { Title = "Conference Planner API", Version = "v1" });
             });
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
             }
-            else
-            {
-                app.UseHsts();
-            }
 
             app.UseHttpsRedirection();
-
-            app.UseHealthChecks("/health");
 
             app.UseSwagger();
 
@@ -74,8 +70,14 @@ namespace BackEnd
                 options.SwaggerEndpoint("/swagger/v1/swagger.json", "Conference Planner API v1");
             });
 
-            app.UseMvc();
+            app.UseRouting();
 
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+                endpoints.MapHealthChecks("/health");
+            });
+            
             app.Run(context =>
             {
                 context.Response.Redirect("/swagger");
