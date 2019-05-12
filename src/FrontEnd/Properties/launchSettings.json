@@ -12,14 +12,12 @@
       "commandName": "IISExpress",
       "launchBrowser": true,
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
-        "AASPNETCORE_HTTPS_PORT": "44374"
+        "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
     "FrontEnd": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "",
       "applicationUrl": "https://localhost:44374;http://localhost:55994",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"

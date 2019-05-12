@@ -1,14 +1,13 @@
 ﻿using System;
-using System.Security.Claims;
 using FrontEnd.Data;
 using FrontEnd.HealthChecks;
 using FrontEnd.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace FrontEnd
 {
@@ -39,15 +38,15 @@ namespace FrontEnd
                 client.BaseAddress = new Uri(Configuration["serviceUrl"]);
             });
 
-            services.AddMvc(options =>
-            {
-                options.Filters.AddService<RequireLoginFilter>();
-            })
-            .AddRazorPagesOptions(options =>
+            services.AddRazorPages(options =>
             {
                 options.Conventions.AuthorizeFolder("/Admin", "Admin");
             })
-            .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            .AddMvcOptions(options =>
+            {
+                options.Filters.AddService<RequireLoginFilter>();
+            })
+            .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             services.AddHealthChecks()
                     .AddCheck<BackendHealthCheck>("backend")
@@ -56,7 +55,7 @@ namespace FrontEnd
             services.AddSingleton<IAdminService, AdminService>();
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -69,21 +68,20 @@ namespace FrontEnd
                 app.UseHsts();
             }
 
-            app.UseStatusCodePagesWithReExecute("/Status/{0}");
+            //app.UseStatusCodePagesWithReExecute("/Status/{0}");
 
             app.UseHttpsRedirection();
-
             app.UseStaticFiles();
 
+            app.UseRouting();
+
             app.UseAuthentication();
+            app.UseAuthorization();
 
-            app.UseHealthChecks("/health");
-
-            app.UseMvc(routes =>
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapRazorPages();
+                endpoints.MapHealthChecks("/health");
             });
         }
     }
