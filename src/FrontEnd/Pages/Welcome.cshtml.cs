@@ -3,7 +3,6 @@ using FrontEnd.Services;
 using FrontEnd.Pages.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using FrontEnd.Filters;
 using System.Net.Http;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
