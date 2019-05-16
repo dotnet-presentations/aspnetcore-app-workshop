@@ -51,6 +51,7 @@ namespace BackEnd.Data
                 FirstName = attendee.FirstName,
                 LastName = attendee.LastName,
                 UserName = attendee.UserName,
+                EmailAddress = attendee.EmailAddress,
                 Sessions = attendee.SessionsAttendees?
                     .Select(sa =>
                         new ConferenceDTO.Session

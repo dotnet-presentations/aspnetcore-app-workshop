@@ -20,12 +20,12 @@ namespace BackEnd
             _db = db;
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<AttendeeResponse>> Get(string id)
+        [HttpGet("{username}")]
+        public async Task<ActionResult<AttendeeResponse>> Get(string username)
         {
             var attendee = await _db.Attendees.Include(a => a.SessionsAttendees)
                                                 .ThenInclude(sa => sa.Session)
-                                              .SingleOrDefaultAsync(a => a.UserName == id);
+                                              .SingleOrDefaultAsync(a => a.UserName == username);
 
             if (attendee == null)
             {
@@ -65,7 +65,7 @@ namespace BackEnd
 
             var result = attendee.MapAttendeeResponse();
 
-            return CreatedAtAction(nameof(Get), new { id = result.UserName }, result);
+            return CreatedAtAction(nameof(Get), new { username = result.UserName }, result);
         }
 
         [HttpPost("{username}/session/{sessionId}")]
