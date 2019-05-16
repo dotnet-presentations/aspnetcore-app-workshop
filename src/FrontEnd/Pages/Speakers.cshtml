@@ -12,11 +12,11 @@
         {
             <div class="col-md-3 mb-4">
                 <div class="card speaker h-100">
-                    <div class="card-header"><a asp-page="Speaker" asp-route-id="@speaker.ID">@speaker.Name</a></div>
+                    <div class="card-header"><a asp-page="Speaker" asp-route-id="@speaker.Id">@speaker.Name</a></div>
                     <ul class="list-group list-group-flush">
                         @foreach (var session in speaker.Sessions)
                         {
-                            <li class="list-group-item"><a asp-page="Session" asp-route-id="@session.ID">@session.Title</a></li>
+                            <li class="list-group-item"><a asp-page="Session" asp-route-id="@session.Id">@session.Title</a></li>
                         }
                     </ul>
                 </div>

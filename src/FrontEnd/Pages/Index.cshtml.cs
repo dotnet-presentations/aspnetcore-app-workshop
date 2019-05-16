@@ -42,7 +42,7 @@ namespace FrontEnd.Pages
 
             var userSessions = await _apiClient.GetSessionsByAttendeeAsync(User.Identity.Name);
 
-            UserSessions = userSessions.Select(u => u.ID).ToList();
+            UserSessions = userSessions.Select(u => u.Id).ToList();
 
             var sessions = await GetSessionsAsync();
 

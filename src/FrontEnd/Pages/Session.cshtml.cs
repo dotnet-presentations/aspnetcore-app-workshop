@@ -36,7 +36,7 @@ namespace FrontEnd.Pages
 
             var sessions = await _apiClient.GetSessionsByAttendeeAsync(User.Identity.Name);
 
-            IsInPersonalAgenda = sessions.Any(s => s.ID == id);
+            IsInPersonalAgenda = sessions.Any(s => s.Id == id);
 
             var allSessions = await _apiClient.GetSessionsAsync();
 

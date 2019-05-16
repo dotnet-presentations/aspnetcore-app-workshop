@@ -15,15 +15,15 @@
 
 @foreach (var speaker in Model.Session.Speakers)
 {
-    <em><a asp-page="Speaker" asp-route-id="@speaker.ID">@speaker.Name</a></em>
+    <em><a asp-page="Speaker" asp-route-id="@speaker.Id">@speaker.Name</a></em>
 }
 
 <p>@Html.Raw(Model.Session.Abstract)</p>
 
 <form method="post">
-    <input type="hidden" name="sessionId" value="@Model.Session.ID" />
+    <input type="hidden" name="sessionId" value="@Model.Session.Id" />
     <p>
-        <a authz-policy="Admin" asp-page="/Admin/EditSession" asp-route-id="@Model.Session.ID" class="btn btn-default btn-sm">Edit</a>
+        <a authz-policy="Admin" asp-page="/Admin/EditSession" asp-route-id="@Model.Session.Id" class="btn btn-default btn-sm">Edit</a>
         @if (Model.IsInPersonalAgenda)
         {
         <button authz="true" type="submit" asp-page-handler="Remove" class="btn btn-default btn-sm" title="Remove from my personal agenda">

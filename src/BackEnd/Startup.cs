@@ -50,6 +50,7 @@ namespace BackEnd
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo { Title = "Conference Planner API", Version = "v1" });
+                options.DescribeAllEnumsAsStrings();
             });
         }
 

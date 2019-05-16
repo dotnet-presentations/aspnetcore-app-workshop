@@ -47,22 +47,21 @@ namespace BackEnd
                 Type = SearchResultType.Session,
                 Value = JObject.FromObject(new SessionResponse
                 {
-                    ID = s.ID,
+                    Id = s.Id,
                     Title = s.Title,
                     Abstract = s.Abstract,
-                    ConferenceID = s.ConferenceID,
                     StartTime = s.StartTime,
                     EndTime = s.EndTime,
                     TrackId = s.TrackId,
                     Track = new ConferenceDTO.Track
                     {
-                        TrackID = s?.TrackId ?? 0,
+                        Id = s?.TrackId ?? 0,
                         Name = s.Track?.Name
                     },
                     Speakers = s?.SessionSpeakers
                                  .Select(ss => new ConferenceDTO.Speaker
                                  {
-                                     ID = ss.SpeakerId,
+                                     Id = ss.SpeakerId,
                                      Name = ss.Speaker.Name
                                  })
                                  .ToList()
@@ -73,7 +72,7 @@ namespace BackEnd
                 Type = SearchResultType.Speaker,
                 Value = JObject.FromObject(new SpeakerResponse
                 {
-                    ID = s.ID,
+                    Id = s.Id,
                     Name = s.Name,
                     Bio = s.Bio,
                     WebSite = s.WebSite,
@@ -81,7 +80,7 @@ namespace BackEnd
                                 .Select(ss =>
                                     new ConferenceDTO.Session
                                     {
-                                        ID = ss.SessionId,
+                                        Id = ss.SessionId,
                                         Title = ss.Session.Title
                                     })
                                 .ToList()

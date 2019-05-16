@@ -34,22 +34,22 @@
                     <div class="card shadow session h-100">
                         <div class="card-header">@session.Track?.Name</div>
                         <div class="card-body">
-                            <h5 class="card-title"><a asp-page="Session" asp-route-id="@session.ID">@session.Title</a></h5>
+                            <h5 class="card-title"><a asp-page="Session" asp-route-id="@session.Id">@session.Title</a></h5>
                         </div>
                         <div class="card-footer">
                             <ul class="list-inline mb-0">
                                 @foreach (var speaker in session.Speakers)
                                 {
                                     <li class="list-inline-item">
-                                        <a asp-page="Speaker" asp-route-id="@speaker.ID">@speaker.Name</a>
+                                        <a asp-page="Speaker" asp-route-id="@speaker.Id">@speaker.Name</a>
                                     </li>
                                 }
                             </ul>
                             <form authz="true" method="post">
-                                <input type="hidden" name="sessionId" value="@session.ID" />
+                                <input type="hidden" name="sessionId" value="@session.Id" />
                                 <p class="mb-0">
-                                    <a authz-policy="Admin" asp-page="/Admin/EditSession" asp-route-id="@session.ID" class="btn btn-default btn-sm">Edit</a>
-                                    @if (Model.UserSessions.Contains(session.ID))
+                                    <a authz-policy="Admin" asp-page="/Admin/EditSession" asp-route-id="@session.Id" class="btn btn-default btn-sm">Edit</a>
+                                    @if (Model.UserSessions.Contains(session.Id))
                                     {
                                         <button type="submit" asp-page-handler="Remove" class="btn btn-default btn-sm bg-transparent" title="Remove from my personal agenda">
                                             <i class="icon ion-md-star" aria-hidden="true"></i>

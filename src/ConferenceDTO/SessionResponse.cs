@@ -9,7 +9,5 @@ namespace ConferenceDTO
         public Track Track { get; set; }
 
         public List<Speaker> Speakers { get; set; } = new List<Speaker>();
-
-        public List<Tag> Tags { get; set; } = new List<Tag>();
     }
 }
