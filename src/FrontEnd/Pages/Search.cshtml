@@ -29,13 +29,13 @@
                 case SpeakerResponse speaker:
                     <div class="card shadow mb-3">
                         <div class="card-header">
-                            <h3 class="card-title">Speaker: <a asp-page="Speaker" asp-route-id="@speaker.ID">@speaker.Name</a></h3>
+                            <h3 class="card-title">Speaker: <a asp-page="Speaker" asp-route-id="@speaker.Id">@speaker.Name</a></h3>
                         </div>
                         <div class="card-body">
                             <p>
                                 @foreach (var session in speaker.Sessions)
                                 {
-                                    <a asp-page="/Session" asp-route-id="@session.ID"><em>@session.Title</em></a>
+                                    <a asp-page="/Session" asp-route-id="@session.Id"><em>@session.Title</em></a>
                                 }
                             </p>
                             <p>
@@ -48,10 +48,10 @@
                 case SessionResponse session:
                     <div class="card shadow mb-3">
                         <div class="card-header">
-                            <h3 class="card-title">Session: <a asp-page="Session" asp-route-id="@session.ID">@session.Title</a></h3>
+                            <h3 class="card-title">Session: <a asp-page="Session" asp-route-id="@session.Id">@session.Title</a></h3>
                             @foreach (var speaker in session.Speakers)
                             {
-                                <a asp-page="/Speaker" asp-route-id="@speaker.ID"><em>@speaker.Name</em></a>
+                                <a asp-page="/Speaker" asp-route-id="@speaker.Id"><em>@speaker.Name</em></a>
                             }
                         </div>
                         <div class="card-body">

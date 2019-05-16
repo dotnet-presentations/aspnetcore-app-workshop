@@ -6,9 +6,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20190126203326_Initial.cs" />
+    <Compile Remove="Migrations\20190126203326_Initial.Designer.cs" />
+    <Compile Remove="Migrations\20190516071446_Initial.cs" />
+    <Compile Remove="Migrations\20190516071446_Initial.Designer.cs" />
+    <Compile Remove="Migrations\20190516072754_Initial.cs" />
+    <Compile Remove="Migrations\20190516072754_Initial.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.0.0-preview5*" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.0.0-preview5*" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.0.0-preview5*" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.0.0-preview5*" />
     <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="3.0.0-preview5*" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.0.0-preview5*" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0-rc2" />

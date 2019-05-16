@@ -30,8 +30,7 @@ namespace FrontEnd.Pages
             var session = await _apiClient.GetSessionAsync(id);
             Session = new Session
             {
-                ID = session.ID,
-                ConferenceID = session.ConferenceID,
+                Id = session.Id,
                 TrackId = session.TrackId,
                 Title = session.Title,
                 Abstract = session.Abstract,

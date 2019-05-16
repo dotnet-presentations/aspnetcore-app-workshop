@@ -18,7 +18,7 @@
         <ul class="list-group">
             @foreach (var session in Model.Speaker.Sessions)
             {
-                <li class="list-group-item"><a asp-page="Session" asp-route-id="@session.ID">@session.Title</a></li>
+                <li class="list-group-item"><a asp-page="Session" asp-route-id="@session.Id">@session.Title</a></li>
             }
         </ul>
     </div>

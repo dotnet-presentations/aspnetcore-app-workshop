@@ -7,10 +7,7 @@ namespace ConferenceDTO
 {
     public class Session
     {
-        public int ID { get; set; }
-
-        [Required]
-        public int ConferenceID { get; set; }
+        public int Id { get; set; }
 
         [Required]
         [StringLength(200)]
