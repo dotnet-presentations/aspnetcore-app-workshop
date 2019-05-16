@@ -22,8 +22,6 @@ namespace FrontEnd
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddTransient<RequireLoginFilter>();
-
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("Admin", policy =>
@@ -41,10 +39,6 @@ namespace FrontEnd
             services.AddRazorPages(options =>
             {
                 options.Conventions.AuthorizeFolder("/Admin", "Admin");
-            })
-            .AddMvcOptions(options =>
-            {
-                options.Filters.AddService<RequireLoginFilter>();
             })
             .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
@@ -77,6 +71,8 @@ namespace FrontEnd
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseMiddleware<RequireLoginMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {
