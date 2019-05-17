@@ -62,7 +62,7 @@ namespace FrontEnd
                 app.UseHsts();
             }
 
-            //app.UseStatusCodePagesWithReExecute("/Status/{0}");
+            app.UseStatusCodePagesWithReExecute("/Status/{0}");
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
