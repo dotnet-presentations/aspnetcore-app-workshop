@@ -5,16 +5,20 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.Caching.Memory;
+using FrontEnd.Infrastructure;
 
 namespace FrontEnd.Pages
 {
     public class EditSessionModel : PageModel
     {
         private readonly IApiClient _apiClient;
+        private readonly IMemoryCache _cache;
 
-        public EditSessionModel(IApiClient apiClient)
+        public EditSessionModel(IApiClient apiClient, IMemoryCache cache)
         {
             _apiClient = apiClient;
+            _cache = cache;
         }
 
         [BindProperty]
@@ -48,6 +52,8 @@ namespace FrontEnd.Pages
 
             await _apiClient.PutSessionAsync(Session);
 
+            _cache.Remove(CacheKeys.ConferenceData);
+
             Message = "Session updated successfully!";
 
             return RedirectToPage();
@@ -61,6 +67,8 @@ namespace FrontEnd.Pages
             {
                 await _apiClient.DeleteSessionAsync(id);
             }
+
+            _cache.Remove(CacheKeys.ConferenceData);
 
             Message = "Session deleted successfully!";
 
