@@ -18,7 +18,12 @@
     <em><a asp-page="Speaker" asp-route-id="@speaker.Id">@speaker.Name</a></em>
 }
 
-<p>@Html.Raw(Model.Session.Abstract)</p>
+@foreach (var line in Model.Session.Abstract.Split("\r\n", StringSplitOptions.RemoveEmptyEntries))
+{ 
+    <p>
+        @line
+    </p>
+}
 
 <form method="post">
     <input type="hidden" name="sessionId" value="@Model.Session.Id" />
