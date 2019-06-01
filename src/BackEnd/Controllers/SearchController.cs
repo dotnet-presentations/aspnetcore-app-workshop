@@ -5,7 +5,6 @@ using BackEnd.Data;
 using ConferenceDTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json.Linq;
 
 namespace BackEnd
 {
@@ -45,7 +44,7 @@ namespace BackEnd
             var results = sessionResults.Select(s => new SearchResult
             {
                 Type = SearchResultType.Session,
-                Value = JObject.FromObject(new SessionResponse
+                Session = new SessionResponse
                 {
                     Id = s.Id,
                     Title = s.Title,
@@ -65,12 +64,12 @@ namespace BackEnd
                                      Name = ss.Speaker.Name
                                  })
                                  .ToList()
-                })
+                }
             })
             .Concat(speakerResults.Select(s => new SearchResult
             {
                 Type = SearchResultType.Speaker,
-                Value = JObject.FromObject(new SpeakerResponse
+                Speaker = new SpeakerResponse
                 {
                     Id = s.Id,
                     Name = s.Name,
@@ -84,7 +83,7 @@ namespace BackEnd
                                         Title = ss.Session.Title
                                     })
                                 .ToList()
-                })
+                }
             }));
 
             return results.ToList();
