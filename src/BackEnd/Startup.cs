@@ -41,7 +41,10 @@ namespace BackEnd
             });
 
             services.AddControllers()
-                    .AddNewtonsoftJson()
+                    .AddMvcOptions(o =>
+                    {
+                        o.SerializerOptions.PropertyNameCaseInsensitive = true;
+                    })
                     .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             services.AddHealthChecks()
