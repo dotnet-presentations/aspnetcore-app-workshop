@@ -1,11 +1,8 @@
 # ASP.NET Core - App Building Workshop
 
-<a href="https://dotnet.visualstudio.com/AspNetCoreWorkshop/_apis/build/status/ASP.NET%20Workshop-ASP.NET%20Core%202.1)](https://dotnet.visualstudio.com/AspNetCoreWorkshop/_build/latest?definitionId=30">![Build status](https://dotnet.visualstudio.com/AspNetCoreWorkshop/_apis/build/status/ASP.NET%20Workshop-ASP.NET%20Core%202.1?branchName=master)</a>
+[![Build Status](https://dotnet.visualstudio.com/AspNetCoreWorkshop/_apis/build/status/ASP.NET%20Workshop-ASP.NET%20Core%202.1.1?branchName=master)](https://dotnet.visualstudio.com/AspNetCoreWorkshop/_build/latest?definitionId=32&branchName=master)
 
-[BackEnd Web API](https://aspnetcorews-backend.azurewebsites.net)<br/> ![Release Status](https://dotnet.vsrm.visualstudio.com/_apis/public/Release/badge/a68bc2e9-c4e7-4af9-80a5-2cfdbcb4805f/3/5)
-
-[FrontEnd Web App](https://aspnetcorews-frontend.azurewebsites.net)
-<br/>![Release Status](https://dotnet.vsrm.visualstudio.com/_apis/public/Release/badge/a68bc2e9-c4e7-4af9-80a5-2cfdbcb4805f/3/6)
+[BackEnd Web API](https://aspnetcorews-backend.azurewebsites.net) | [FrontEnd Web App](https://aspnetcorews-frontend.azurewebsites.net)
 
 ## Setup
 
