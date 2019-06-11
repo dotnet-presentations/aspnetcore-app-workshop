@@ -41,10 +41,6 @@ namespace BackEnd
             });
 
             services.AddControllers()
-                    .AddMvcOptions(o =>
-                    {
-                        o.SerializerOptions.PropertyNameCaseInsensitive = true;
-                    })
                     .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             services.AddHealthChecks()
