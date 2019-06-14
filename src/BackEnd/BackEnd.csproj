@@ -4,14 +4,6 @@
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <UserSecretsId>aspnet-BackEnd-931E56BD-86CB-4A96-BD99-2C6A6ABB0829</UserSecretsId>
   </PropertyGroup>
-
-  <PropertyGroup>
-    <RestoreSources>
-      $(RestoreSources);
-      https://dotnetfeed.blob.core.windows.net/dotnet-core-preview6-012264/index.json;
-      https://api.nuget.org/v3/index.json;
-    </RestoreSources>
-  </PropertyGroup>
   
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.2.4" />
