@@ -12,7 +12,6 @@ namespace ConferenceDTO
     public enum SearchResultType
     {
         Session,
-        Track,
         Speaker
     }
 }

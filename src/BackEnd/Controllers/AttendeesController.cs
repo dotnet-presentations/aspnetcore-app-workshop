@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
 using ConferenceDTO;
 
-namespace BackEnd
+namespace BackEnd.Controllers
 {
     [Route("/api/[controller]")]
     [ApiController]
