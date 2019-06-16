@@ -18,10 +18,6 @@ namespace FrontEnd.Pages
 
         }
 
-        protected override Task<ConferenceData> GetConferenceDataAsync()
-        {
-            throw new Exception("later asshole");
-            //return _apiClient.GetSessionsByAttendeeAsync(User.Identity.Name);
-        }
+        public override bool ShowSessionsNotInAgenda() => false;
     }
 }

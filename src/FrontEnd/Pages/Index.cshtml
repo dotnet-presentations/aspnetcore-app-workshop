@@ -30,6 +30,9 @@
         <div class="row">
             @foreach (var session in timeSlot)
             {
+                var inUserAgenda = Model.UserSessions?.Contains(session.Id) ?? false;
+                if (inUserAgenda || Model.ShowSessionsNotInAgenda())
+                {
                 <div class="col-md-3 mb-4">
                     <div class="card shadow session h-100">
                         <div class="card-header">@session.Track?.Name</div>
@@ -49,7 +52,7 @@
                                 <input type="hidden" name="sessionId" value="@session.Id" />
                                 <p class="mb-0">
                                     <a authz-policy="Admin" asp-page="/Admin/EditSession" asp-route-id="@session.Id" class="btn btn-default btn-sm">Edit</a>
-                                    @if (Model.UserSessions?.Contains(session.Id) ?? false)
+                                    @if (inUserAgenda)
                                     {
                                         <button type="submit" asp-page-handler="Remove" asp-route-day="@Model.CurrentDayOffset" class="btn btn-default btn-sm bg-transparent" title="Remove from my personal agenda">
                                             <i class="icon ion-md-star" aria-hidden="true"></i>
@@ -66,6 +69,7 @@
                         </div>
                     </div>
                 </div>
+                }
             }
         </div>
     }
