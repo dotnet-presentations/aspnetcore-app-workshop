@@ -41,49 +41,15 @@ namespace BackEnd.Controllers
                                                    )
                                                    .ToListAsync();
 
-            var results = sessionResults.Select(s => new SearchResult
+            var results = sessionResults.Select(session => new SearchResult
             {
                 Type = SearchResultType.Session,
-                Session = new SessionResponse
-                {
-                    Id = s.Id,
-                    Title = s.Title,
-                    Abstract = s.Abstract,
-                    StartTime = s.StartTime,
-                    EndTime = s.EndTime,
-                    TrackId = s.TrackId,
-                    Track = new ConferenceDTO.Track
-                    {
-                        Id = s?.TrackId ?? 0,
-                        Name = s.Track?.Name
-                    },
-                    Speakers = s?.SessionSpeakers
-                                 .Select(ss => new ConferenceDTO.Speaker
-                                 {
-                                     Id = ss.SpeakerId,
-                                     Name = ss.Speaker.Name
-                                 })
-                                 .ToList()
-                }
+                Session = session.MapSessionResponse()
             })
-            .Concat(speakerResults.Select(s => new SearchResult
+            .Concat(speakerResults.Select(speaker => new SearchResult
             {
                 Type = SearchResultType.Speaker,
-                Speaker = new SpeakerResponse
-                {
-                    Id = s.Id,
-                    Name = s.Name,
-                    Bio = s.Bio,
-                    WebSite = s.WebSite,
-                    Sessions = s.SessionSpeakers?
-                                .Select(ss =>
-                                    new ConferenceDTO.Session
-                                    {
-                                        Id = ss.SessionId,
-                                        Title = ss.Session.Title
-                                    })
-                                .ToList()
-                }
+                Speaker = speaker.MapSpeakerResponse()
             }));
 
             return results.ToList();

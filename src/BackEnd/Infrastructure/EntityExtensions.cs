@@ -17,7 +17,7 @@ namespace BackEnd.Data
                                       Id = ss.SpeakerId,
                                       Name = ss.Speaker.Name
                                   })
-                                   .ToList(),
+                                  .ToList(),
                 TrackId = session.TrackId,
                 Track = new ConferenceDTO.Track
                 {
