@@ -33,9 +33,12 @@ namespace FrontEnd.Pages
                 return RedirectToPage("/Index");
             }
 
-            var sessions = await _apiClient.GetSessionsByAttendeeAsync(User.Identity.Name);
+            if (User.Identity.IsAuthenticated)
+            {
+                var sessions = await _apiClient.GetSessionsByAttendeeAsync(User.Identity.Name);
 
-            IsInPersonalAgenda = sessions.Any(s => s.Id == id);
+                IsInPersonalAgenda = sessions.Any(s => s.Id == id);
+            }
 
             var allSessions = await _apiClient.GetSessionsAsync();
 
