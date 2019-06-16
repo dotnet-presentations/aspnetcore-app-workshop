@@ -4,73 +4,8 @@
     ViewData["Title"] = "Home Page";
 }
 
-@if (Model.ShowMessage)
-{
-    <div class="alert alert-success alert-dismissible" role="alert">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>   </button>
-        @Model.Message
-    </div>
-}
+<partial name="_AlertPartial" model="(Model.ShowMessage, Model.Message)" />
 
-<div class="agenda">
-    <h1 class="mb-4">My Conference @System.DateTime.Now.Year</h1>
+<h1 class="mb-4">My Conference @System.DateTime.Now.Year</h1>
 
-    <ul class="nav nav-pills mb-3">
-        @foreach (var day in Model.ConferenceModel.DayOffsets)
-        {
-            <li role="presentation" class="nav-item">
-                <a class="nav-link @(Model.CurrentDayOffset == day.Offset ? "active" : null)" asp-route-day="@day.Offset">@day.DayofWeek?.ToString()</a>
-            </li>
-        }
-    </ul>
-
-    @foreach (var timeSlot in Model.ConferenceModel[Model.CurrentDayOffset])
-    {
-        <h4>@timeSlot.Key?.ToString("HH:mm")</h4>
-        <div class="row">
-            @foreach (var session in timeSlot)
-            {
-                var inUserAgenda = Model.UserSessions?.Contains(session.Id) ?? false;
-                if (inUserAgenda || Model.ShowSessionsNotInAgenda())
-                {
-                <div class="col-md-3 mb-4">
-                    <div class="card shadow session h-100">
-                        <div class="card-header">@session.Track?.Name</div>
-                        <div class="card-body">
-                            <h5 class="card-title"><a asp-page="Session" asp-route-id="@session.Id">@session.Title</a></h5>
-                        </div>
-                        <div class="card-footer">
-                            <ul class="list-inline mb-0">
-                                @foreach (var speaker in session.Speakers)
-                                {
-                                    <li class="list-inline-item">
-                                        <a asp-page="Speaker" asp-route-id="@speaker.Id">@speaker.Name</a>
-                                    </li>
-                                }
-                            </ul>
-                            <form authz method="post">
-                                <input type="hidden" name="sessionId" value="@session.Id" />
-                                <p class="mb-0">
-                                    <a authz-policy="Admin" asp-page="/Admin/EditSession" asp-route-id="@session.Id" class="btn btn-default btn-sm">Edit</a>
-                                    @if (inUserAgenda)
-                                    {
-                                        <button type="submit" asp-page-handler="Remove" asp-route-day="@Model.CurrentDayOffset" class="btn btn-default btn-sm bg-transparent" title="Remove from my personal agenda">
-                                            <i class="icon ion-md-star" aria-hidden="true"></i>
-                                        </button>
-                                    }
-                                    else
-                                    {
-                                        <button type="submit" asp-route-day="@Model.CurrentDayOffset" class="btn btn-default btn-sm bg-transparent" title="Add to my personal agenda">
-                                            <i class="icon ion-md-star-outline" aria-hidden="true"></i>
-                                        </button>
-                                    }
-                                </p>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-                }
-            }
-        </div>
-    }
-</div>
+<partial name="_AgendaPartial" model="Model" />
