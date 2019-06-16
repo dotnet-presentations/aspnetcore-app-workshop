@@ -61,7 +61,9 @@ namespace FrontEnd.Pages
             return RedirectToPage(new { day });
         }
 
-        protected virtual Task<ConferenceData> GetConferenceDataAsync()
+        public virtual bool ShowSessionsNotInAgenda() => true;
+
+        protected Task<ConferenceData> GetConferenceDataAsync()
         {
             return _cache.GetOrCreateAsync(CacheKeys.ConferenceData, async entry =>
             {
@@ -72,26 +74,27 @@ namespace FrontEnd.Pages
 
                 var numberOfDays = ((endDate - startDate)?.Days + 1) ?? 0;
 
-                var dict = new ConferenceData(numberOfDays);
+                var confData = new ConferenceData(numberOfDays);
 
                 for (int i = 0; i < numberOfDays; i++)
                 {
                     var filterDate = startDate?.AddDays(i);
 
-                    dict[i] = sessions.Where(s => s.StartTime?.Date == filterDate)
-                                       .OrderBy(s => s.TrackId)
-                                       .GroupBy(s => s.StartTime)
-                                       .OrderBy(g => g.Key);
+                    confData[i] = sessions.Where(s => s.StartTime?.Date == filterDate)
+                                          .OrderBy(s => s.TrackId)
+                                          .GroupBy(s => s.StartTime)
+                                          .OrderBy(g => g.Key);
                 }
 
                 entry.SetSlidingExpiration(TimeSpan.FromHours(1));
 
-                dict.StartDate = startDate;
-                dict.EndDate = endDate;
-                dict.DayOffsets = Enumerable.Range(0, numberOfDays)
-                    .Select(offset => (offset, (startDate?.AddDays(offset))?.DayOfWeek));
+                confData.StartDate = startDate;
+                confData.EndDate = endDate;
+                confData.DayOffsets = Enumerable.Range(0, numberOfDays)
+                                                .Select(offset =>
+                                                    (offset, (startDate?.AddDays(offset))?.DayOfWeek));
 
-                return dict;
+                return confData;
             });
         }
 
@@ -102,7 +105,9 @@ namespace FrontEnd.Pages
             }
 
             public DateTimeOffset? StartDate { get; set; }
+
             public DateTimeOffset? EndDate { get; set; }
+
             public IEnumerable<(int Offset, DayOfWeek? DayofWeek)> DayOffsets { get; set; }
         }
     }
