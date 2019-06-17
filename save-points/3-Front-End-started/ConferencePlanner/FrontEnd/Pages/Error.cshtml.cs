@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Logging;
 
 namespace FrontEnd.Pages
 {
@@ -15,6 +16,12 @@ namespace FrontEnd.Pages
 
         public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
 
+        private readonly ILogger<ErrorModel> logger;
+
+        public ErrorModel(ILogger<ErrorModel> _logger)
+        {
+            logger = _logger;
+        }
         public void OnGet()
         {
             RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;

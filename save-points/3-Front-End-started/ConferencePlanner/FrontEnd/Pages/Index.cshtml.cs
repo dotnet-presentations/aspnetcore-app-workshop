@@ -6,23 +6,26 @@ using ConferenceDTO;
 using FrontEnd.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Logging;
 
 namespace FrontEnd.Pages
 {
     public class IndexModel : PageModel
     {
+        private readonly ILogger<IndexModel> logger;
         protected readonly IApiClient _apiClient;
+
+        public IndexModel(ILogger<IndexModel> _logger, IApiClient apiClient)
+        {
+            logger = _logger;
+            _apiClient = apiClient;
+        }
 
         public IEnumerable<IGrouping<DateTimeOffset?, SessionResponse>> Sessions { get; set; }
 
         public IEnumerable<(int Offset, DayOfWeek? DayofWeek)> DayOffsets { get; set; }
 
         public int CurrentDayOffset { get; set; }
-
-        public IndexModel(IApiClient apiClient)
-        {
-            _apiClient = apiClient;
-        }
 
         public async Task OnGet(int day = 0)
         {
