@@ -26,14 +26,14 @@
                     <div class="card shadow session h-100">
                         <div class="card-header">@session.Track?.Name</div>
                         <div class="card-body">
-                            <h5 class="card-title"><a asp-page="Session" asp-route-id="@session.ID">@session.Title</a></h5>
+                            <h5 class="card-title"><a asp-page="Session" asp-route-id="@session.Id">@session.Title</a></h5>
                         </div>
                         <div class="card-footer">
                             <ul class="list-inline mb-0">
                                 @foreach (var speaker in session.Speakers)
                                 {
                                     <li class="list-inline-item">
-                                        <a asp-page="Speaker" asp-route-id="@speaker.ID">@speaker.Name</a>
+                                        <a asp-page="Speaker" asp-route-id="@speaker.Id">@speaker.Name</a>
                                     </li>
                                 }
                             </ul>
