@@ -10,17 +10,15 @@ namespace BackEnd
 {
     public class SessionizeLoader : DataLoader
     {
-        public override async Task LoadDataAsync(string conferenceName, Stream fileStream, ApplicationDbContext db)
+        public override async Task LoadDataAsync(Stream fileStream, ApplicationDbContext db)
         {
-            //var blah = new RootObject().rooms[0].sessions[0].speakers[0].name;
+            // var blah = new RootObject().rooms[0].sessions[0].speakers[0].name;
 
             var addedSpeakers = new Dictionary<string, Speaker>();
             var addedTracks = new Dictionary<string, Track>();
-            var addedTags = new Dictionary<string, Tag>();
 
             var array = await JToken.LoadAsync(new JsonTextReader(new StreamReader(fileStream)));
-            var conference = new Conference { Name = conferenceName };
-
+            
             var root = array.ToObject<List<RootObject>>();
 
             foreach (var date in root)
@@ -29,7 +27,7 @@ namespace BackEnd
                 {
                     if (!addedTracks.ContainsKey(room.name))
                     {
-                        var thisTrack = new Track { Name = room.name, Conference = conference };
+                        var thisTrack = new Track { Name = room.name };
                         db.Tracks.Add(thisTrack);
                         addedTracks.Add(thisTrack.Name, thisTrack);
                     }
@@ -46,19 +44,8 @@ namespace BackEnd
                             }
                         }
 
-                        foreach (var category in thisSession.categories)
-                        {
-                            if (!addedTags.ContainsKey(category.name))
-                            {
-                                var thisTag = new Tag { Name = category.name };
-                                db.Tags.Add(thisTag);
-                                addedTags.Add(thisTag.Name, thisTag);
-                            }
-                        }
-
                         var session = new Session
                         {
-                            Conference = conference,
                             Title = thisSession.title,
                             StartTime = thisSession.startsAt,
                             EndTime = thisSession.endsAt,

@@ -1,7 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using ConferenceDTO;
 using FrontEnd.Services;
@@ -14,12 +13,9 @@ namespace FrontEnd.Pages
     {
         private readonly IApiClient _apiClient;
 
-        private readonly HtmlEncoder _htmlEncoder;
-
-        public SessionModel(IApiClient apiClient, HtmlEncoder htmlEncoder)
+        public SessionModel(IApiClient apiClient)
         {
             _apiClient = apiClient;
-            _htmlEncoder = htmlEncoder;
         }
 
         public SessionResponse Session { get; set; }
@@ -40,13 +36,6 @@ namespace FrontEnd.Pages
             var startDate = allSessions.Min(s => s.StartTime?.Date);
 
             DayOffset = Session.StartTime?.Subtract(startDate ?? DateTimeOffset.MinValue).Days;
-
-            if (!string.IsNullOrEmpty(Session.Abstract))
-            {
-                var encodedCrLf = _htmlEncoder.Encode("\r\n");
-                var encodedAbstract = _htmlEncoder.Encode(Session.Abstract);
-                Session.Abstract = "<p>" + String.Join("</p><p>", encodedAbstract.Split(encodedCrLf, StringSplitOptions.RemoveEmptyEntries)) + "</p>";
-            }
 
             return Page();
         }
