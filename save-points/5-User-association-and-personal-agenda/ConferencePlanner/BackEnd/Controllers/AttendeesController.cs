@@ -7,25 +7,25 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
 using ConferenceDTO;
 
-namespace BackEnd
+namespace BackEnd.Controllers
 {
     [Route("/api/[controller]")]
     [ApiController]
     public class AttendeesController : ControllerBase
     {
-        private readonly ApplicationDbContext _db;
+        private readonly ApplicationDbContext _context;
 
-        public AttendeesController(ApplicationDbContext db)
+        public AttendeesController(ApplicationDbContext context)
         {
-            _db = db;
+            _context = context;
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<AttendeeResponse>> Get(string id)
+        [HttpGet("{username}")]
+        public async Task<ActionResult<AttendeeResponse>> Get(string username)
         {
-            var attendee = await _db.Attendees.Include(a => a.SessionsAttendees)
+            var attendee = await _context.Attendees.Include(a => a.SessionsAttendees)
                                                 .ThenInclude(sa => sa.Session)
-                                              .SingleOrDefaultAsync(a => a.UserName == id);
+                                              .SingleOrDefaultAsync(a => a.UserName == username);
 
             if (attendee == null)
             {
@@ -37,13 +37,26 @@ namespace BackEnd
             return result;
         }
 
+        [HttpGet("{username}/sessions")]
+        public async Task<ActionResult<List<SessionResponse>>> GetSessions(string username)
+        {
+            var sessions = await _context.Sessions.AsNoTracking()
+                                                .Include(s => s.Track)
+                                                .Include(s => s.SessionSpeakers)
+                                                    .ThenInclude(ss => ss.Speaker)
+                                                .Where(s => s.SessionAttendees.Any(sa => sa.Attendee.UserName == username))
+                                                .Select(m => m.MapSessionResponse())
+                                                .ToListAsync();
+            return sessions;
+        }
+
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<ActionResult<AttendeeResponse>> Post(ConferenceDTO.Attendee input)
         {
             // Check if the attendee already exists
-            var existingAttendee = await _db.Attendees
+            var existingAttendee = await _context.Attendees
                 .Where(a => a.UserName == input.UserName)
                 .FirstOrDefaultAsync();
 
@@ -60,25 +73,23 @@ namespace BackEnd
                 EmailAddress = input.EmailAddress
             };
 
-            _db.Attendees.Add(attendee);
-            await _db.SaveChangesAsync();
+            _context.Attendees.Add(attendee);
+            await _context.SaveChangesAsync();
 
             var result = attendee.MapAttendeeResponse();
 
-            return CreatedAtAction(nameof(Get), new { id = result.UserName }, result);
+            return CreatedAtAction(nameof(Get), new { username = result.UserName }, result);
         }
 
-        [HttpPost("{username}/session/{sessionId:int}")]
+        [HttpPost("{username}/session/{sessionId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesDefaultResponseType]
         public async Task<ActionResult<AttendeeResponse>> AddSession(string username, int sessionId)
         {
-            var attendee = await _db.Attendees.Include(a => a.SessionsAttendees)
+            var attendee = await _context.Attendees.Include(a => a.SessionsAttendees)
                                                 .ThenInclude(sa => sa.Session)
-                                              .Include(a => a.ConferenceAttendees)
-                                                .ThenInclude(ca => ca.Conference)
                                               .SingleOrDefaultAsync(a => a.UserName == username);
 
             if (attendee == null)
@@ -86,7 +97,7 @@ namespace BackEnd
                 return NotFound();
             }
 
-            var session = await _db.Sessions.FindAsync(sessionId);
+            var session = await _context.Sessions.FindAsync(sessionId);
 
             if (session == null)
             {
@@ -95,25 +106,25 @@ namespace BackEnd
 
             attendee.SessionsAttendees.Add(new SessionAttendee
             {
-                AttendeeID = attendee.ID,
-                SessionID = sessionId
+                AttendeeId = attendee.Id,
+                SessionId = sessionId
             });
 
-            await _db.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
             var result = attendee.MapAttendeeResponse();
 
             return result;
         }
 
-        [HttpDelete("{username}/session/{sessionId:int}")]
+        [HttpDelete("{username}/session/{sessionId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesDefaultResponseType]
         public async Task<IActionResult> RemoveSession(string username, int sessionId)
         {
-            var attendee = await _db.Attendees.Include(a => a.SessionsAttendees)
+            var attendee = await _context.Attendees.Include(a => a.SessionsAttendees)
                                               .SingleOrDefaultAsync(a => a.UserName == username);
 
             if (attendee == null)
@@ -121,17 +132,17 @@ namespace BackEnd
                 return NotFound();
             }
 
-            var session = await _db.Sessions.FindAsync(sessionId);
+            var session = await _context.Sessions.FindAsync(sessionId);
 
             if (session == null)
             {
                 return BadRequest();
             }
 
-            var sessionAttendee = attendee.SessionsAttendees.FirstOrDefault(sa => sa.SessionID == sessionId);
+            var sessionAttendee = attendee.SessionsAttendees.FirstOrDefault(sa => sa.SessionId == sessionId);
             attendee.SessionsAttendees.Remove(sessionAttendee);
 
-            await _db.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }

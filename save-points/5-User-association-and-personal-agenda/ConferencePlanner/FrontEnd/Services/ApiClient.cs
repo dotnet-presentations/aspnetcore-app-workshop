@@ -110,7 +110,7 @@ namespace FrontEnd.Services
 
         public async Task PutSessionAsync(Session session)
         {
-            var response = await _httpClient.PutAsJsonAsync($"/api/sessions/{session.ID}", session);
+            var response = await _httpClient.PutAsJsonAsync($"/api/sessions/{session.Id}", session);
 
             response.EnsureSuccessStatusCode();
         }
@@ -145,26 +145,11 @@ namespace FrontEnd.Services
 
         public async Task<List<SessionResponse>> GetSessionsByAttendeeAsync(string name)
         {
-            // TODO: Would be better to add backend API for this
+            var response = await _httpClient.GetAsync($"/api/attendees/{name}/sessions");
 
-            var sessionsTask = GetSessionsAsync();
-            var attendeeTask = GetAttendeeAsync(name);
+            response.EnsureSuccessStatusCode();
 
-            await Task.WhenAll(sessionsTask, attendeeTask);
-
-            var sessions = await sessionsTask;
-            var attendee = await attendeeTask;
-
-            if (attendee == null)
-            {
-                return new List<SessionResponse>();
-            }
-
-            var sessionIds = attendee.Sessions.Select(s => s.ID);
-
-            sessions.RemoveAll(s => !sessionIds.Contains(s.ID));
-
-            return sessions;
+            return await response.Content.ReadAsAsync<List<SessionResponse>>();
         }
     }
 }
