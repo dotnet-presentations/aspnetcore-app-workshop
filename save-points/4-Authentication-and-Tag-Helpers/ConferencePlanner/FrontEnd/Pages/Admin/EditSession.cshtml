@@ -1,10 +1,7 @@
 ﻿@page "{id}"
-@model FrontEnd.Pages.Admin.EditSessionModel
-@{
-    ViewData["Title"] = "EditSession";
-}
+@model EditSessionModel
 
-<h3>EditSession</h3>
+<h3>Edit Session</h3>
 
 @if (Model.ShowMessage)
 {
@@ -16,8 +13,7 @@
 
 <form method="post" class="form-horizontal">
     <div asp-validation-summary="All" class="text-danger"></div>
-    <input asp-for="Session.ID" type="hidden" />
-    <input asp-for="Session.ConferenceID" type="hidden" />
+    <input asp-for="Session.Id" type="hidden" />
     <input asp-for="Session.TrackId" type="hidden" />
     <div class="form-group">
         <label asp-for="Session.Title" class="col-md-2 control-label"></label>
@@ -54,4 +50,7 @@
         </div>
     </div>
 </form>
-<partial name="_ValidationScriptsPartial" />
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

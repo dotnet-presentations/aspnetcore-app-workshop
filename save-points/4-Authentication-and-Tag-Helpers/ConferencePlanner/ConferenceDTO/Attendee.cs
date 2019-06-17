@@ -6,7 +6,7 @@ namespace ConferenceDTO
 {
     public class Attendee
     {
-        public int ID { get; set; }
+        public int Id { get; set; }
 
         [Required]
         [StringLength(200)]

@@ -2,8 +2,8 @@
 @model SpeakerModel
 
 <ol class="breadcrumb">
-    <li><a asp-page="/Speakers">Speakers</a></li>
-    <li class="active">@Model.Speaker.Name</li>
+    <li class="breadcrumb-item"><a asp-page="/Speakers">Speakers</a></li>
+    <li class="breadcrumb-item active">@Model.Speaker.Name</li>
 </ol>
 
 <h2>@Model.Speaker.Name</h2>
@@ -16,7 +16,7 @@
         <ul class="list-group">
             @foreach (var session in Model.Speaker.Sessions)
             {
-                <li class="list-group-item"><a asp-page="Session" asp-route-id="@session.ID">@session.Title</a></li>
+                <li class="list-group-item"><a asp-page="Session" asp-route-id="@session.Id">@session.Title</a></li>
             }
         </ul>
     </div>

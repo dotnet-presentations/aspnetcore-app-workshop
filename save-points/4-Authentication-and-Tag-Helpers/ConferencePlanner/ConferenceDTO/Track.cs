@@ -6,10 +6,7 @@ namespace ConferenceDTO
 {
     public class Track
     {
-        public int TrackID { get; set; }
-
-        [Required]
-        public int ConferenceID { get; set; }
+        public int Id { get; set; }
 
         [Required]
         [StringLength(200)]

@@ -1,19 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using ConferenceDTO;
 using FrontEnd.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
+using Microsoft.Extensions.Logging;
 
 namespace FrontEnd.Pages
 {
     public class IndexModel : PageModel
     {
+        private readonly ILogger<IndexModel> logger;
         protected readonly IApiClient _apiClient;
+
+        public IndexModel(ILogger<IndexModel> _logger, IApiClient apiClient)
+        {
+            logger = _logger;
+            _apiClient = apiClient;
+        }
+
+        public bool IsAdmin { get; set; }
 
         public IEnumerable<IGrouping<DateTimeOffset?, SessionResponse>> Sessions { get; set; }
 
@@ -21,14 +30,12 @@ namespace FrontEnd.Pages
 
         public int CurrentDayOffset { get; set; }
 
-        public bool IsAdmin { get; set; }
+        [TempData]
+        public string Message { get; set; }
 
-        public IndexModel(IApiClient apiClient)
-        {
-            _apiClient = apiClient;
-        }
+        public bool ShowMessage => !string.IsNullOrEmpty(Message);
 
-        public async Task OnGetAsync(int day = 0)
+        public async Task OnGet(int day = 0)
         {
             IsAdmin = User.IsAdmin();
 

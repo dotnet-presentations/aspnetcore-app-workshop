@@ -4,6 +4,14 @@
     ViewData["Title"] = "Home page";
 }
 
+@if (Model.ShowMessage)
+{
+    <div class="alert alert-success alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        @Model.Message
+    </div>
+}
+
 <ul class="nav nav-pills mb-3">
     @foreach (var day in Model.DayOffsets)
     {
@@ -26,20 +34,18 @@
                     <div class="card shadow session h-100">
                         <div class="card-header">@session.Track?.Name</div>
                         <div class="card-body">
-                            <h5 class="card-title"><a asp-page="Session" asp-route-id="@session.ID">@session.Title</a></h5>
+                            <h5 class="card-title"><a asp-page="Session" asp-route-id="@session.Id">@session.Title</a></h5>
                         </div>
                         <div class="card-footer">
                             <ul class="list-inline mb-0">
                                 @foreach (var speaker in session.Speakers)
                                 {
                                     <li class="list-inline-item">
-                                        <a asp-page="Speaker" asp-route-id="@speaker.ID">@speaker.Name</a>
+                                        <a asp-page="Speaker" asp-route-id="@speaker.Id">@speaker.Name</a>
                                     </li>
                                 }
-                                <li authz="true">
-                                    <a asp-page="/Admin/EditSession" asp-route-id="@session.ID" class="btn btn-default btn-xs">Edit</a>
-                                </li>
                             </ul>
+                            <a asp-page="/Admin/EditSession" asp-route-id="@session.Id" class="btn btn-default btn-xs">Edit</a>
                         </div>
                     </div>
                 </div>
