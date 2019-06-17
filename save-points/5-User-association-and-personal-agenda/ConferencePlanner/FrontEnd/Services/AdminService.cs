@@ -8,7 +8,6 @@ namespace FrontEnd.Services
 {
     public class AdminService : IAdminService
     {
-        private readonly Lazy<long> _creationKey = new Lazy<long>(() => BitConverter.ToInt64(Guid.NewGuid().ToByteArray(), 7));
         private readonly IServiceProvider _serviceProvider;
 
         private bool _adminExists;
@@ -17,8 +16,6 @@ namespace FrontEnd.Services
         {
             _serviceProvider = serviceProvider;
         }
-
-        public long CreationKey => _creationKey.Value;
 
         public async Task<bool> AllowAdminUserCreationAsync()
         {

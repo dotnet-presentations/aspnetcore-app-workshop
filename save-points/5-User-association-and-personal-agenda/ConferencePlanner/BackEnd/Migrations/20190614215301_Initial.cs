@@ -11,7 +11,7 @@ namespace BackEnd.Migrations
                 name: "Speakers",
                 columns: table => new
                 {
-                    ID = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(maxLength: 200, nullable: false),
                     Bio = table.Column<string>(maxLength: 4000, nullable: true),
@@ -19,7 +19,7 @@ namespace BackEnd.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Speakers", x => x.ID);
+                    table.PrimaryKey("PK_Speakers", x => x.Id);
                 });
         }
 

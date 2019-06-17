@@ -1,7 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using ConferenceDTO;
 using FrontEnd.Services;
@@ -14,15 +13,12 @@ namespace FrontEnd.Pages
     {
         private readonly IApiClient _apiClient;
 
-        private readonly HtmlEncoder _htmlEncoder;
-
-        public bool IsInPersonalAgenda { get; set; }
-
-        public SessionModel(IApiClient apiClient, HtmlEncoder htmlEncoder)
+        public SessionModel(IApiClient apiClient)
         {
             _apiClient = apiClient;
-            _htmlEncoder = htmlEncoder;
         }
+
+        public bool IsInPersonalAgenda { get; set; }
 
         public SessionResponse Session { get; set; }
 
@@ -37,22 +33,18 @@ namespace FrontEnd.Pages
                 return RedirectToPage("/Index");
             }
 
-            var sessions = await _apiClient.GetSessionsByAttendeeAsync(User.Identity.Name);
+            if (User.Identity.IsAuthenticated)
+            {
+                var sessions = await _apiClient.GetSessionsByAttendeeAsync(User.Identity.Name);
 
-            IsInPersonalAgenda = sessions.Any(s => s.ID == id);
+                IsInPersonalAgenda = sessions.Any(s => s.Id == id);
+            }
 
             var allSessions = await _apiClient.GetSessionsAsync();
 
             var startDate = allSessions.Min(s => s.StartTime?.Date);
 
             DayOffset = Session.StartTime?.Subtract(startDate ?? DateTimeOffset.MinValue).Days;
-
-            if (!string.IsNullOrEmpty(Session.Abstract))
-            {
-                var encodedCrLf = _htmlEncoder.Encode("\r\n");
-                var encodedAbstract = _htmlEncoder.Encode(Session.Abstract);
-                Session.Abstract = "<p>" + String.Join("</p><p>", encodedAbstract.Split(encodedCrLf, StringSplitOptions.RemoveEmptyEntries)) + "</p>";
-            }
 
             return Page();
         }
