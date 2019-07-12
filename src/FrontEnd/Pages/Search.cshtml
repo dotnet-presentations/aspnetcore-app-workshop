@@ -2,8 +2,13 @@
 @using ConferenceDTO
 @model SearchModel
 
+@{ 
+    var title = "Search";
+    ViewData["Title"] = title;
+}
+
 <div class="search">
-    <h1>Search</h1>
+    <h1>@title</h1>
     <form method="get">
         <div class="input-group mb-3">
             <input asp-for="Term" placeholder="Search for sessions or speakers..." class="form-control" />

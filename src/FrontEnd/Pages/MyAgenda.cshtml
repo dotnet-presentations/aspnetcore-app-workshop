@@ -1,11 +1,19 @@
 ﻿@page
 @model MyAgendaModel
 @{
-    ViewData["Title"] = "Home Page";
+    var title = "My Agenda";
+    ViewData["Title"] = title;
 }
 
 <partial name="_AlertPartial" model="(Model.ShowMessage, Model.Message)" />
 
-<h1 class="mb-4">My Agenda - My Conference @System.DateTime.Now.Year</h1>
+<h1 class="mb-4">@title</h1>
 
-<partial name="_AgendaPartial" model="Model" />
+@if (Model.UserSessions.Count > 0)
+{
+    <partial name="_AgendaPartial" model="Model" />
+}
+else
+{
+    <p>You don't have any sessions in your agenda yet. Try <a asp-page="/Index">browsing</a> or <a asp-page="/Search">searching</a> for sessions then starring them to add them to your agenda.</p>
+}

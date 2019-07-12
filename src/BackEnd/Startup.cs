@@ -41,10 +41,10 @@ namespace BackEnd
             });
 
             services.AddControllers()
-                    .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+                    .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
                     // BUG: There's an issue with the default JSON formatters right now that is causing truncation of results.
                     //      Uncomment following line to make app functional.
-                    //.AddNewtonsoftJson();
+                    .AddNewtonsoftJson();
 
             services.AddHealthChecks()
                     .AddDbContextCheck<ApplicationDbContext>();
