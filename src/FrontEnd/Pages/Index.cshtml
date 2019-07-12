@@ -1,11 +1,12 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home Page";
+    var title = $"My Conference {DateTime.Now.Year}";
+    ViewData["Title"] = title;
 }
 
 <partial name="_AlertPartial" model="(Model.ShowMessage, Model.Message)" />
 
-<h1 class="mb-4">My Conference @System.DateTime.Now.Year</h1>
+<h1 class="mb-4">@title</h1>
 
 <partial name="_AgendaPartial" model="Model" />

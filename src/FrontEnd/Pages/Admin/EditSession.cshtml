@@ -1,7 +1,11 @@
 @page "{id}"
 @model EditSessionModel
 
-<h3>Edit Session</h3>
+@{
+    ViewData["Title"] = "Edit Session";
+}
+
+<h3>@ViewData["Title"]</h3>
 
 <partial name="_AlertPartial" model="(Model.ShowMessage, Model.Message)" />
 
@@ -44,4 +48,7 @@
         </div>
     </div>
 </form>
-<partial name="_ValidationScriptsPartial" />
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

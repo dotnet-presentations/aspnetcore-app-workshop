@@ -33,7 +33,7 @@ namespace FrontEnd.Pages
 
         public bool ShowMessage => !string.IsNullOrEmpty(Message);
 
-        public async Task OnGetAsync(int day = 0)
+        public async Task<IActionResult> OnGetAsync(int day = 0)
         {
             CurrentDayOffset = day;
 
@@ -43,20 +43,38 @@ namespace FrontEnd.Pages
             }
 
             ConferenceModel = await GetConferenceDataAsync();
+
+            if (CurrentDayOffset > 0 && !ConferenceModel.ContainsKey(CurrentDayOffset))
+            {
+                // Requested day is no longer valid, redirect to first day
+                return RedirectToPage();
+            }
+
+            return Page();
         }
         
         public async Task<IActionResult> OnPostAsync(int sessionId, int day = 0)
         {
             await _apiClient.AddSessionToAttendeeAsync(User.Identity.Name, sessionId);
 
-            return RedirectToPage(new { day });
+            if (day > 0)
+            {
+                return RedirectToPage(new { day });
+            }
+
+            return RedirectToPage();
         }
 
         public async Task<IActionResult> OnPostRemoveAsync(int sessionId, int day = 0)
         {
             await _apiClient.RemoveSessionFromAttendeeAsync(User.Identity.Name, sessionId);
 
-            return RedirectToPage(new { day });
+            if (day > 0)
+            {
+                return RedirectToPage(new { day });
+            }
+
+            return RedirectToPage();
         }
 
         protected virtual Task<ConferenceData> GetConferenceDataAsync()
@@ -73,27 +91,28 @@ namespace FrontEnd.Pages
         protected static ConferenceData GenerateConferenceData(List<SessionResponse> sessions)
         {
             var startDate = sessions.Min(s => s.StartTime?.Date);
-            var endDate = sessions.Max(s => s.EndTime?.Date);
 
-            var numberOfDays = ((endDate - startDate)?.Days + 1) ?? 0;
+            var dayOffsets = sessions.Select(s => s.StartTime?.Date)
+                                     .Distinct()
+                                     .OrderBy(d => d)
+                                     .Select(day => (Offset: (int)Math.Floor((day.Value - startDate)?.TotalDays ?? 0),
+                                                     day?.DayOfWeek))
+                                     .ToList();
 
-            var confData = new ConferenceData(numberOfDays);
+            var confData = new ConferenceData(dayOffsets.Count);
 
-            for (int i = 0; i < numberOfDays; i++)
+            foreach (var day in dayOffsets)
             {
-                var filterDate = startDate?.AddDays(i);
+                var filterDate = startDate?.AddDays(day.Offset);
 
-                confData[i] = sessions.Where(s => s.StartTime?.Date == filterDate)
-                                      .OrderBy(s => s.TrackId)
-                                      .GroupBy(s => s.StartTime)
-                                      .OrderBy(g => g.Key);
+                confData[day.Offset] = sessions.Where(s => s.StartTime?.Date == filterDate)
+                                               .OrderBy(s => s.Track.Name)
+                                               .GroupBy(s => s.StartTime)
+                                               .OrderBy(g => g.Key);
             }
 
             confData.StartDate = startDate;
-            confData.EndDate = endDate;
-            confData.DayOffsets = Enumerable.Range(0, numberOfDays)
-                                            .Select(offset =>
-                                                (offset, (startDate?.AddDays(offset))?.DayOfWeek));
+            confData.DayOffsets = dayOffsets;
 
             return confData;
         }

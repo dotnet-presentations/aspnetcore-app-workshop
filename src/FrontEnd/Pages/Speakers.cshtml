@@ -1,11 +1,12 @@
 @page
 @model SpeakersModel
 @{
-    ViewData["Title"] = "Speakers";
+    var title = "Speakers";
+    ViewData["Title"] = title;
 }
 
 <div class="speaker-list">
-    <h1>My Conference @System.DateTime.Now.Year</h1>
+    <h1>@title</h1>
 
     <div class="row">
         @foreach (var speaker in Model.Speakers)

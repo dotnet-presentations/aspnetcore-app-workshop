@@ -29,9 +29,15 @@ namespace FrontEnd.Pages
 
         public bool ShowMessage => !string.IsNullOrEmpty(Message);
 
-        public async Task OnGet(int id)
+        public async Task<IActionResult> OnGet(int id)
         {
             var session = await _apiClient.GetSessionAsync(id);
+
+            if (session == null)
+            {
+                return RedirectToPage("/Index");
+            }
+
             Session = new Session
             {
                 Id = session.Id,
@@ -41,6 +47,8 @@ namespace FrontEnd.Pages
                 StartTime = session.StartTime,
                 EndTime = session.EndTime
             };
+
+            return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()

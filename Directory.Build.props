@@ -7,5 +7,6 @@
       https://dotnetfeed.blob.core.windows.net/dotnet-core-preview7-012802/index.json;
       https://grpc.jfrog.io/grpc/api/nuget/v3/grpc-nuget-dev;
     </RestoreSources>
+    <DisableImplicitAspNetCoreAnalyzers>true</DisableImplicitAspNetCoreAnalyzers>
   </PropertyGroup>
 </Project>

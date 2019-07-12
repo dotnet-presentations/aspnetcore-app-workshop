@@ -27,10 +27,13 @@ namespace BackEnd.Controllers
             var sessions = await _db.Sessions.AsNoTracking()
                                              .Include(s => s.Track)
                                              .Include(s => s.SessionSpeakers)
-                                                .ThenInclude(ss => ss.Speaker)
-                                             .Select(m => m.MapSessionResponse())
+                                             .ThenInclude(ss => ss.Speaker)
+                                             //.Select(m => m.MapSessionResponse())
                                              .ToListAsync();
-            return sessions;
+
+            // BUG: Working around EF Core 3.0 issue: https://github.com/aspnet/EntityFrameworkCore/issues/16318
+            return sessions.Select(s => s.MapSessionResponse())
+                           .ToList();
         }
 
         [HttpGet("{id}")]

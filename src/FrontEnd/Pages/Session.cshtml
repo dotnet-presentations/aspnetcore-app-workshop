@@ -1,6 +1,10 @@
 @page "{id}"
 @model SessionModel
 
+@{
+    ViewData["Titlte"] = Model.Session.Title;
+}
+
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a asp-page="/Index">Agenda</a></li>
