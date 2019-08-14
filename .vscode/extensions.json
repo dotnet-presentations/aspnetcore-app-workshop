@@ -1,0 +1,10 @@
+{
+  "recommendations": [
+    "ms-vscode.csharp",
+    "VisualStudioExptTeam.vscodeintellicode",
+    "ms-mssql.mssql",
+    "ms-vscode.azure-account",
+    "ms-azuretools.vscode-azureappservice",
+    "MS-vsliveshare.vsliveshare-pack"
+  ]
+}
