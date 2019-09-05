@@ -2,11 +2,11 @@
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using BackEnd.Data;
-using ConferenceDTO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using BackEnd.Data;
+using ConferenceDTO;
 
 namespace BackEnd.Controllers
 {
@@ -28,12 +28,10 @@ namespace BackEnd.Controllers
                                              .Include(s => s.Track)
                                              .Include(s => s.SessionSpeakers)
                                              .ThenInclude(ss => ss.Speaker)
-                                             //.Select(m => m.MapSessionResponse())
+                                             .Select(m => m.MapSessionResponse())
                                              .ToListAsync();
 
-            // BUG: Working around EF Core 3.0 issue: https://github.com/aspnet/EntityFrameworkCore/issues/16318
-            return sessions.Select(s => s.MapSessionResponse())
-                           .ToList();
+            return sessions;
         }
 
         [HttpGet("{id}")]

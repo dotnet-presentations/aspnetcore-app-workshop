@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using BackEnd.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
+using BackEnd.Data;
 using ConferenceDTO;
 
 namespace BackEnd.Controllers
@@ -21,6 +21,9 @@ namespace BackEnd.Controllers
         }
 
         [HttpGet("{username}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesDefaultResponseType]
         public async Task<ActionResult<AttendeeResponse>> Get(string username)
         {
             var attendee = await _db.Attendees.Include(a => a.SessionsAttendees)
@@ -45,11 +48,10 @@ namespace BackEnd.Controllers
                                              .Include(s => s.SessionSpeakers)
                                                  .ThenInclude(ss => ss.Speaker)
                                              .Where(s => s.SessionAttendees.Any(sa => sa.Attendee.UserName == username))
-                                             //.Select(m => m.MapSessionResponse())
+                                             .Select(m => m.MapSessionResponse())
                                              .ToListAsync();
 
-            // BUG: Working around EF Core 3.0 issue: https://github.com/aspnet/EntityFrameworkCore/issues/16318
-            return sessions.Select(s => s.MapSessionResponse()).ToList();
+            return sessions;
         }
 
         [HttpPost]
