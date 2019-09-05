@@ -1,12 +1,10 @@
 using System.Threading.Tasks;
-using FrontEnd.Services;
-using FrontEnd.Pages.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Caching.Memory;
 using FrontEnd.Infrastructure;
+using FrontEnd.Pages.Models;
+using FrontEnd.Services;
 
 namespace FrontEnd.Pages
 {

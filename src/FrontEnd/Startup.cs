@@ -36,11 +36,8 @@ namespace FrontEnd
                 client.BaseAddress = new Uri(Configuration["serviceUrl"]);
             });
 
-            services.AddRazorPages(options =>
-            {
-                options.Conventions.AuthorizeFolder("/Admin", "Admin");
-            })
-            .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+            services.AddRazorPages()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             services.AddHealthChecks()
                     .AddCheck<BackendHealthCheck>("backend")
