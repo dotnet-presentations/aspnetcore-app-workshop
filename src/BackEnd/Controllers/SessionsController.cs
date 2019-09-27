@@ -27,7 +27,7 @@ namespace BackEnd.Controllers
             var sessions = await _db.Sessions.AsNoTracking()
                                              .Include(s => s.Track)
                                              .Include(s => s.SessionSpeakers)
-                                             .ThenInclude(ss => ss.Speaker)
+                                                .ThenInclude(ss => ss.Speaker)
                                              .Select(m => m.MapSessionResponse())
                                              .ToListAsync();
 
