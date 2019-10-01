@@ -49,7 +49,10 @@ namespace BackEnd
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo { Title = "Conference Planner API", Version = "v1" });
+#pragma warning disable CS0618 // Type or member is obsolete
+                // The following method is marked obsolete right now but is required until Swashbuckle supports System.Text.Json
                 options.DescribeAllEnumsAsStrings();
+#pragma warning restore CS0618
             });
         }
 
