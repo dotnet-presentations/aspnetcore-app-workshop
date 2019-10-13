@@ -20,7 +20,7 @@ namespace FrontEnd.Areas.Identity
                         context.Configuration.GetConnectionString("IdentityDbContextConnection")));
 
                 services.AddDefaultIdentity<User>()
-                    .AddDefaultUI(UIFramework.Bootstrap4)
+                    .AddDefaultUI()
                     .AddEntityFrameworkStores<IdentityDbContext>()
                     .AddClaimsPrincipalFactory<ClaimsPrincipalFactory>();
             });
