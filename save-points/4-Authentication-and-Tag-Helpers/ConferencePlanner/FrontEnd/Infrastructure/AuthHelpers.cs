@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using FrontEnd.Infrastructure;
 using Microsoft.AspNetCore.Authorization;
 
@@ -11,6 +7,7 @@ namespace FrontEnd.Infrastructure
     public static class AuthConstants
     {
         public static readonly string IsAdmin = nameof(IsAdmin);
+        public static readonly string IsAttendee = nameof(IsAttendee);
         public static readonly string TrueValue = "true";
     }
 }

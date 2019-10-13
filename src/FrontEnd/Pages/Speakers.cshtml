@@ -1,22 +1,23 @@
 @page
 @model SpeakersModel
 @{
-    ViewData["Title"] = "Speakers";
+    var title = "Speakers";
+    ViewData["Title"] = title;
 }
 
 <div class="speaker-list">
-    <h1>My Conference @System.DateTime.Now.Year</h1>
+    <h1>@title</h1>
 
     <div class="row">
         @foreach (var speaker in Model.Speakers)
         {
             <div class="col-md-3 mb-4">
                 <div class="card speaker h-100">
-                    <div class="card-header"><a asp-page="Speaker" asp-route-id="@speaker.ID">@speaker.Name</a></div>
+                    <div class="card-header"><a asp-page="Speaker" asp-route-id="@speaker.Id">@speaker.Name</a></div>
                     <ul class="list-group list-group-flush">
                         @foreach (var session in speaker.Sessions)
                         {
-                            <li class="list-group-item"><a asp-page="Session" asp-route-id="@session.ID">@session.Title</a></li>
+                            <li class="list-group-item"><a asp-page="Session" asp-route-id="@session.Id">@session.Title</a></li>
                         }
                     </ul>
                 </div>

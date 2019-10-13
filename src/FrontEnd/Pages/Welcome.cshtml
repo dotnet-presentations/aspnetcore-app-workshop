@@ -2,7 +2,12 @@
 @using ConferenceDTO
 @model WelcomeModel
 
-<h2>Welcome @User.Identity.Name</h2>
+@{ 
+    var title = $"Welcome {User.Identity.Name}";
+    ViewData["Title"] = title;
+}
+
+<h2>@title</h2>
 <p>
     Register as an attendee to get access to cool features.
 </p>
@@ -43,4 +48,7 @@
         </div>
     </div>
 </form>
-<partial name="_ValidationScriptsPartial" />
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

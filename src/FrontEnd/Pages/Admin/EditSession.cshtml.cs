@@ -1,20 +1,22 @@
 using System.Threading.Tasks;
-using FrontEnd.Services;
-using FrontEnd.Pages.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.Caching.Memory;
+using FrontEnd.Infrastructure;
+using FrontEnd.Pages.Models;
+using FrontEnd.Services;
 
 namespace FrontEnd.Pages
 {
     public class EditSessionModel : PageModel
     {
         private readonly IApiClient _apiClient;
+        private readonly IMemoryCache _cache;
 
-        public EditSessionModel(IApiClient apiClient)
+        public EditSessionModel(IApiClient apiClient, IMemoryCache cache)
         {
             _apiClient = apiClient;
+            _cache = cache;
         }
 
         [BindProperty]
@@ -25,19 +27,26 @@ namespace FrontEnd.Pages
 
         public bool ShowMessage => !string.IsNullOrEmpty(Message);
 
-        public async Task OnGet(int id)
+        public async Task<IActionResult> OnGet(int id)
         {
             var session = await _apiClient.GetSessionAsync(id);
+
+            if (session == null)
+            {
+                return RedirectToPage("/Index");
+            }
+
             Session = new Session
             {
-                ID = session.ID,
-                ConferenceID = session.ConferenceID,
+                Id = session.Id,
                 TrackId = session.TrackId,
                 Title = session.Title,
                 Abstract = session.Abstract,
                 StartTime = session.StartTime,
                 EndTime = session.EndTime
             };
+
+            return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()
@@ -48,6 +57,8 @@ namespace FrontEnd.Pages
             }
 
             await _apiClient.PutSessionAsync(Session);
+
+            _cache.Remove(CacheKeys.ConferenceData);
 
             Message = "Session updated successfully!";
 
@@ -62,6 +73,8 @@ namespace FrontEnd.Pages
             {
                 await _apiClient.DeleteSessionAsync(id);
             }
+
+            _cache.Remove(CacheKeys.ConferenceData);
 
             Message = "Session deleted successfully!";
 

@@ -1,6 +1,10 @@
 @page "{id}"
 @model SpeakerModel
 
+@{
+    ViewData["Titlte"] = Model.Speaker.Name;
+}
+
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a asp-page="/Speakers">Speakers</a></li>
@@ -18,7 +22,7 @@
         <ul class="list-group">
             @foreach (var session in Model.Speaker.Sessions)
             {
-                <li class="list-group-item"><a asp-page="Session" asp-route-id="@session.ID">@session.Title</a></li>
+                <li class="list-group-item"><a asp-page="Session" asp-route-id="@session.Id">@session.Title</a></li>
             }
         </ul>
     </div>

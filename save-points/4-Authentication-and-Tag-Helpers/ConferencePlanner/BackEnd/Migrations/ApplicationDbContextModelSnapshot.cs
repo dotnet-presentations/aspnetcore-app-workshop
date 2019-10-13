@@ -15,13 +15,13 @@ namespace BackEnd.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.1-servicing-10028")
+                .HasAnnotation("ProductVersion", "3.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("BackEnd.Data.Attendee", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -40,7 +40,7 @@ namespace BackEnd.Migrations
                         .IsRequired()
                         .HasMaxLength(200);
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
                     b.HasIndex("UserName")
                         .IsUnique();
@@ -48,46 +48,14 @@ namespace BackEnd.Migrations
                     b.ToTable("Attendees");
                 });
 
-            modelBuilder.Entity("BackEnd.Data.Conference", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(200);
-
-                    b.HasKey("ID");
-
-                    b.ToTable("Conferences");
-                });
-
-            modelBuilder.Entity("BackEnd.Data.ConferenceAttendee", b =>
-                {
-                    b.Property<int>("ConferenceID");
-
-                    b.Property<int>("AttendeeID");
-
-                    b.HasKey("ConferenceID", "AttendeeID");
-
-                    b.HasIndex("AttendeeID");
-
-                    b.ToTable("ConferenceAttendee");
-                });
-
             modelBuilder.Entity("BackEnd.Data.Session", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Abstract")
                         .HasMaxLength(4000);
-
-                    b.Property<int?>("AttendeeID");
-
-                    b.Property<int>("ConferenceID");
 
                     b.Property<DateTimeOffset?>("EndTime");
 
@@ -99,15 +67,24 @@ namespace BackEnd.Migrations
 
                     b.Property<int?>("TrackId");
 
-                    b.HasKey("ID");
-
-                    b.HasIndex("AttendeeID");
-
-                    b.HasIndex("ConferenceID");
+                    b.HasKey("Id");
 
                     b.HasIndex("TrackId");
 
                     b.ToTable("Sessions");
+                });
+
+            modelBuilder.Entity("BackEnd.Data.SessionAttendee", b =>
+                {
+                    b.Property<int>("SessionId");
+
+                    b.Property<int>("AttendeeId");
+
+                    b.HasKey("SessionId", "AttendeeId");
+
+                    b.HasIndex("AttendeeId");
+
+                    b.ToTable("SessionAttendee");
                 });
 
             modelBuilder.Entity("BackEnd.Data.SessionSpeaker", b =>
@@ -123,29 +100,14 @@ namespace BackEnd.Migrations
                     b.ToTable("SessionSpeaker");
                 });
 
-            modelBuilder.Entity("BackEnd.Data.SessionTag", b =>
-                {
-                    b.Property<int>("SessionID");
-
-                    b.Property<int>("TagID");
-
-                    b.HasKey("SessionID", "TagID");
-
-                    b.HasIndex("TagID");
-
-                    b.ToTable("SessionTag");
-                });
-
             modelBuilder.Entity("BackEnd.Data.Speaker", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Bio")
                         .HasMaxLength(4000);
-
-                    b.Property<int?>("ConferenceID");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -154,74 +116,46 @@ namespace BackEnd.Migrations
                     b.Property<string>("WebSite")
                         .HasMaxLength(1000);
 
-                    b.HasKey("ID");
-
-                    b.HasIndex("ConferenceID");
+                    b.HasKey("Id");
 
                     b.ToTable("Speakers");
                 });
 
-            modelBuilder.Entity("BackEnd.Data.Tag", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(32);
-
-                    b.HasKey("ID");
-
-                    b.ToTable("Tags");
-                });
-
             modelBuilder.Entity("BackEnd.Data.Track", b =>
                 {
-                    b.Property<int>("TrackID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("ConferenceID");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(200);
 
-                    b.HasKey("TrackID");
-
-                    b.HasIndex("ConferenceID");
+                    b.HasKey("Id");
 
                     b.ToTable("Tracks");
                 });
 
-            modelBuilder.Entity("BackEnd.Data.ConferenceAttendee", b =>
-                {
-                    b.HasOne("BackEnd.Data.Attendee", "Attendee")
-                        .WithMany("ConferenceAttendees")
-                        .HasForeignKey("AttendeeID")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("BackEnd.Data.Conference", "Conference")
-                        .WithMany("ConferenceAttendees")
-                        .HasForeignKey("ConferenceID")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
             modelBuilder.Entity("BackEnd.Data.Session", b =>
                 {
-                    b.HasOne("BackEnd.Data.Attendee")
-                        .WithMany("Sessions")
-                        .HasForeignKey("AttendeeID");
-
-                    b.HasOne("BackEnd.Data.Conference", "Conference")
-                        .WithMany("Sessions")
-                        .HasForeignKey("ConferenceID")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.HasOne("BackEnd.Data.Track", "Track")
                         .WithMany("Sessions")
                         .HasForeignKey("TrackId");
+                });
+
+            modelBuilder.Entity("BackEnd.Data.SessionAttendee", b =>
+                {
+                    b.HasOne("BackEnd.Data.Attendee", "Attendee")
+                        .WithMany("SessionsAttendees")
+                        .HasForeignKey("AttendeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BackEnd.Data.Session", "Session")
+                        .WithMany()
+                        .HasForeignKey("SessionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("BackEnd.Data.SessionSpeaker", b =>
@@ -229,40 +163,14 @@ namespace BackEnd.Migrations
                     b.HasOne("BackEnd.Data.Session", "Session")
                         .WithMany("SessionSpeakers")
                         .HasForeignKey("SessionId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("BackEnd.Data.Speaker", "Speaker")
                         .WithMany("SessionSpeakers")
                         .HasForeignKey("SpeakerId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("BackEnd.Data.SessionTag", b =>
-                {
-                    b.HasOne("BackEnd.Data.Session", "Session")
-                        .WithMany("SessionTags")
-                        .HasForeignKey("SessionID")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("BackEnd.Data.Tag", "Tag")
-                        .WithMany("SessionTags")
-                        .HasForeignKey("TagID")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("BackEnd.Data.Speaker", b =>
-                {
-                    b.HasOne("BackEnd.Data.Conference")
-                        .WithMany("Speakers")
-                        .HasForeignKey("ConferenceID");
-                });
-
-            modelBuilder.Entity("BackEnd.Data.Track", b =>
-                {
-                    b.HasOne("BackEnd.Data.Conference", "Conference")
-                        .WithMany("Tracks")
-                        .HasForeignKey("ConferenceID")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

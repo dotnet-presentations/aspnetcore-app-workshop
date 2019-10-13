@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -18,21 +18,20 @@ namespace FrontEnd.Pages.Admin
             _apiClient = apiClient;
         }
 
-        [BindProperty]
-        public Session Session { get; set; }
-
         [TempData]
         public string Message { get; set; }
 
         public bool ShowMessage => !string.IsNullOrEmpty(Message);
+
+        [BindProperty]
+        public Session Session { get; set; }
 
         public async Task OnGetAsync(int id)
         {
             var session = await _apiClient.GetSessionAsync(id);
             Session = new Session
             {
-                ID = session.ID,
-                ConferenceID = session.ConferenceID,
+                Id = session.Id,
                 TrackId = session.TrackId,
                 Title = session.Title,
                 Abstract = session.Abstract,
@@ -52,7 +51,7 @@ namespace FrontEnd.Pages.Admin
 
             await _apiClient.PutSessionAsync(Session);
 
-            return RedirectToPage();
+            return Page();
         }
 
         public async Task<IActionResult> OnPostDeleteAsync(int id)
@@ -66,7 +65,7 @@ namespace FrontEnd.Pages.Admin
 
             Message = "Session deleted successfully!";
 
-            return RedirectToPage("/Index");
+            return Page();
         }
     }
 }

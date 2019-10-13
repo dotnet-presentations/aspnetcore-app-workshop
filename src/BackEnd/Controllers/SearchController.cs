@@ -1,13 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using BackEnd.Data;
-using ConferenceDTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json.Linq;
+using BackEnd.Data;
+using ConferenceDTO;
 
-namespace BackEnd
+namespace BackEnd.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -42,50 +41,15 @@ namespace BackEnd
                                                    )
                                                    .ToListAsync();
 
-            var results = sessionResults.Select(s => new SearchResult
+            var results = sessionResults.Select(session => new SearchResult
             {
                 Type = SearchResultType.Session,
-                Value = JObject.FromObject(new SessionResponse
-                {
-                    ID = s.ID,
-                    Title = s.Title,
-                    Abstract = s.Abstract,
-                    ConferenceID = s.ConferenceID,
-                    StartTime = s.StartTime,
-                    EndTime = s.EndTime,
-                    TrackId = s.TrackId,
-                    Track = new ConferenceDTO.Track
-                    {
-                        TrackID = s?.TrackId ?? 0,
-                        Name = s.Track?.Name
-                    },
-                    Speakers = s?.SessionSpeakers
-                                 .Select(ss => new ConferenceDTO.Speaker
-                                 {
-                                     ID = ss.SpeakerId,
-                                     Name = ss.Speaker.Name
-                                 })
-                                 .ToList()
-                })
+                Session = session.MapSessionResponse()
             })
-            .Concat(speakerResults.Select(s => new SearchResult
+            .Concat(speakerResults.Select(speaker => new SearchResult
             {
                 Type = SearchResultType.Speaker,
-                Value = JObject.FromObject(new SpeakerResponse
-                {
-                    ID = s.ID,
-                    Name = s.Name,
-                    Bio = s.Bio,
-                    WebSite = s.WebSite,
-                    Sessions = s.SessionSpeakers?
-                                .Select(ss =>
-                                    new ConferenceDTO.Session
-                                    {
-                                        ID = ss.SessionId,
-                                        Title = ss.Session.Title
-                                    })
-                                .ToList()
-                })
+                Speaker = speaker.MapSpeakerResponse()
             }));
 
             return results.ToList();

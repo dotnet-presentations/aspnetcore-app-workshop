@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using FrontEnd.Data;
 using FrontEnd.Services;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace FrontEnd.Areas.Identity.Pages.Account
 {
@@ -20,30 +21,25 @@ namespace FrontEnd.Areas.Identity.Pages.Account
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
         private readonly IAdminService _adminService;
-        private readonly IdentityDbContext _dbContext;
 
         public RegisterModel(
             UserManager<User> userManager,
             SignInManager<User> signInManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender,
-            IAdminService adminService,
-            IdentityDbContext dbContext)
+            IAdminService adminService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
             _adminService = adminService;
-            _dbContext = dbContext;
         }
 
         [BindProperty]
         public InputModel Input { get; set; }
 
         public string ReturnUrl { get; set; }
-
-        public bool AllowAdminCreation { get; set; }
 
         public class InputModel
         {
@@ -62,31 +58,21 @@ namespace FrontEnd.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
-
-            [DataType(DataType.Password)]
-            [Display(Name = "Admin creation key")]
-            public long? AdminCreationKey { get; set; }
         }
 
-        public async Task OnGetAsync(string returnUrl = null)
+        public void OnGet(string returnUrl = null)
         {
             ReturnUrl = returnUrl;
-
-            if (await _adminService.AllowAdminUserCreationAsync())
-            {
-                AllowAdminCreation = true;
-                _logger.LogInformation("Admin creation is enabled. Use the following key to create an admin user: {adminKey}", _adminService.CreationKey);
-            }
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
-            returnUrl = returnUrl ?? Url.Content("~/");
+            returnUrl ??= Url.Content("~/");
             if (ModelState.IsValid)
             {
                 var user = new User { UserName = Input.Email, Email = Input.Email };
 
-                if (await _adminService.AllowAdminUserCreationAsync() && Input.AdminCreationKey == _adminService.CreationKey)
+                if (await _adminService.AllowAdminUserCreationAsync())
                 {
                     // Set as admin user
                     user.IsAdmin = true;
@@ -109,7 +95,7 @@ namespace FrontEnd.Areas.Identity.Pages.Account
                     var callbackUrl = Url.Page(
                         "/Account/ConfirmEmail",
                         pageHandler: null,
-                        values: new { userId = user.Id, code = code },
+                        values: new { userId = user.Id, code },
                         protocol: Request.Scheme);
 
                     await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",

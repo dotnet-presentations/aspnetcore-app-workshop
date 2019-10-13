@@ -10,11 +10,9 @@ namespace BackEnd
 {
     public class DevIntersectionLoader : DataLoader
     {
-        public override async Task LoadDataAsync(string conferenceName, Stream fileStream, ApplicationDbContext db)
+        public override async Task LoadDataAsync(Stream fileStream, ApplicationDbContext db)
         {
             var reader = new JsonTextReader(new StreamReader(fileStream));
-
-            var conference = new Conference { Name = conferenceName };
 
             var speakerNames = new Dictionary<string, Speaker>();
             var tracks = new Dictionary<string, Track>();
@@ -41,7 +39,7 @@ namespace BackEnd
                 {
                     if (!tracks.ContainsKey(thisTrackName.Value<string>()))
                     {
-                        var thisTrack = new Track { Name = thisTrackName.Value<string>(), Conference = conference };
+                        var thisTrack = new Track { Name = thisTrackName.Value<string>() };
                         db.Tracks.Add(thisTrack);
                         tracks.Add(thisTrackName.Value<string>(), thisTrack);
                     }
@@ -50,7 +48,6 @@ namespace BackEnd
 
                 var session = new Session
                 {
-                    Conference = conference,
                     Title = item["title"].Value<string>(),
                     StartTime = item["startTime"].Value<DateTime>(),
                     EndTime = item["endTime"].Value<DateTime>(),

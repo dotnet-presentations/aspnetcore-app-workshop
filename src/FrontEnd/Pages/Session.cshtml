@@ -1,6 +1,10 @@
 @page "{id}"
 @model SessionModel
 
+@{
+    ViewData["Titlte"] = Model.Session.Title;
+}
+
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a asp-page="/Index">Agenda</a></li>
@@ -15,15 +19,20 @@
 
 @foreach (var speaker in Model.Session.Speakers)
 {
-    <em><a asp-page="Speaker" asp-route-id="@speaker.ID">@speaker.Name</a></em>
+    <em><a asp-page="Speaker" asp-route-id="@speaker.Id">@speaker.Name</a></em>
 }
 
-<p>@Html.Raw(Model.Session.Abstract)</p>
+@foreach (var line in Model.Session.Abstract.Split("\r\n", StringSplitOptions.RemoveEmptyEntries))
+{ 
+    <p>
+        @line
+    </p>
+}
 
 <form method="post">
-    <input type="hidden" name="sessionId" value="@Model.Session.ID" />
+    <input type="hidden" name="sessionId" value="@Model.Session.Id" />
     <p>
-        <a authz-policy="Admin" asp-page="/Admin/EditSession" asp-route-id="@Model.Session.ID" class="btn btn-default btn-sm">Edit</a>
+        <a authz-policy="Admin" asp-page="/Admin/EditSession" asp-route-id="@Model.Session.Id" class="btn btn-default btn-sm">Edit</a>
         @if (Model.IsInPersonalAgenda)
         {
         <button authz="true" type="submit" asp-page-handler="Remove" class="btn btn-default btn-sm" title="Remove from my personal agenda">

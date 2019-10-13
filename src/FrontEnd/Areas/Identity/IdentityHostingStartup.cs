@@ -38,7 +38,6 @@ namespace FrontEnd.Areas.Identity
                     options.Password.RequireUppercase = false;
                     options.Password.RequireNonAlphanumeric = false;
                 })
-                .AddDefaultUI(UIFramework.Bootstrap4)
                 .AddEntityFrameworkStores<IdentityDbContext>()
                 .AddClaimsPrincipalFactory<ClaimsPrincipalFactory>();
             });

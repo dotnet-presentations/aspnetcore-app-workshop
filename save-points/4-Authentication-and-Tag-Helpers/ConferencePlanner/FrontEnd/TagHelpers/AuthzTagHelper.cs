@@ -1,17 +1,17 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.AspNetCore.Razor.TagHelpers;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace FrontEnd.TagHelpers
 {
     [HtmlTargetElement("*", Attributes = "authz")]
     [HtmlTargetElement("*", Attributes = "authz-policy")]
-    public class AuthzTagHelper: TagHelper
+    public class AuthzTagHelper : TagHelper
     {
         private readonly IAuthorizationService _authzService;
 
@@ -54,7 +54,7 @@ namespace FrontEnd.TagHelpers
                     authorized = authResult.Succeeded;
                     ViewContext.ViewData["AuthPolicy." + RequiredPolicy] = authorized;
                 }
-
+                
                 showOutput = authorized;
             }
             else if (requiresAuth && ViewContext.HttpContext.User.Identity.IsAuthenticated)

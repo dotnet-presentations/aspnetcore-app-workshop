@@ -1,4 +1,5 @@
-﻿using FrontEnd.Data;
+﻿using System;
+using FrontEnd.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
@@ -18,18 +19,10 @@ namespace FrontEnd.Areas.Identity
                     options.UseSqlServer(
                         context.Configuration.GetConnectionString("IdentityDbContextConnection")));
 
-                services.AddDefaultIdentity<User>(options =>
-                {
-                    options.Password.RequireDigit = false;
-                    options.Password.RequiredLength = 1;
-                    options.Password.RequiredUniqueChars = 0;
-                    options.Password.RequireLowercase = false;
-                    options.Password.RequireUppercase = false;
-                    options.Password.RequireNonAlphanumeric = false;
-                })
-                .AddDefaultUI(UIFramework.Bootstrap4)
-                .AddEntityFrameworkStores<IdentityDbContext>()
-                .AddClaimsPrincipalFactory<ClaimsPrincipalFactory>();
+                services.AddDefaultIdentity<User>()
+                    .AddDefaultUI()
+                    .AddEntityFrameworkStores<IdentityDbContext>()
+                    .AddClaimsPrincipalFactory<ClaimsPrincipalFactory>();
             });
         }
     }

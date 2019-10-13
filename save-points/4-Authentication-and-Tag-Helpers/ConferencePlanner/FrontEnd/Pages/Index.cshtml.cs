@@ -1,19 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using ConferenceDTO;
 using FrontEnd.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
+using Microsoft.Extensions.Logging;
 
 namespace FrontEnd.Pages
 {
     public class IndexModel : PageModel
     {
+        private readonly ILogger<IndexModel> _logger;
         protected readonly IApiClient _apiClient;
+
+        public IndexModel(ILogger<IndexModel> logger, IApiClient apiClient)
+        {
+            _logger = logger;
+            _apiClient = apiClient;
+        }
+
+        public bool IsAdmin { get; set; }
 
         public IEnumerable<IGrouping<DateTimeOffset?, SessionResponse>> Sessions { get; set; }
 
@@ -21,14 +30,12 @@ namespace FrontEnd.Pages
 
         public int CurrentDayOffset { get; set; }
 
-        public bool IsAdmin { get; set; }
+        [TempData]
+        public string Message { get; set; }
 
-        public IndexModel(IApiClient apiClient)
-        {
-            _apiClient = apiClient;
-        }
+        public bool ShowMessage => !string.IsNullOrEmpty(Message);
 
-        public async Task OnGetAsync(int day = 0)
+        public async Task OnGet(int day = 0)
         {
             IsAdmin = User.IsAdmin();
 
@@ -37,12 +44,12 @@ namespace FrontEnd.Pages
             var sessions = await _apiClient.GetSessionsAsync();
 
             var startDate = sessions.Min(s => s.StartTime?.Date);
-            var endDate = sessions.Max(s => s.EndTime?.Date);
 
-            var numberOfDays = ((endDate - startDate)?.Days) + 1;
-
-            DayOffsets = Enumerable.Range(0, numberOfDays ?? 0)
-                .Select(offset => (offset, (startDate?.AddDays(offset))?.DayOfWeek));
+            var offset = 0;
+            DayOffsets = sessions.Select(s => s.StartTime?.Date)
+                                 .Distinct()
+                                 .OrderBy(d => d)
+                                 .Select(day => (offset++, day?.DayOfWeek));
 
             var filterDate = startDate?.AddDays(day);
 
