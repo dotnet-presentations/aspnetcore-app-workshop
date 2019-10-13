@@ -46,7 +46,10 @@ namespace BackEnd
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo { Title = "Conference Planner API", Version = "v1" });
+#pragma warning disable CS0618 // Type or member is obsolete
+                // Swashbuckle.AspNetCore doesn't support all System.Text.Json fully yet so we still need to call this
                 options.DescribeAllEnumsAsStrings();
+#pragma warning restore CS0618 // Type or member is obsolete
             });
         }
 

@@ -12,12 +12,12 @@ namespace FrontEnd.Pages
 {
     public class IndexModel : PageModel
     {
-        private readonly ILogger<IndexModel> logger;
+        private readonly ILogger<IndexModel> _logger;
         protected readonly IApiClient _apiClient;
 
-        public IndexModel(ILogger<IndexModel> _logger, IApiClient apiClient)
+        public IndexModel(ILogger<IndexModel> logger, IApiClient apiClient)
         {
-            logger = _logger;
+            _logger = logger;
             _apiClient = apiClient;
         }
 
@@ -34,12 +34,12 @@ namespace FrontEnd.Pages
             var sessions = await _apiClient.GetSessionsAsync();
 
             var startDate = sessions.Min(s => s.StartTime?.Date);
-            var endDate = sessions.Max(s => s.EndTime?.Date);
 
-            var numberOfDays = ((endDate - startDate)?.Days) + 1;
-
-            DayOffsets = Enumerable.Range(0, numberOfDays ?? 0)
-                .Select(offset => (offset, (startDate?.AddDays(offset))?.DayOfWeek));
+            var offset = 0;
+            DayOffsets = sessions.Select(s => s.StartTime?.Date)
+                                 .Distinct()
+                                 .OrderBy(d => d)
+                                 .Select(day => (offset++, day?.DayOfWeek));
 
             var filterDate = startDate?.AddDays(day);
 
