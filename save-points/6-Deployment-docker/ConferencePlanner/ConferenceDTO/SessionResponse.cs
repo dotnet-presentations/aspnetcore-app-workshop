@@ -8,8 +8,6 @@ namespace ConferenceDTO
     {
         public Track Track { get; set; }
 
-        public ICollection<Speaker> Speakers { get; set; } = new List<Speaker>();
-
-        public ICollection<Tag> Tags { get; set; } = new List<Tag>();
+        public List<Speaker> Speakers { get; set; } = new List<Speaker>();
     }
 }

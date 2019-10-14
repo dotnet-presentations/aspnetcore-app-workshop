@@ -1,0 +1,23 @@
+﻿@page "{id}"
+@model SpeakerModel
+
+<ol class="breadcrumb">
+    <li class="breadcrumb-item"><a asp-page="/Speakers">Speakers</a></li>
+    <li class="breadcrumb-item active">@Model.Speaker.Name</li>
+</ol>
+
+<h2>@Model.Speaker.Name</h2>
+
+<p>@Model.Speaker.Bio</p>
+
+<h3>Sessions</h3>
+<div class="row">
+    <div class="col-md-5">
+        <ul class="list-group">
+            @foreach (var session in Model.Speaker.Sessions)
+            {
+                <li class="list-group-item"><a asp-page="Session" asp-route-id="@session.Id">@session.Title</a></li>
+            }
+        </ul>
+    </div>
+</div>

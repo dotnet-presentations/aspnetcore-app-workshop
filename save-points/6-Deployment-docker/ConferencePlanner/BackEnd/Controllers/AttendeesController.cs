@@ -1,25 +1,30 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using BackEnd.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
+using ConferenceDTO;
 
-namespace BackEnd
+namespace BackEnd.Controllers
 {
     [Route("/api/[controller]")]
-    public class AttendeesController : Controller
+    [ApiController]
+    public class AttendeesController : ControllerBase
     {
-        private readonly ApplicationDbContext _db;
+        private readonly ApplicationDbContext _context;
 
-        public AttendeesController(ApplicationDbContext db)
+        public AttendeesController(ApplicationDbContext context)
         {
-            _db = db;
+            _context = context;
         }
 
         [HttpGet("{username}")]
-        public async Task<IActionResult> Get(string username)
+        public async Task<ActionResult<AttendeeResponse>> Get(string username)
         {
-            var attendee = await _db.Attendees.Include(a => a.Sessions)
+            var attendee = await _context.Attendees.Include(a => a.SessionsAttendees)
+                                                .ThenInclude(sa => sa.Session)
                                               .SingleOrDefaultAsync(a => a.UserName == username);
 
             if (attendee == null)
@@ -29,18 +34,38 @@ namespace BackEnd
 
             var result = attendee.MapAttendeeResponse();
 
-            return Ok(result);
+            return result;
+        }
+
+        [HttpGet("{username}/sessions")]
+        public async Task<ActionResult<List<SessionResponse>>> GetSessions(string username)
+        {
+            var sessions = await _context.Sessions.AsNoTracking()
+                                                .Include(s => s.Track)
+                                                .Include(s => s.SessionSpeakers)
+                                                    .ThenInclude(ss => ss.Speaker)
+                                                .Where(s => s.SessionAttendees.Any(sa => sa.Attendee.UserName == username))
+                                                .Select(m => m.MapSessionResponse())
+                                                .ToListAsync();
+            return sessions;
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody]ConferenceDTO.Attendee input)
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        public async Task<ActionResult<AttendeeResponse>> Post(ConferenceDTO.Attendee input)
         {
-            if (!ModelState.IsValid)
+            // Check if the attendee already exists
+            var existingAttendee = await _context.Attendees
+                .Where(a => a.UserName == input.UserName)
+                .FirstOrDefaultAsync();
+
+            if (existingAttendee != null)
             {
-                return BadRequest(ModelState);
+                return Conflict(input);
             }
 
-            var attendee = new Attendee
+            var attendee = new Data.Attendee
             {
                 FirstName = input.FirstName,
                 LastName = input.LastName,
@@ -48,36 +73,23 @@ namespace BackEnd
                 EmailAddress = input.EmailAddress
             };
 
-            _db.Attendees.Add(attendee);
-            await _db.SaveChangesAsync();
+            _context.Attendees.Add(attendee);
+            await _context.SaveChangesAsync();
 
             var result = attendee.MapAttendeeResponse();
 
             return CreatedAtAction(nameof(Get), new { username = result.UserName }, result);
         }
 
-        [HttpDelete("{id:int}")]
-        public async Task<IActionResult> Delete([FromRoute]int id)
+        [HttpPost("{username}/session/{sessionId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesDefaultResponseType]
+        public async Task<ActionResult<AttendeeResponse>> AddSession(string username, int sessionId)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var attendee = new Attendee { ID = id };
-
-            _db.Attendees.Remove(attendee);
-            await _db.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        [HttpPost("{username}/session/{sessionId:int}")]
-        public async Task<IActionResult> AddSession(string username, int sessionId)
-        {
-            var attendee = await _db.Attendees.Include(a => a.Sessions)
-                                              .Include(a => a.ConferenceAttendees)
-                                                .ThenInclude(ca => ca.Conference)
+            var attendee = await _context.Attendees.Include(a => a.SessionsAttendees)
+                                                .ThenInclude(sa => sa.Session)
                                               .SingleOrDefaultAsync(a => a.UserName == username);
 
             if (attendee == null)
@@ -85,44 +97,52 @@ namespace BackEnd
                 return NotFound();
             }
 
-            var session = await _db.Sessions.FindAsync(sessionId);
+            var session = await _context.Sessions.FindAsync(sessionId);
 
             if (session == null)
             {
                 return BadRequest();
             }
 
-            attendee.Sessions.Add(session);
+            attendee.SessionsAttendees.Add(new SessionAttendee
+            {
+                AttendeeId = attendee.Id,
+                SessionId = sessionId
+            });
 
-            await _db.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
             var result = attendee.MapAttendeeResponse();
 
-            return Ok(result);
+            return result;
         }
 
-        [HttpDelete("{username}/session/{sessionId:int}")]
+        [HttpDelete("{username}/session/{sessionId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesDefaultResponseType]
         public async Task<IActionResult> RemoveSession(string username, int sessionId)
         {
-            var attendee = await _db.Attendees.SingleOrDefaultAsync(a => a.UserName == username);
+            var attendee = await _context.Attendees.Include(a => a.SessionsAttendees)
+                                              .SingleOrDefaultAsync(a => a.UserName == username);
 
             if (attendee == null)
             {
                 return NotFound();
             }
 
-            var session = await _db.Sessions.FindAsync(sessionId);
+            var session = await _context.Sessions.FindAsync(sessionId);
 
             if (session == null)
             {
                 return BadRequest();
             }
 
-            attendee.Sessions.Remove(session);
+            var sessionAttendee = attendee.SessionsAttendees.FirstOrDefault(sa => sa.SessionId == sessionId);
+            attendee.SessionsAttendees.Remove(sessionAttendee);
 
-            await _db.SaveChangesAsync();
-
-            var result = attendee.MapAttendeeResponse();
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }

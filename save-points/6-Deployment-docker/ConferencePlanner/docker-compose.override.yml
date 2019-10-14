@@ -1,23 +1,25 @@
-version: '3.3'
+version: '3.4'
 
 services:
-  proxy:
-    ports:
-      - "8080:80"
-
   backend:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_HTTPS_PORT=44370
     ports:
-      - "56009:80"
-
+      - "63145:80"
+      - "44370:443"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
   frontend:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_HTTPS_PORT=44384
     ports:
-      - "5001:80"
-
-  db:
-    environment:
-      SA_PASSWORD: "ConferencePlanner1234$$"
-      ACCEPT_EULA: "Y"
+      - "56004:80"
+      - "44384:443"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro

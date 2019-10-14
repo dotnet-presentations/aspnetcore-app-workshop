@@ -1,30 +1,23 @@
-version: '3.3'
+version: '3.4'
 
 services:
-  proxy:
-    image: confproxy
-    build:
-      context: .
-      dockerfile: proxy/Dockerfile
-    links:
-      - backend
-      - frontend
-
-  backend:
-    image: backend
-    build:
-      context: .
-      dockerfile: BackEnd/Dockerfile
-    links:
-      - db
 
   frontend:
-    image: frontend
+    image: ${DOCKER_REGISTRY-}frontend
     build:
       context: .
       dockerfile: FrontEnd/Dockerfile
-    links:
-      - backend
+
+  backend:
+    image: ${DOCKER_REGISTRY-}backend
+    build:
+      context: .
+      dockerfile: BackEnd/Dockerfile
+    depends_on:
+      - db 
 
   db:
     image: "microsoft/mssql-server-linux"
+    environment:
+      SA_PASSWORD: "ConferencePlanner1234$$"
+      ACCEPT_EULA: "Y"

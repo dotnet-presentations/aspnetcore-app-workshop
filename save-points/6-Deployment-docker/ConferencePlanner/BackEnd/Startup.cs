@@ -1,18 +1,19 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using BackEnd.Data;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Microsoft.EntityFrameworkCore;
-using Swashbuckle.AspNetCore.Swagger;
+using Microsoft.OpenApi.Models;
 
 namespace BackEnd
 {
@@ -28,42 +29,59 @@ namespace BackEnd
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-             services.AddDbContext<ApplicationDbContext>(options =>
-             {
-                 //if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                 //{
-                     options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
-                 //}
-                 //else
-                 //{
-                 //    options.UseSqlite("Data Source=conferences.db");
-                 //}
-             });
+            services.AddDbContext<ApplicationDbContext>(options =>
+            {
+                //if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                //{
+                    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+                //}
+                //else
+                //{
+                //    options.UseSqlite("Data Source=conferences.db");
+                //}
+            });
 
-            services.AddMvcCore()
-                .AddJsonFormatters()
-                .AddApiExplorer();
+            services.AddControllers();
 
             services.AddSwaggerGen(options =>
-                options.SwaggerDoc("v1", new Info { Title = "Conference Planner API", Version = "v1" })
-            );
+            {
+                options.SwaggerDoc("v1", new OpenApiInfo { Title = "Conference Planner API", Version = "v1" });
+#pragma warning disable CS0618 // Type or member is obsolete
+                // Swashbuckle.AspNetCore doesn't support all System.Text.Json fully yet so we still need to call this
+                options.DescribeAllEnumsAsStrings();
+#pragma warning restore CS0618 // Type or member is obsolete
+            });
 
-            services.AddMvc();
+            services.AddHealthChecks().AddDbContextCheck<ApplicationDbContext>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseHsts();
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+                app.UseDatabaseErrorPage();
+            }
+
+            //app.UseHttpsRedirection();
+
+
+            app.UseRouting();
+
+            app.UseAuthorization();
+
             app.UseSwagger();
 
             app.UseSwaggerUI(options =>
                 options.SwaggerEndpoint("/swagger/v1/swagger.json", "Conference Planner API v1")
             );
 
-            app.UseHttpsRedirection();
-            app.UseMvc();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+                endpoints.MapHealthChecks("/health");
+            });
 
             app.Run(context =>
             {
@@ -71,9 +89,17 @@ namespace BackEnd
                 return Task.CompletedTask;
             });
 
-            // Comment out the following line to avoid resetting the database each time
-            var loader = new DevIntersectionLoader(app.ApplicationServices);
-            loader.LoadData("DevIntersection_Vegas_2017.json", "DevIntersection Vegas 2017");
+            //using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            //{
+            //    using (var context = serviceScope.ServiceProvider.GetService<ApplicationDbContext>())
+            //    {
+            //        var loader = new SessionizeLoader();
+            //        //loader.LoadDataAsync(null, context);
+
+            //        context.Database.Migrate();
+            //    }
+            //}
+
         }
     }
 }

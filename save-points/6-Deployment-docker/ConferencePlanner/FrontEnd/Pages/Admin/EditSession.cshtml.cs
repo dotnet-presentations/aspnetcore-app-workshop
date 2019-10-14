@@ -2,14 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using FrontEnd.Pages.Models;
+using ConferenceDTO;
+using FrontEnd.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
-namespace FrontEnd.Pages
+namespace FrontEnd.Pages.Admin
 {
-public class EditSessionModel : PageModel
+    public class EditSessionModel : PageModel
     {
         private readonly IApiClient _apiClient;
 
@@ -31,8 +31,7 @@ public class EditSessionModel : PageModel
             var session = await _apiClient.GetSessionAsync(id);
             Session = new Session
             {
-                ID = session.ID,
-                ConferenceID = session.ConferenceID,
+                Id = session.Id,
                 TrackId = session.TrackId,
                 Title = session.Title,
                 Abstract = session.Abstract,
@@ -52,7 +51,7 @@ public class EditSessionModel : PageModel
 
             await _apiClient.PutSessionAsync(Session);
 
-            return RedirectToPage();
+            return Page();
         }
 
         public async Task<IActionResult> OnPostDeleteAsync(int id)
@@ -66,7 +65,7 @@ public class EditSessionModel : PageModel
 
             Message = "Session deleted successfully!";
 
-            return RedirectToPage("/Index");
+            return Page();
         }
     }
 }

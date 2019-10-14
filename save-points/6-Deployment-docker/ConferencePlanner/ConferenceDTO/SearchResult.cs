@@ -1,4 +1,6 @@
-using Newtonsoft.Json.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace ConferenceDTO
 {
@@ -6,15 +8,14 @@ namespace ConferenceDTO
     {
         public SearchResultType Type { get; set; }
 
-        public JObject Value { get; set; }
+        public SessionResponse Session { get; set; }
+
+        public SpeakerResponse Speaker { get; set; }
     }
 
     public enum SearchResultType
     {
-        Attendee,
-        Conference,
         Session,
-        Track,
         Speaker
     }
 }

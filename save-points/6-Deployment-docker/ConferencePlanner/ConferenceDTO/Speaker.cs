@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -8,7 +8,7 @@ namespace ConferenceDTO
 {
     public class Speaker
     {
-        public int ID { get; set; }
+        public int Id { get; set; }
 
         [Required]
         [StringLength(200)]
