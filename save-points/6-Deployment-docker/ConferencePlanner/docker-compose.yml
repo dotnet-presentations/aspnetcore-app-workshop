@@ -15,6 +15,11 @@ services:
       dockerfile: BackEnd/Dockerfile
     depends_on:
       - db 
+  proxy:
+    image: ${DOCKER_REGISTRY-}confproxy
+    build:
+      context: .
+      dockerfile: proxy/Dockerfile
 
   db:
     image: "microsoft/mssql-server-linux"
