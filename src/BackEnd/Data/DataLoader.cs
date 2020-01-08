@@ -8,5 +8,4 @@ namespace BackEnd.Data
     {
         public abstract Task LoadDataAsync(Stream fileStream, ApplicationDbContext db);
     }
-
 }
