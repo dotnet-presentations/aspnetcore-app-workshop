@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -41,7 +42,10 @@ namespace BackEnd
             });
 
             services.AddControllers()
-                    .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+                    .AddJsonOptions(options =>
+                    {
+                        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                    });
 
             services.AddHealthChecks()
                     .AddDbContextCheck<ApplicationDbContext>();
@@ -49,10 +53,6 @@ namespace BackEnd
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo { Title = "Conference Planner API", Version = "v1" });
-#pragma warning disable CS0618 // Type or member is obsolete
-                // The following method is marked obsolete right now but is required until Swashbuckle supports System.Text.Json
-                options.DescribeAllEnumsAsStrings();
-#pragma warning restore CS0618
             });
         }
 
