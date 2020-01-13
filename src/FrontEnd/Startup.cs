@@ -36,8 +36,7 @@ namespace FrontEnd
                 client.BaseAddress = new Uri(Configuration["serviceUrl"]);
             });
 
-            services.AddRazorPages()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+            services.AddRazorPages();
 
             services.AddHealthChecks()
                     .AddCheck<BackendHealthCheck>("backend")
