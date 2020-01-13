@@ -3,7 +3,6 @@ using System;
 using BackEnd.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BackEnd.Migrations
@@ -15,29 +14,31 @@ namespace BackEnd.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.0.0-preview7.19352.17")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "3.1.0");
 
             modelBuilder.Entity("BackEnd.Data.Attendee", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("EmailAddress")
+                        .HasColumnType("TEXT")
                         .HasMaxLength(256);
 
                     b.Property<string>("FirstName")
                         .IsRequired()
+                        .HasColumnType("TEXT")
                         .HasMaxLength(200);
 
                     b.Property<string>("LastName")
                         .IsRequired()
+                        .HasColumnType("TEXT")
                         .HasMaxLength(200);
 
                     b.Property<string>("UserName")
                         .IsRequired()
+                        .HasColumnType("TEXT")
                         .HasMaxLength(200);
 
                     b.HasKey("Id");
@@ -52,20 +53,25 @@ namespace BackEnd.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Abstract")
+                        .HasColumnType("TEXT")
                         .HasMaxLength(4000);
 
-                    b.Property<DateTimeOffset?>("EndTime");
+                    b.Property<DateTimeOffset?>("EndTime")
+                        .HasColumnType("TEXT");
 
-                    b.Property<DateTimeOffset?>("StartTime");
+                    b.Property<DateTimeOffset?>("StartTime")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Title")
                         .IsRequired()
+                        .HasColumnType("TEXT")
                         .HasMaxLength(200);
 
-                    b.Property<int?>("TrackId");
+                    b.Property<int?>("TrackId")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -76,9 +82,11 @@ namespace BackEnd.Migrations
 
             modelBuilder.Entity("BackEnd.Data.SessionAttendee", b =>
                 {
-                    b.Property<int>("SessionId");
+                    b.Property<int>("SessionId")
+                        .HasColumnType("INTEGER");
 
-                    b.Property<int>("AttendeeId");
+                    b.Property<int>("AttendeeId")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("SessionId", "AttendeeId");
 
@@ -89,9 +97,11 @@ namespace BackEnd.Migrations
 
             modelBuilder.Entity("BackEnd.Data.SessionSpeaker", b =>
                 {
-                    b.Property<int>("SessionId");
+                    b.Property<int>("SessionId")
+                        .HasColumnType("INTEGER");
 
-                    b.Property<int>("SpeakerId");
+                    b.Property<int>("SpeakerId")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("SessionId", "SpeakerId");
 
@@ -104,16 +114,19 @@ namespace BackEnd.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Bio")
+                        .HasColumnType("TEXT")
                         .HasMaxLength(4000);
 
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasColumnType("TEXT")
                         .HasMaxLength(200);
 
                     b.Property<string>("WebSite")
+                        .HasColumnType("TEXT")
                         .HasMaxLength(1000);
 
                     b.HasKey("Id");
@@ -125,10 +138,11 @@ namespace BackEnd.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasColumnType("TEXT")
                         .HasMaxLength(200);
 
                     b.HasKey("Id");
