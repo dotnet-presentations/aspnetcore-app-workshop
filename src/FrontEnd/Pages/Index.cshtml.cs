@@ -81,9 +81,18 @@ namespace FrontEnd.Pages
         {
             return _cache.GetOrCreateAsync(CacheKeys.ConferenceData, async entry =>
             {
-                entry.SetSlidingExpiration(TimeSpan.FromHours(1));
-
                 var sessions = await _apiClient.GetSessionsAsync();
+
+                if (sessions.Count == 0)
+                {
+                    // No data yet, so expire immediately
+                    entry.SetAbsoluteExpiration(DateTimeOffset.UtcNow.AddSeconds(-1));
+                }
+                else
+                {
+                    entry.SetSlidingExpiration(TimeSpan.FromHours(1));
+                }
+
                 return GenerateConferenceData(sessions);
             });
         }
