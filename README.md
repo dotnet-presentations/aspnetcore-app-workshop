@@ -1,6 +1,6 @@
 # ASP.NET Core - App Building Workshop
 
-[![Build Status](https://dotnet.visualstudio.com/AspNetCoreWorkshop/_apis/build/status/ASP.NET Workshop-ASP.NET%20Core%203.0?branchName=master)](https://dotnet.visualstudio.com/AspNetCoreWorkshop/_build/latest?definitionId=71&branchName=master)
+[![Build Status](https://dev.azure.com/dotnet/AspNetCoreWorkshop/_apis/build/status/ASP.NET%20Workshop-ASP.NET%20Core%203.x?branchName=master)](https://dev.azure.com/dotnet/AspNetCoreWorkshop/_build/latest?definitionId=71&branchName=master)
 
 [BackEnd Web API](https://aspnetcorews-backend.azurewebsites.net) | [FrontEnd Web App](https://aspnetcorews-frontend.azurewebsites.net)
 
