@@ -45,11 +45,12 @@ namespace FrontEnd.Pages
 
             var startDate = sessions.Min(s => s.StartTime?.Date);
 
-            var offset = 0;
             DayOffsets = sessions.Select(s => s.StartTime?.Date)
                                  .Distinct()
                                  .OrderBy(d => d)
-                                 .Select(day => (offset++, day?.DayOfWeek));
+                                 .Select(day => ((int)Math.Floor((day.Value - startDate)?.TotalDays ?? 0),
+                                                 day?.DayOfWeek))
+                                 .ToList();
 
             var filterDate = startDate?.AddDays(day);
 
