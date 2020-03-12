@@ -1,0 +1,163 @@
+﻿@using FrontEnd.Services
+@using ConferenceDTO
+
+@inject IApiClient _apiClient
+
+@namespace FrontEnd.Components
+
+<style>
+    .local-button {
+        background-color: dodgerblue;
+        padding: 15px 32px;
+        text-align: center;
+        display: inline-block;
+        color: white;
+        cursor: pointer;
+        border-radius: 15px;
+        width: 150px;
+        outline: none;
+    }
+
+    .local-button:hover {
+        background-color: bisque;
+        color: black;
+        width: 150px;
+        outline: none;
+    }
+
+    .local-button:focus {
+        background-color: bisque;
+        color: black;
+        width: 160px;
+        outline: none;
+    }
+</style>
+
+<ul class="nav nav-pills mb-3">
+    @if (DayOffsets != null)
+    {
+        foreach (var day in DayOffsets)
+        {
+            <li role="presentation" class="nav-item">
+                <button class="local-button" @onclick="@(() => SetDay(day.Offset))">@day.DayofWeek?.ToString()</button>
+            </li>
+        }
+    }
+</ul>
+
+<div class="agenda">
+    @if (Sessions != null)
+    {
+        @foreach (var timeSlot in Sessions)
+        {
+            <h4>@timeSlot.Key?.ToString("HH:mm")</h4>
+            <div class="row">
+                @foreach (var session in timeSlot)
+                {
+                    <div class="col-md-3 mb-4">
+                        <div class="card shadow session h-100">
+                            <div class="card-header">@session.Track?.Name</div>
+                            <div class="card-body">
+                                @{var sessionRef = $"/Session/{session.Id}";}
+                                <h5 class="card-title"><NavLink href=@sessionRef>@session.Title</NavLink></h5>
+                            </div>
+                            <div class="card-footer">
+                                <ul class="list-inline mb-0">
+                                    @foreach (var speaker in session.Speakers)
+                                    {
+                                        <li class="list-inline-item">
+                                            @{var speakerRef = $"/Speaker/{speaker.Id}"; }
+                                            <NavLink href=@speakerRef>@speaker.Name</NavLink>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    }
+</div>
+
+<div class="agenda">
+    @if (Sessions != null)
+    {
+        @foreach (var timeSlot in Sessions)
+        {
+            <h4>@timeSlot.Key?.ToString("HH:mm")</h4>
+            <div class="row">
+                @foreach (var session in timeSlot)
+                {
+                    <div class="col-md-3 mb-4">
+                        <div class="card shadow session h-100">
+                            <div class="card-header">@session.Track?.Name</div>
+                            <div class="card-body">
+                                @{var sessionRef = $"/Session/{session.Id}";}
+                                <h5 class="card-title"><NavLink href=@sessionRef>@session.Title</NavLink></h5>
+                            </div>
+                            <div class="card-footer">
+                                <ul class="list-inline mb-0">
+                                    @foreach (var speaker in session.Speakers)
+                                    {
+                                        <li class="list-inline-item">
+                                            @{var speakerRef = $"/Speaker/{speaker.Id}"; }
+                                            <NavLink href=@speakerRef>@speaker.Name</NavLink>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    }
+</div>
+
+@code {
+
+    public IEnumerable<IGrouping<DateTimeOffset?, SessionResponse>> Sessions { get; set; }
+
+    public IEnumerable<(int Offset, DayOfWeek? DayofWeek)> DayOffsets { get; set; }
+
+    public int CurrentDayOffset { get; set; }
+
+    protected List<SessionResponse> sessions;
+
+    protected DateTime? startDate;
+
+    protected virtual Task<List<SessionResponse>> GetSessionsAsync()
+    {
+        return _apiClient.GetSessionsAsync();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        sessions = await GetSessionsAsync();
+
+        startDate = sessions.Min(s => s.StartTime?.Date);
+
+        DayOffsets = sessions.Select(s => s.StartTime?.Date)
+                             .Distinct()
+                             .OrderBy(d => d)
+                             .Select(day => ((int)Math.Floor((day.Value - startDate)?.TotalDays ?? 0),
+                                             day?.DayOfWeek))
+                             .ToList();
+
+        Sessions = sessions.Where(s => s.StartTime?.Date == startDate)
+                           .OrderBy(s => s.TrackId)
+                           .GroupBy(s => s.StartTime)
+                           .OrderBy(g => g.Key);
+    }
+
+    public void SetDay(int day = 0)
+    {
+        var filterDate = startDate?.AddDays(day);
+
+        Sessions = sessions.Where(s => s.StartTime?.Date == filterDate)
+                           .OrderBy(s => s.TrackId)
+                           .GroupBy(s => s.StartTime)
+                           .OrderBy(g => g.Key);
+    }
+}

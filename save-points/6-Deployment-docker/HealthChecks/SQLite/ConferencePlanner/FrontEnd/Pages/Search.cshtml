@@ -1,0 +1,67 @@
+﻿@page
+@using ConferenceDTO
+@model SearchModel
+
+<div class="search">
+    <h1>Search</h1>
+    <form method="get">
+        <div class="input-group mb-3">
+            <input asp-for="Term" placeholder="Search for sessions or speakers..." class="form-control" />
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="submit">Go!</button>
+            </div>
+        </div>
+        @if (Model.SearchResults?.Count > 0)
+        {
+            <p>
+                @Model.SearchResults.Count result(s)
+            </p>
+        }
+    </form>
+</div>
+
+<div class="row">
+    @foreach (var result in Model.SearchResults)
+    {
+        <div class="col-md-12">
+            @switch (result.Type)
+            {
+                case SearchResultType.Speaker:
+                    <div class="card shadow mb-3">
+                        <div class="card-header">
+                            <h3 class="card-title">Speaker: <a asp-page="Speaker" asp-route-id="@result.Speaker.Id">@result.Speaker.Name</a></h3>
+                        </div>
+                        <div class="card-body">
+                            <p>
+                                @foreach (var session in result.Speaker.Sessions)
+                                {
+                                    <a asp-page="/Session" asp-route-id="@session.Id"><em>@session.Title</em></a>
+                                }
+                            </p>
+                            <p>
+                                @result.Speaker.Bio
+                            </p>
+                        </div>
+                    </div>
+                    break;
+
+                case SearchResultType.Session:
+                    <div class="card shadow mb-3">
+                        <div class="card-header">
+                            <h3 class="card-title">Session: <a asp-page="Session" asp-route-id="@result.Session.Id">@result.Session.Title</a></h3>
+                            @foreach (var speaker in result.Session.Speakers)
+                            {
+                                <a asp-page="/Speaker" asp-route-id="@speaker.Id"><em>@speaker.Name</em></a>
+                            }
+                        </div>
+                        <div class="card-body">
+                            <p>
+                                @result.Session.Abstract
+                            </p>
+                        </div>
+                    </div>
+                    break;
+            }
+        </div>
+    }
+</div>

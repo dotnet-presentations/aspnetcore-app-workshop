@@ -1,0 +1,21 @@
+﻿@page "{id}"
+@model SessionModel
+
+<ol class="breadcrumb">
+    <li class="breadcrumb-item"><a asp-page="/Index">Agenda</a></li>
+    <li class="breadcrumb-item"><a asp-page="/Index" asp-route-day="@Model.DayOffset">Day @(Model.DayOffset + 1)</a></li>
+    <li class="breadcrumb-item active">@Model.Session.Title</li>
+</ol>
+
+<h1>@Model.Session.Title</h1>
+<span class="label label-default">@Model.Session.Track?.Name</span>
+
+@foreach (var speaker in Model.Session.Speakers)
+{
+    <em><a asp-page="Speaker" asp-route-id="@speaker.Id">@speaker.Name</a></em>
+}
+
+@foreach (var para in Model.Session.Abstract.Split("\r\n", StringSplitOptions.RemoveEmptyEntries))
+{
+    <p>@para</p>
+}

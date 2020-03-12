@@ -1,0 +1,9 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<h1 class="mb-4">Microsoft Conference @System.DateTime.Now.Year</h1>
+
+<partial name="_AgendaPartial" model="Model" />

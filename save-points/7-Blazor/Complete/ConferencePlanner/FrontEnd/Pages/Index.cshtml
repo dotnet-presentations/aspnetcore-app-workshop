@@ -1,0 +1,10 @@
+﻿@page
+@using FrontEnd.Components
+
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<h1 class="mb-4">My Conference @System.DateTime.Now.Year</h1>
+
+<component type="typeof(SessionsListComponent)" render-mode="ServerPrerendered" />
