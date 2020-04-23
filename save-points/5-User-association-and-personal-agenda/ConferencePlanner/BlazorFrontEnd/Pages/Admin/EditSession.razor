@@ -1,0 +1,98 @@
+﻿@page "/Admin/EditSession/{id:int}"
+@inject IApiClient ApiClient
+@inject MessageService Messages
+<h3>Edit Session</h3>
+
+@if (ShowMessage)
+{
+    <div class="alert alert-success alert-dismissible" role="alert">
+        <button type="button" @onclick="() => ShowMessage = false" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>   </button>
+        @Message
+    </div>
+}
+
+<EditForm Model="Session" OnValidSubmit="Update">
+    <DataAnnotationsValidator />
+    <ValidationSummary class="text-danger" />
+    <div class="form-group">
+        <label for="session-Title" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <InputText name="session-title" @bind-Value="Session.Title" class="form-control" />
+            <ValidationMessage For="() => Session.Title" class="text-danger" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="session-Abstract" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <InputTextArea name="session-abstract" @bind-Value="Session.Abstract" class="form-control"></InputTextArea>
+            <ValidationMessage For="() => Session.Abstract" class="text-danger" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="session-StartTime" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <InputDate name="session-StartTime" @bind-Value="Session.StartTime" class="form-control" />
+            <ValidationMessage For="() => Session.StartTime" class="text-danger" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="session-EndTime" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <InputDate name="session-EndTime" @bind-Value="Session.EndTime" class="form-control" />
+            <ValidationMessage For="() => Session.EndTime" class="text-danger" />
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <button @onclick="Remove" class="btn btn-danger">Delete</button>
+        </div>
+    </div>
+</EditForm>
+
+@code{
+    public string Message { get; set; }
+
+    public bool ShowMessage { get; set; }
+
+    public Session Session { get; set; } = new Session();
+
+    [Parameter] public int Id { get; set; }
+
+    [Inject] public NavigationManager Navigation { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var session = await ApiClient.GetSessionAsync(Id);
+        Session = new Session
+        {
+            Id = session.Id,
+            TrackId = session.TrackId,
+            Title = session.Title,
+            Abstract = session.Abstract,
+            StartTime = session.StartTime,
+            EndTime = session.EndTime
+        };
+    }
+
+    public async Task Update()
+    {
+        Message = "Session updated successfully!";
+        ShowMessage = true;
+        await ApiClient.PutSessionAsync(Session);
+    }
+
+    public async Task Remove()
+    {
+        var session = await ApiClient.GetSessionAsync(Id);
+
+        if (session != null)
+        {
+            await ApiClient.DeleteSessionAsync(Id);
+        }
+
+        Messages.Message = "Session deleted successfully!";
+
+        Navigation.NavigateTo("/");
+    }
+}

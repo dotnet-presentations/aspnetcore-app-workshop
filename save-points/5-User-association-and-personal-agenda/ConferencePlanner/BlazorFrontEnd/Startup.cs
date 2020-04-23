@@ -37,10 +37,12 @@ namespace BlazorFrontEnd
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddClaimsPrincipalFactory<ClaimsPrincipalFactory>();
             services.AddRazorPages();
 
             services.AddSingleton<IAdminService, AdminService>();
+            services.AddScoped<MessageService>();
 
             services.AddAuthorization(options =>
             {

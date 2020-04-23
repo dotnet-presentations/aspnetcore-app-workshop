@@ -1,12 +1,13 @@
 ﻿@page "/"
 @inject IApiClient ApiClient
-@*@if (ShowMessage)
-{
-    <div class="alert alert-success alert-dismissible" role="alert">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        @Message
-    </div>
-}*@
+@inject MessageService Messages
+@if (Messages.ShowMessage)
+    {
+        <div class="alert alert-success alert-dismissible" role="alert">
+            <button type="button" @onclick="() => Messages.ShowMessage = false" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            @Messages.Message
+        </div>
+    }
 
 <ul class="nav nav-pills mb-3">
     @foreach (var day in DayOffsets)
@@ -41,24 +42,25 @@
                                     </li>
                                 }
                             </ul>
-                            <form authz method="post">
-                                <input type="hidden" name="sessionId" value="@session.Id" />
-                                <p class="mb-0">
-                                    <a authz-policy="Admin" asp-page="/Admin/EditSession" asp-route-id="@session.Id" class="btn btn-default btn-xs">Edit</a>
-                                    @if (UserSessions.Contains(session.Id))
-                                    {
-                                        <button type="submit" asp-page-handler="Remove" class="btn btn-default btn-sm bg-transparent" title="Remove from my personal agenda">
-                                            <i class="icon ion-md-star" aria-hidden="true"></i>
-                                        </button>
-                                    }
-                                    else
-                                    {
-                                        <button type="submit" class="btn btn-default btn-sm bg-transparent" title="Add to my personal agenda">
-                                            <i class="icon ion-md-star-outline" aria-hidden="true"></i>
-                                        </button>
-                                    }
-                                </p>
-                            </form>
+                            <p class="mb-0">
+                                <AuthorizeView Policy="Admin">
+                                    <Authorized>
+                                        <a href="Admin/EditSession/@session.Id" class="btn btn-default btn-xs">Edit</a>
+                                    </Authorized>
+                                </AuthorizeView>
+                                @if (UserSessions.Contains(session.Id))
+                                {
+                                    <button @onclick="() => Remove(session)" class="btn btn-default btn-sm bg-transparent" title="Remove from my personal agenda">
+                                        <i class="icon ion-md-star" aria-hidden="true"></i>
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button @onclick="() => Add(session)" class="btn btn-default btn-sm bg-transparent" title="Add to my personal agenda">
+                                        <i class="icon ion-md-star-outline" aria-hidden="true"></i>
+                                    </button>
+                                }
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -70,10 +72,10 @@
 
     public bool IsAdmin { get; set; }
 
-    public IEnumerable<IGrouping<DateTimeOffset?, SessionResponse>> Sessions { get; set; } 
+    public IEnumerable<IGrouping<DateTimeOffset?, SessionResponse>> Sessions { get; set; }
         = new List<IGrouping<DateTimeOffset?, SessionResponse>>();
 
-    public IEnumerable<(int Offset, DayOfWeek? DayofWeek)> DayOffsets { get; set; } 
+    public IEnumerable<(int Offset, DayOfWeek? DayofWeek)> DayOffsets { get; set; }
         = new List<(int Offset, DayOfWeek? DayofWeek)>();
 
     public int CurrentDayOffset { get; set; }
@@ -81,11 +83,6 @@
     public List<int> UserSessions { get; set; } = new List<int>();
 
     [CascadingParameter] Task<AuthenticationState> AuthenticationState { get; set; }
-
-    //[TempData]
-    //public string Message { get; set; }
-
-    //public bool ShowMessage => !string.IsNullOrEmpty(Message);
 
     protected async override Task OnInitializedAsync()
     {
@@ -126,17 +123,21 @@
         return ApiClient.GetSessionsAsync();
     }
 
-    //public async Task<IActionResult> OnPostAsync(int sessionId)
-    //{
-    //    await ApiClient.AddSessionToAttendeeAsync(User.Identity.Name, sessionId);
+    public async Task Add(SessionResponse session)
+    {
+        var userState = await AuthenticationState;
+        var user = userState.User;
 
-    //    return RedirectToPage();
-    //}
+        await ApiClient.AddSessionToAttendeeAsync(user.Identity.Name, session.Id);
+        UserSessions.Add(session.Id);
+    }
 
-    //public async Task<IActionResult> OnPostRemoveAsync(int sessionId)
-    //{
-    //    await ApiClient.RemoveSessionFromAttendeeAsync(User.Identity.Name, sessionId);
+    public async Task Remove(SessionResponse session)
+    {
+        var userState = await AuthenticationState;
+        var user = userState.User;
 
-    //    return RedirectToPage();
-    //}
+        await ApiClient.RemoveSessionFromAttendeeAsync(user.Identity.Name, session.Id);
+        UserSessions.Remove(session.Id);
+    }
 }
