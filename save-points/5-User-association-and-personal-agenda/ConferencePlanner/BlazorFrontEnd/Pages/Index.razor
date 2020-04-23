@@ -1,0 +1,142 @@
+﻿@page "/"
+@inject IApiClient ApiClient
+@*@if (ShowMessage)
+{
+    <div class="alert alert-success alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        @Message
+    </div>
+}*@
+
+<ul class="nav nav-pills mb-3">
+    @foreach (var day in DayOffsets)
+    {
+        <li role="presentation" class="nav-item">
+            <a class="nav-link @(CurrentDayOffset == day.Offset ? "active" : null)" asp-route-day="@day.Offset">@day.DayofWeek?.ToString()</a>
+        </li>
+    }
+</ul>
+
+<h1 class="mb-4">My Conference @System.DateTime.Now.Year</h1>
+
+<div class="agenda">
+    @foreach (var timeSlot in Sessions)
+    {
+        <h4>@timeSlot.Key?.ToString("HH:mm")</h4>
+        <div class="row">
+            @foreach (var session in timeSlot)
+            {
+                <div class="col-md-3 mb-4">
+                    <div class="card shadow session h-100">
+                        <div class="card-header">@session.Track?.Name</div>
+                        <div class="card-body">
+                            <h5 class="card-title"><a asp-page="Session" asp-route-id="@session.Id">@session.Title</a></h5>
+                        </div>
+                        <div class="card-footer">
+                            <ul class="list-inline mb-0">
+                                @foreach (var speaker in session.Speakers)
+                                {
+                                    <li class="list-inline-item">
+                                        <a asp-page="Speaker" asp-route-id="@speaker.Id">@speaker.Name</a>
+                                    </li>
+                                }
+                            </ul>
+                            <form authz method="post">
+                                <input type="hidden" name="sessionId" value="@session.Id" />
+                                <p class="mb-0">
+                                    <a authz-policy="Admin" asp-page="/Admin/EditSession" asp-route-id="@session.Id" class="btn btn-default btn-xs">Edit</a>
+                                    @if (UserSessions.Contains(session.Id))
+                                    {
+                                        <button type="submit" asp-page-handler="Remove" class="btn btn-default btn-sm bg-transparent" title="Remove from my personal agenda">
+                                            <i class="icon ion-md-star" aria-hidden="true"></i>
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button type="submit" class="btn btn-default btn-sm bg-transparent" title="Add to my personal agenda">
+                                            <i class="icon ion-md-star-outline" aria-hidden="true"></i>
+                                        </button>
+                                    }
+                                </p>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+@code{
+
+    public bool IsAdmin { get; set; }
+
+    public IEnumerable<IGrouping<DateTimeOffset?, SessionResponse>> Sessions { get; set; } 
+        = new List<IGrouping<DateTimeOffset?, SessionResponse>>();
+
+    public IEnumerable<(int Offset, DayOfWeek? DayofWeek)> DayOffsets { get; set; } 
+        = new List<(int Offset, DayOfWeek? DayofWeek)>();
+
+    public int CurrentDayOffset { get; set; }
+
+    public List<int> UserSessions { get; set; } = new List<int>();
+
+    [CascadingParameter] Task<AuthenticationState> AuthenticationState { get; set; }
+
+    //[TempData]
+    //public string Message { get; set; }
+
+    //public bool ShowMessage => !string.IsNullOrEmpty(Message);
+
+    protected async override Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        var userState = await AuthenticationState;
+        var user = userState.User;
+        IsAdmin = user.IsAdmin();
+        var day = 0;
+        CurrentDayOffset = day;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            var userSessions = await ApiClient.GetSessionsByAttendeeAsync(user.Identity.Name);
+            UserSessions = userSessions.Select(u => u.Id).ToList();
+        }
+
+        var sessions = await GetSessionsAsync();
+
+        var startDate = sessions.Min(s => s.StartTime?.Date);
+
+        DayOffsets = sessions.Select(s => s.StartTime?.Date)
+                             .Distinct()
+                             .OrderBy(d => d)
+                             .Select(day => ((int)Math.Floor((day.Value - startDate)?.TotalDays ?? 0),
+                                             day?.DayOfWeek))
+                             .ToList();
+
+        var filterDate = startDate?.AddDays(day);
+
+        Sessions = sessions.Where(s => s.StartTime?.Date == filterDate)
+                           .OrderBy(s => s.TrackId)
+                           .GroupBy(s => s.StartTime)
+                           .OrderBy(g => g.Key);
+    }
+
+    protected virtual Task<List<SessionResponse>> GetSessionsAsync()
+    {
+        return ApiClient.GetSessionsAsync();
+    }
+
+    //public async Task<IActionResult> OnPostAsync(int sessionId)
+    //{
+    //    await ApiClient.AddSessionToAttendeeAsync(User.Identity.Name, sessionId);
+
+    //    return RedirectToPage();
+    //}
+
+    //public async Task<IActionResult> OnPostRemoveAsync(int sessionId)
+    //{
+    //    await ApiClient.RemoveSessionFromAttendeeAsync(User.Identity.Name, sessionId);
+
+    //    return RedirectToPage();
+    //}
+}

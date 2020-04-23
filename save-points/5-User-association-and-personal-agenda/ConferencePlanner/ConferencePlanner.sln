@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConferenceDTO", "Conference
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FrontEnd", "FrontEnd\FrontEnd.csproj", "{0B73E421-4D0D-4743-8E00-DF2DBBEFCEFB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorFrontEnd", "BlazorFrontEnd\BlazorFrontEnd.csproj", "{CEE7A6C1-4D23-409F-99D3-F25178BC867E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{0B73E421-4D0D-4743-8E00-DF2DBBEFCEFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0B73E421-4D0D-4743-8E00-DF2DBBEFCEFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0B73E421-4D0D-4743-8E00-DF2DBBEFCEFB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CEE7A6C1-4D23-409F-99D3-F25178BC867E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CEE7A6C1-4D23-409F-99D3-F25178BC867E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CEE7A6C1-4D23-409F-99D3-F25178BC867E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CEE7A6C1-4D23-409F-99D3-F25178BC867E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
