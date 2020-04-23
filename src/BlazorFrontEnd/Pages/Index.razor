@@ -1,0 +1,60 @@
+﻿@page "/"
+@page "/{day:int}"
+@inject IApiClient ApiClient
+
+<h1 class="mb-4">@($"My Conference {DateTime.Now.Year}")</h1>
+
+@if (conferenceData != null)
+{ 
+    <div class="agenda">
+        <ul class="nav nav-pills mb-3">
+            @foreach (var dayOffset in conferenceData.DayOffsets)
+            {
+                <li role="presentation" class="nav-item">
+                    <NavLink class="nav-link" href="@dayOffset.Offset">@dayOffset.DayofWeek?.ToString()</NavLink>
+                </li>
+            }
+        </ul>
+
+        @foreach (var timeSlot in conferenceData[Day])
+        {
+            <h4>@timeSlot.Key?.ToString("HH:mm")</h4>
+            <div class="row">
+                @foreach (var session in timeSlot)
+                {
+                    <div class="col-md-3 mb-4">
+                        <div class="card shadow session h-100">
+                            <div class="card-header">@session.Track?.Name</div>
+                            <div class="card-body">
+                                <h5 class="card-title"><a href=session/@session.Id>@session.Title</a></h5>
+                            </div>
+                            <div class="card-footer">
+                                <ul class="list-inline mb-0">
+                                    @foreach (var speaker in session.Speakers)
+                                    {
+                                        <li class="list-inline-item">
+                                            <a href="speaker/@speaker.Id">@speaker.Name</a>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+}
+
+@code {
+    ConferenceData conferenceData;
+
+    [Parameter]
+    public int Day { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var sessions = await ApiClient.GetSessionsAsync();
+        conferenceData = ConferenceData.GenerateConferenceData(sessions);
+    }
+}

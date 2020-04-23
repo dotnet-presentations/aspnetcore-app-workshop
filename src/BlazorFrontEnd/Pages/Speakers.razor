@@ -1,0 +1,32 @@
+﻿@page "/speakers"
+@inject IApiClient ApiClient
+
+<div class="speaker-list">
+    <h1>Speakers</h1>
+
+    <div class="row">
+        @foreach (var speaker in speakers.OrderBy(s => s.Name))
+        {
+            <div class="col-md-3 mb-4">
+                <div class="card speaker h-100">
+                    <div class="card-header"><a href="speaker/@speaker.Id">@speaker.Name</a></div>
+                    <ul class="list-group list-group-flush">
+                        @foreach (var session in speaker.Sessions)
+                        {
+                            <li class="list-group-item"><a href="session/@session.Id">@session.Title</a></li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    IEnumerable<SpeakerResponse> speakers = new SpeakerResponse[0];
+
+    protected override async Task OnInitializedAsync()
+    {
+        speakers = await ApiClient.GetSpeakersAsync();
+    }
+}

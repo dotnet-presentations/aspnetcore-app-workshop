@@ -1,0 +1,48 @@
+﻿@page "/speaker/{id:int}"
+@inject IApiClient ApiClient
+
+@if (speaker != null)
+{
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/speakers">Speakers</a></li>
+            <li class="breadcrumb-item active" aria-current="page">@speaker.Name</li>
+        </ol>
+    </nav>
+
+    <h2>@speaker.Name</h2>
+
+    <p>@speaker.Bio</p>
+
+    <h3>Sessions</h3>
+    <div class="row">
+        <div class="col-md-5">
+            <ul class="list-group">
+                @foreach (var session in speaker.Sessions)
+                {
+                    <li class="list-group-item"><a href="session/@session.Id">@session.Title</a></li>
+                }
+            </ul>
+        </div>
+    </div>
+}
+
+@if (speakerNotFound)
+{
+    <p>Speaker not found. Sorry!</p>
+}
+
+
+@code {
+    SpeakerResponse speaker;
+    bool speakerNotFound;
+
+    [Parameter]
+    public int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        speaker = await ApiClient.GetSpeakerAsync(Id);
+        speakerNotFound = speaker == null;
+    }
+}

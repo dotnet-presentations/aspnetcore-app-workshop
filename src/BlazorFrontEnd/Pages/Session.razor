@@ -1,0 +1,49 @@
+﻿@page "/session/{id:int}"
+@inject IApiClient ApiClient 
+
+@if (session != null)
+{
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-page="/Index">Agenda</a></li>
+            <li class="breadcrumb-item"><a href="@dayOffset">Day @(dayOffset + 1)</a></li>
+            <li class="breadcrumb-item active">@session.Title</li>
+        </ol>
+    </nav>
+
+
+    <h1>@session.Title</h1>
+    <span class="label label-default">@session.Track?.Name</span>
+
+    @foreach (var speaker in session.Speakers)
+    {
+        <em><a asp-page="Speaker" asp-route-id="@speaker.Id">@speaker.Name</a></em>
+    }
+
+    @foreach (var line in session.Abstract.Split("\r\n", StringSplitOptions.RemoveEmptyEntries))
+    {
+        <p>
+            @line
+        </p>
+    }
+}
+
+
+@code {
+    SessionResponse session;
+    int? dayOffset;
+
+    [Parameter]
+    public int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        session = await ApiClient.GetSessionAsync(Id);
+
+        var allSessions = await ApiClient.GetSessionsAsync();
+
+        var startDate = allSessions.Min(s => s.StartTime?.Date);
+
+        dayOffset = session.StartTime?.Subtract(startDate ?? DateTimeOffset.MinValue).Days;
+    }
+}
