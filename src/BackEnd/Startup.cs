@@ -41,6 +41,8 @@ namespace BackEnd
                 }
             });
 
+            services.AddDatabaseDeveloperPageExceptionFilter();
+
             services.AddControllers()
                     .AddJsonOptions(options =>
                     {
@@ -61,7 +63,6 @@ namespace BackEnd
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
             }
 
             app.UseHttpsRedirection();

@@ -36,6 +36,8 @@ namespace FrontEnd
                 client.BaseAddress = new Uri(Configuration["serviceUrl"]);
             });
 
+            services.AddDatabaseDeveloperPageExceptionFilter();
+
             services.AddRazorPages();
 
             services.AddHealthChecks()
@@ -50,7 +52,6 @@ namespace FrontEnd
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
             }
             else
             {
