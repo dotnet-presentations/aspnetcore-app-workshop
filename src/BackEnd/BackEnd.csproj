@@ -24,6 +24,8 @@
 
   <ItemGroup>
     <Using Include="BackEnd" />
+    <Using Include="BackEnd.Data" />
+    <Using Include="System.Text.Json.Serialization" />
   </ItemGroup>
   
   <ItemGroup>
