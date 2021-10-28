@@ -1,5 +1,9 @@
-﻿var builder = WebApplication.CreateBuilder(args);
+﻿using Microsoft.EntityFrameworkCore;
+
+var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
+
+services.AddEndpointsApiExplorer();
 
 services.AddSqlServer<ApplicationDbContext>("name=DefaultConnection")
         .AddDatabaseDeveloperPageExceptionFilter();
@@ -27,6 +31,20 @@ app.UseSwaggerUI(options =>
 {
     options.SwaggerEndpoint("/swagger/v1/swagger.json", "Conference Planner API v1");
 });
+
+
+app.MapGet("/api/Sessions", async (ApplicationDbContext db) =>
+{
+    var sessions = await db.Sessions.AsNoTracking()
+                            .Include(s => s.Track)
+                            .Include(s => s.SessionSpeakers)
+                            .ThenInclude(ss => ss.Speaker)
+                            .Select(m => m.MapSessionResponse())
+                            .ToListAsync();
+
+    return sessions;
+})
+    .WithTags("Sessions");
 
 app.MapControllers();
 app.MapHealthChecks("/health");

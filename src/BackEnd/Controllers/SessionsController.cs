@@ -21,8 +21,8 @@ namespace BackEnd.Controllers
             _db = db;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<List<SessionResponse>>> Get()
+        //[HttpGet]
+        private async Task<ActionResult<List<SessionResponse>>> Get()
         {
             var sessions = await _db.Sessions.AsNoTracking()
                                              .Include(s => s.Track)
