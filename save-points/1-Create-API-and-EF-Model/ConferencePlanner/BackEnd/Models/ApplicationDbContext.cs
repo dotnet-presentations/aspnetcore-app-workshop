@@ -9,7 +9,6 @@ namespace BackEnd.Models
         {
 
         }
-
-        public DbSet<Speaker> Speakers { get; set; }
+        public DbSet<Speaker> Speakers => Set<Speaker>();
     }
 }
