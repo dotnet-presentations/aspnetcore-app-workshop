@@ -290,7 +290,7 @@ __pycache__/
 *.db
 
 # Visual Studio code
-.vscode/*
+.vscode
 !.vscode/extensions.json
 
 # MacOS
