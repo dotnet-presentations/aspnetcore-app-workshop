@@ -1,14 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace BackEnd.Models
-{
-    public class ApplicationDbContext : DbContext
-    {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-            : base(options)
-        {
+namespace BackEnd.Models;
 
-        }
-        public DbSet<Speaker> Speakers => Set<Speaker>();
+public class ApplicationDbContext : DbContext
+{
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        : base(options)
+    {
+
     }
+
+    public DbSet<Speaker> Speakers => Set<Speaker>();
 }
