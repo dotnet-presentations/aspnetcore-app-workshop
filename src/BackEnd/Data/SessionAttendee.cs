@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace BackEnd.Data
 {
-    public class SessionAttendee
+    public record SessionAttendee
     {
         public int SessionId { get; set; }
 
