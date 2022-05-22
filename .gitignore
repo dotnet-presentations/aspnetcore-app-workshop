@@ -288,6 +288,8 @@ __pycache__/
 
 # SQL Lite
 *.db
+*.db-wal
+*.db.shm
 
 # Visual Studio code
 .vscode
