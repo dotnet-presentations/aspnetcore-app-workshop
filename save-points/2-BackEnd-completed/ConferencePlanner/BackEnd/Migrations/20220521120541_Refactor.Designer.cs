@@ -3,44 +3,46 @@ using System;
 using BackEnd.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+
+#nullable disable
 
 namespace BackEnd.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190614225827_Refactor")]
+    [Migration("20220521120541_Refactor")]
     partial class Refactor
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder
-                .HasAnnotation("ProductVersion", "3.0.0-preview6.19304.10")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+            modelBuilder.HasAnnotation("ProductVersion", "6.0.4");
 
             modelBuilder.Entity("BackEnd.Data.Attendee", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("EmailAddress")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
-                        .HasMaxLength(200);
+                        .HasMaxLength(200)
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("LastName")
                         .IsRequired()
-                        .HasMaxLength(200);
+                        .HasMaxLength(200)
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("UserName")
                         .IsRequired()
-                        .HasMaxLength(200);
+                        .HasMaxLength(200)
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -54,20 +56,25 @@ namespace BackEnd.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Abstract")
-                        .HasMaxLength(4000);
+                        .HasMaxLength(4000)
+                        .HasColumnType("TEXT");
 
-                    b.Property<DateTimeOffset?>("EndTime");
+                    b.Property<DateTimeOffset?>("EndTime")
+                        .HasColumnType("TEXT");
 
-                    b.Property<DateTimeOffset?>("StartTime");
+                    b.Property<DateTimeOffset?>("StartTime")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasMaxLength(200);
+                        .HasMaxLength(200)
+                        .HasColumnType("TEXT");
 
-                    b.Property<int?>("TrackId");
+                    b.Property<int?>("TrackId")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -78,9 +85,11 @@ namespace BackEnd.Migrations
 
             modelBuilder.Entity("BackEnd.Data.SessionAttendee", b =>
                 {
-                    b.Property<int>("SessionId");
+                    b.Property<int>("SessionId")
+                        .HasColumnType("INTEGER");
 
-                    b.Property<int>("AttendeeId");
+                    b.Property<int>("AttendeeId")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("SessionId", "AttendeeId");
 
@@ -91,9 +100,11 @@ namespace BackEnd.Migrations
 
             modelBuilder.Entity("BackEnd.Data.SessionSpeaker", b =>
                 {
-                    b.Property<int>("SessionId");
+                    b.Property<int>("SessionId")
+                        .HasColumnType("INTEGER");
 
-                    b.Property<int>("SpeakerId");
+                    b.Property<int>("SpeakerId")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("SessionId", "SpeakerId");
 
@@ -106,17 +117,20 @@ namespace BackEnd.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Bio")
-                        .HasMaxLength(4000);
+                        .HasMaxLength(4000)
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(200);
+                        .HasMaxLength(200)
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("WebSite")
-                        .HasMaxLength(1000);
+                        .HasMaxLength(1000)
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -127,11 +141,12 @@ namespace BackEnd.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(200);
+                        .HasMaxLength(200)
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -143,6 +158,8 @@ namespace BackEnd.Migrations
                     b.HasOne("BackEnd.Data.Track", "Track")
                         .WithMany("Sessions")
                         .HasForeignKey("TrackId");
+
+                    b.Navigation("Track");
                 });
 
             modelBuilder.Entity("BackEnd.Data.SessionAttendee", b =>
@@ -154,10 +171,14 @@ namespace BackEnd.Migrations
                         .IsRequired();
 
                     b.HasOne("BackEnd.Data.Session", "Session")
-                        .WithMany()
+                        .WithMany("SessionAttendees")
                         .HasForeignKey("SessionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Attendee");
+
+                    b.Navigation("Session");
                 });
 
             modelBuilder.Entity("BackEnd.Data.SessionSpeaker", b =>
@@ -173,6 +194,32 @@ namespace BackEnd.Migrations
                         .HasForeignKey("SpeakerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Session");
+
+                    b.Navigation("Speaker");
+                });
+
+            modelBuilder.Entity("BackEnd.Data.Attendee", b =>
+                {
+                    b.Navigation("SessionsAttendees");
+                });
+
+            modelBuilder.Entity("BackEnd.Data.Session", b =>
+                {
+                    b.Navigation("SessionAttendees");
+
+                    b.Navigation("SessionSpeakers");
+                });
+
+            modelBuilder.Entity("BackEnd.Data.Speaker", b =>
+                {
+                    b.Navigation("SessionSpeakers");
+                });
+
+            modelBuilder.Entity("BackEnd.Data.Track", b =>
+                {
+                    b.Navigation("Sessions");
                 });
 #pragma warning restore 612, 618
         }

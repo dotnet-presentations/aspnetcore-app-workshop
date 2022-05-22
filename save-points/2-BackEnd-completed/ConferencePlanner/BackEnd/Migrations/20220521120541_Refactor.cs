@@ -1,6 +1,7 @@
 ﻿using System;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
+
+#nullable disable
 
 namespace BackEnd.Migrations
 {
@@ -12,12 +13,12 @@ namespace BackEnd.Migrations
                 name: "Attendees",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    FirstName = table.Column<string>(maxLength: 200, nullable: false),
-                    LastName = table.Column<string>(maxLength: 200, nullable: false),
-                    UserName = table.Column<string>(maxLength: 200, nullable: false),
-                    EmailAddress = table.Column<string>(maxLength: 256, nullable: true)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    FirstName = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false),
+                    LastName = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false),
+                    UserName = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false),
+                    EmailAddress = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -28,9 +29,9 @@ namespace BackEnd.Migrations
                 name: "Tracks",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(maxLength: 200, nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -41,13 +42,13 @@ namespace BackEnd.Migrations
                 name: "Sessions",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Title = table.Column<string>(maxLength: 200, nullable: false),
-                    Abstract = table.Column<string>(maxLength: 4000, nullable: true),
-                    StartTime = table.Column<DateTimeOffset>(nullable: true),
-                    EndTime = table.Column<DateTimeOffset>(nullable: true),
-                    TrackId = table.Column<int>(nullable: true)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Title = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false),
+                    Abstract = table.Column<string>(type: "TEXT", maxLength: 4000, nullable: true),
+                    StartTime = table.Column<DateTimeOffset>(type: "TEXT", nullable: true),
+                    EndTime = table.Column<DateTimeOffset>(type: "TEXT", nullable: true),
+                    TrackId = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -56,16 +57,15 @@ namespace BackEnd.Migrations
                         name: "FK_Sessions_Tracks_TrackId",
                         column: x => x.TrackId,
                         principalTable: "Tracks",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
                 name: "SessionAttendee",
                 columns: table => new
                 {
-                    SessionId = table.Column<int>(nullable: false),
-                    AttendeeId = table.Column<int>(nullable: false)
+                    SessionId = table.Column<int>(type: "INTEGER", nullable: false),
+                    AttendeeId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -88,8 +88,8 @@ namespace BackEnd.Migrations
                 name: "SessionSpeaker",
                 columns: table => new
                 {
-                    SessionId = table.Column<int>(nullable: false),
-                    SpeakerId = table.Column<int>(nullable: false)
+                    SessionId = table.Column<int>(type: "INTEGER", nullable: false),
+                    SpeakerId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
