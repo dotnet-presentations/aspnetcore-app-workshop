@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using ConferenceDTO;
+﻿using ConferenceDTO;
 using FrontEnd.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging;
 
 namespace FrontEnd.Pages
 {
@@ -15,17 +10,15 @@ namespace FrontEnd.Pages
         private readonly ILogger<IndexModel> _logger;
         protected readonly IApiClient _apiClient;
 
+        public IEnumerable<IGrouping<DateTimeOffset?, SessionResponse>> Sessions { get; set; } = null!;
+        public IEnumerable<(int Offset, DayOfWeek? DayofWeek)> DayOffsets { get; set; } = null!;
+        public int CurrentDayOffset { get; set; }
+
         public IndexModel(ILogger<IndexModel> logger, IApiClient apiClient)
         {
             _logger = logger;
             _apiClient = apiClient;
         }
-
-        public IEnumerable<IGrouping<DateTimeOffset?, SessionResponse>> Sessions { get; set; }
-
-        public IEnumerable<(int Offset, DayOfWeek? DayofWeek)> DayOffsets { get; set; }
-
-        public int CurrentDayOffset { get; set; }
 
         public async Task OnGet(int day = 0)
         {
@@ -38,8 +31,8 @@ namespace FrontEnd.Pages
             DayOffsets = sessions.Select(s => s.StartTime?.Date)
                                  .Distinct()
                                  .OrderBy(d => d)
-                                 .Select(day => ((int)Math.Floor((day.Value - startDate)?.TotalDays ?? 0),
-                                                 day?.DayOfWeek))
+                                 .Select(d => ((int)Math.Floor((d!.Value - startDate)?.TotalDays ?? 0),
+                                                 d?.DayOfWeek))
                                  .ToList();
 
             var filterDate = startDate?.AddDays(day);

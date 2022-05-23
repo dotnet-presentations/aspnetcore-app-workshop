@@ -21,7 +21,7 @@
 </div>
 
 <div class="row">
-    @foreach (var result in Model.SearchResults)
+    @foreach (var result in Model.SearchResults!)
     {
         <div class="col-md-12">
             @switch (result.Type)
@@ -29,13 +29,20 @@
                 case SearchResultType.Speaker:
                     <div class="card shadow mb-3">
                         <div class="card-header">
-                            <h3 class="card-title">Speaker: <a asp-page="Speaker" asp-route-id="@result.Speaker.Id">@result.Speaker.Name</a></h3>
+                            <h3 class="card-title">
+                                Speaker:
+                                <a asp-page="Speaker" asp-route-id="@result.Speaker.Id">
+                                    @result.Speaker!.Name
+                                </a>
+                            </h3>
                         </div>
                         <div class="card-body">
                             <p>
                                 @foreach (var session in result.Speaker.Sessions)
                                 {
-                                    <a asp-page="/Session" asp-route-id="@session.Id"><em>@session.Title</em></a>
+                                    <a asp-page="/Session" asp-route-id="@session.Id">
+                                        <em>@session.Title</em>
+                                    </a>
                                 }
                             </p>
                             <p>
@@ -48,10 +55,15 @@
                 case SearchResultType.Session:
                     <div class="card shadow mb-3">
                         <div class="card-header">
-                            <h3 class="card-title">Session: <a asp-page="Session" asp-route-id="@result.Session.Id">@result.Session.Title</a></h3>
+                            <h3 class="card-title">
+                                Session:
+                                <a asp-page="Session" asp-route-id="@result.Session.Id">@result.Session!.Title</a>
+                            </h3>
                             @foreach (var speaker in result.Session.Speakers)
                             {
-                                <a asp-page="/Speaker" asp-route-id="@speaker.Id"><em>@speaker.Name</em></a>
+                                <a asp-page="/Speaker" asp-route-id="@speaker.Id">
+                                    <em>@speaker.Name</em>
+                                </a>
                             }
                         </div>
                         <div class="card-body">
