@@ -26,7 +26,7 @@ public static class SpeakerEndpoints
                             .ThenInclude(ss => ss.Session)
                             .SingleOrDefaultAsync(s => s.Id == Id)
                 is Speaker model
-                    ? Results.Ok(model)
+                    ? Results.Ok(model.MapSpeakerResponse())
                     : Results.NotFound();
         })
         .WithTags("Speaker")
