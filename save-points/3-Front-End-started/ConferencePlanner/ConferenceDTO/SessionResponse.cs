@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿namespace ConferenceDTO;
 
-namespace ConferenceDTO
+public class SessionResponse : Session
 {
-    public class SessionResponse : Session
-    {
-        public Track Track { get; set; }
+    public Track Track { get; set; } = null!;
 
-        public List<Speaker> Speakers { get; set; } = new List<Speaker>();
-    }
+    public List<Speaker> Speakers { get; set; } = new List<Speaker>();
 }

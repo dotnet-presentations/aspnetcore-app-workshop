@@ -1,5 +1,5 @@
 # ASP.NET Core - App Building Workshop
- 
+
 [![Build Status](https://dev.azure.com/dotnet/AspNetCoreWorkshop/_apis/build/status/ASP.NET%20Workshop-ASP.NET%20Core%203.x?branchName=master)](https://dev.azure.com/dotnet/AspNetCoreWorkshop/_build/latest?definitionId=71&branchName=master)
 
 [BackEnd Web API](https://aspnetcorews-backend.azurewebsites.net) | [FrontEnd Web App](https://aspnetcorews-frontend.azurewebsites.net)
@@ -13,12 +13,15 @@
 If you have issues downloading the installers we may have USB sticks with offline installers for you to use.
 
 ## What you'll be building
+
 In this workshop, you'll learn by building a full-featured ASP.NET Core application from scratch. We'll start from File/ New and build up to an API back-end application, a web front-end application, and a common library for shared data transfer objects using .NET Standard.
 
 ### Application Architecture
+
 ![Architecture Diagram](/docs/images/ConferencePlannerArchitectureDiagram.svg)
 
 ### Database Schema
+
 ![Database Schema Diagram](/docs/conference-planner-db-diagram.png)
 
 ## Sessions
