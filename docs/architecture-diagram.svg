@@ -1,10 +1,54 @@
-<svg font-family="arial" font-size="14" height="416" width="840" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<marker id="triangle" markerHeight="10" markerUnits="strokeWidth" markerWidth="10" orient="auto" refX="15" refY="10" viewBox="0 0 50 20">
-<path d="M 0 0 L 30 10 L 0 20 z"/>
-</marker>
-</defs>
-<style>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   font-family="arial"
+   font-size="14"
+   height="416"
+   width="840"
+   version="1.1"
+   id="svg95"
+   sodipodi:docname="architecture-diagram.svg"
+   inkscape:version="1.2-beta (1b65182ce9, 2022-04-05)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview97"
+     pagecolor="#505050"
+     bordercolor="#eeeeee"
+     borderopacity="1"
+     inkscape:pageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#505050"
+     showgrid="false"
+     inkscape:zoom="1.6309524"
+     inkscape:cx="420"
+     inkscape:cy="207.85401"
+     inkscape:window-width="1920"
+     inkscape:window-height="1009"
+     inkscape:window-x="1912"
+     inkscape:window-y="-5"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg95" />
+  <defs
+     id="defs57">
+    <marker
+       id="triangle"
+       markerHeight="10"
+       markerUnits="strokeWidth"
+       markerWidth="10"
+       orient="auto"
+       refX="15"
+       refY="10"
+       viewBox="0 0 50 20">
+      <path
+         d="M 0 0 L 30 10 L 0 20 z"
+         id="path54" />
+    </marker>
+  </defs>
+  <style
+     id="style59">
 
     line, path {
       stroke: black;
@@ -35,43 +79,105 @@
     }
     
 </style>
-<path d=" M 4 8 L 4 32 M 4 8 L 192 8 M 8 8 L 192 8 M 196 8 L 196 32 M 196 8 L 192 8 M 276 8 L 276 32 M 276 8 L 480 8 M 280 8 L 480 8 M 484 8 L 484 32 M 484 8 L 480 8 M 580 8 L 580 32 M 580 8 L 800 8 M 584 8 L 800 8 M 804 8 L 804 32 M 804 8 L 800 8 M 4 16 L 4 32 M 196 16 L 196 32 M 276 16 L 276 32 M 484 16 L 484 32 M 580 16 L 580 32 M 804 16 L 804 32 M 4 32 L 4 160 M 4 40 L 192 40 M 8 40 L 192 40 M 196 32 L 196 64 M 196 40 L 192 40 M 276 32 L 276 160 M 276 40 L 480 40 M 280 40 L 480 40 M 484 32 L 484 160 M 484 40 L 480 40 M 580 32 L 580 64 M 580 40 L 800 40 M 584 40 L 800 40 M 804 32 L 804 96 M 804 40 L 800 40 M 4 48 L 4 160 M 196 48 L 196 64 M 276 48 L 276 160 M 484 48 L 484 160 M 580 48 L 580 64 M 804 48 L 804 96 M 196 64 L 196 160 M 504 72 L 576 72 M 580 64 L 580 96 M 580 72 L 576 72 M 196 80 L 196 160 M 580 80 L 580 96 L 580 160 M 580 104 L 696 104 M 584 104 L 696 104 M 700 104 L 700 160 M 696 104 L 800 104 M 704 104 L 800 104 M 804 96 L 804 160 M 804 104 L 800 104 M 580 112 L 580 160 M 700 112 L 700 160 M 804 112 L 804 160 M 4 168 L 4 160 M 4 168 L 192 168 M 8 168 L 192 168 M 196 168 L 196 160 M 196 168 L 192 168 M 276 168 L 276 160 M 276 168 L 480 168 M 280 168 L 480 168 M 484 168 L 484 160 M 484 168 L 480 168 M 580 168 L 580 160 M 580 168 L 696 168 M 584 168 L 696 168 M 700 168 L 700 160 M 696 168 L 800 168 M 704 168 L 800 168 M 804 168 L 804 160 M 804 168 L 800 168 M 748 208 L 748 304 M 4 232 L 4 256 M 4 232 L 192 232 M 8 232 L 192 232 M 196 232 L 196 256 M 196 232 L 192 232 M 4 240 L 4 256 M 196 240 L 196 256 M 4 256 L 4 368 M 4 264 L 192 264 M 8 264 L 192 264 M 196 256 L 196 304 M 196 264 L 192 264 M 4 272 L 4 368 M 196 272 L 196 304 L 196 368 M 196 312 L 744 312 M 200 312 L 744 312 M 748 312 L 748 304 M 748 312 L 744 312 M 196 320 L 196 368 M 4 376 L 4 368 M 4 376 L 192 376 M 8 376 L 192 376 M 196 376 L 196 368 M 196 376 L 192 376" fill="none"/>
-<path d="" fill="none" stroke-dasharray="3 3"/>
-<line marker-end="url(#triangle)" x1="196" x2="260" y1="72" y2="72"/>
-<line marker-end="url(#triangle)" x1="200" x2="260" y1="72" y2="72"/>
-<line marker-end="url(#triangle)" x1="504" x2="500" y1="72" y2="72"/>
-<line marker-end="url(#triangle)" x1="748" x2="748" y1="208" y2="192"/>
-<text x="50" y="28">
-.NET Core 2.1
-</text>
-<text x="330" y="28">
-.NET Standard 2.0
-</text>
-<text x="634" y="28">
-.NET Core 2.1
-</text>
-<text x="642" y="76">
+  <path
+     d=" M 4 8 L 4 32 M 4 8 L 192 8 M 8 8 L 192 8 M 196 8 L 196 32 M 196 8 L 192 8 M 276 8 L 276 32 M 276 8 L 480 8 M 280 8 L 480 8 M 484 8 L 484 32 M 484 8 L 480 8 M 580 8 L 580 32 M 580 8 L 800 8 M 584 8 L 800 8 M 804 8 L 804 32 M 804 8 L 800 8 M 4 16 L 4 32 M 196 16 L 196 32 M 276 16 L 276 32 M 484 16 L 484 32 M 580 16 L 580 32 M 804 16 L 804 32 M 4 32 L 4 160 M 4 40 L 192 40 M 8 40 L 192 40 M 196 32 L 196 64 M 196 40 L 192 40 M 276 32 L 276 160 M 276 40 L 480 40 M 280 40 L 480 40 M 484 32 L 484 160 M 484 40 L 480 40 M 580 32 L 580 64 M 580 40 L 800 40 M 584 40 L 800 40 M 804 32 L 804 96 M 804 40 L 800 40 M 4 48 L 4 160 M 196 48 L 196 64 M 276 48 L 276 160 M 484 48 L 484 160 M 580 48 L 580 64 M 804 48 L 804 96 M 196 64 L 196 160 M 504 72 L 576 72 M 580 64 L 580 96 M 580 72 L 576 72 M 196 80 L 196 160 M 580 80 L 580 96 L 580 160 M 580 104 L 696 104 M 584 104 L 696 104 M 700 104 L 700 160 M 696 104 L 800 104 M 704 104 L 800 104 M 804 96 L 804 160 M 804 104 L 800 104 M 580 112 L 580 160 M 700 112 L 700 160 M 804 112 L 804 160 M 4 168 L 4 160 M 4 168 L 192 168 M 8 168 L 192 168 M 196 168 L 196 160 M 196 168 L 192 168 M 276 168 L 276 160 M 276 168 L 480 168 M 280 168 L 480 168 M 484 168 L 484 160 M 484 168 L 480 168 M 580 168 L 580 160 M 580 168 L 696 168 M 584 168 L 696 168 M 700 168 L 700 160 M 696 168 L 800 168 M 704 168 L 800 168 M 804 168 L 804 160 M 804 168 L 800 168 M 748 208 L 748 304 M 4 232 L 4 256 M 4 232 L 192 232 M 8 232 L 192 232 M 196 232 L 196 256 M 196 232 L 192 232 M 4 240 L 4 256 M 196 240 L 196 256 M 4 256 L 4 368 M 4 264 L 192 264 M 8 264 L 192 264 M 196 256 L 196 304 M 196 264 L 192 264 M 4 272 L 4 368 M 196 272 L 196 304 L 196 368 M 196 312 L 744 312 M 200 312 L 744 312 M 748 312 L 748 304 M 748 312 L 744 312 M 196 320 L 196 368 M 4 376 L 4 368 M 4 376 L 192 376 M 8 376 L 192 376 M 196 376 L 196 368 M 196 376 L 192 376"
+     fill="none"
+     id="path61" />
+  <path
+     d=""
+     fill="none"
+     stroke-dasharray="3 3"
+     id="path63" />
+  <line
+     marker-end="url(#triangle)"
+     x1="196"
+     x2="260"
+     y1="72"
+     y2="72"
+     id="line65" />
+  <line
+     marker-end="url(#triangle)"
+     x1="200"
+     x2="260"
+     y1="72"
+     y2="72"
+     id="line67" />
+  <line
+     marker-end="url(#triangle)"
+     x1="504"
+     x2="500"
+     y1="72"
+     y2="72"
+     id="line69" />
+  <line
+     marker-end="url(#triangle)"
+     x1="748"
+     x2="748"
+     y1="208"
+     y2="192"
+     id="line71" />
+  <text
+     x="70.846718"
+     y="28.613138"
+     id="text73">.NET 6</text>
+  <text
+     x="330"
+     y="28"
+     id="text75">.NET Standard</text>
+  <text
+     x="670.78833"
+     y="27.386862"
+     id="text77">.NET 6</text>
+  <text
+     x="642"
+     y="76"
+     id="text79">
 Back End
 </text>
-<text x="42" y="92">
+  <text
+     x="42"
+     y="92"
+     id="text81">
 Front End
 </text>
-<text x="330" y="92">
+  <text
+     x="330"
+     y="92"
+     id="text83">
 Conference DTO
 </text>
-<text x="610" y="140">
+  <text
+     x="610"
+     y="140"
+     id="text85">
 EF Models
 </text>
-<text x="730" y="140">
-APIs
-</text>
-<text x="34" y="252">
-JavaScript Services
-</text>
-<text x="370" y="300">
+  <text
+     x="729.25549"
+     y="132.64233"
+     id="text87"><tspan
+       sodipodi:role="line"
+       id="tspan359"
+       x="729.25549"
+       y="132.64233">Minimal</tspan><tspan
+       sodipodi:role="line"
+       id="tspan361"
+       x="729.25549"
+       y="150.14233">APIs</tspan></text>
+  <text
+     x="34"
+     y="252"
+     id="text89" />
+  <text
+     x="370"
+     y="300"
+     id="text91">
 HTTP calls
 </text>
-<text x="42" y="316">
+  <text
+     x="42"
+     y="316"
+     id="text93">
 SPA Front End
 </text>
 </svg>
