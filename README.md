@@ -18,7 +18,7 @@ In this workshop, you'll learn by building a full-featured ASP.NET Core applicat
 
 ### Application Architecture
 
-![Architecture Diagram](/docs/images/ConferencePlannerArchitectureDiagram.svg)
+![Architecture Diagram](/docs/architecture-diagram.svg)
 
 ### Database Schema
 
