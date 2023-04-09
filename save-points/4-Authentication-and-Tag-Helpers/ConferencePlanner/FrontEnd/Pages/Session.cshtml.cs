@@ -1,43 +1,33 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using ConferenceDTO;
 using FrontEnd.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace FrontEnd.Pages
+namespace FrontEnd.Pages;
+public class SessionModel : PageModel
 {
-    public class SessionModel : PageModel
+    private readonly IApiClient _apiClient;
+    public SessionResponse? Session { get; set; }
+    public int? DayOffset { get; set; }
+
+    public SessionModel(IApiClient apiClient)
     {
-        private readonly IApiClient _apiClient;
+        _apiClient = apiClient;
+    }
 
-        public SessionModel(IApiClient apiClient)
+    public async Task<IActionResult> OnGet(int id)
+    {
+        Session = await _apiClient.GetSessionAsync(id);
+
+        if (Session == null)
         {
-            _apiClient = apiClient;
+            return RedirectToPage("/Index");
         }
 
-        public SessionResponse Session { get; set; }
+        var allSessions = await _apiClient.GetSessionsAsync();
+        var startDate = allSessions.Min(s => s.StartTime?.Date);
+        DayOffset = Session.StartTime?.Subtract(startDate ?? DateTimeOffset.MinValue).Days;
 
-        public int? DayOffset { get; set; }
-
-        public async Task<IActionResult> OnGetAsync(int id)
-        {
-            Session = await _apiClient.GetSessionAsync(id);
-
-            if (Session == null)
-            {
-                return RedirectToPage("/Index");
-            }
-
-            var allSessions = await _apiClient.GetSessionsAsync();
-
-            var startDate = allSessions.Min(s => s.StartTime?.Date);
-
-            DayOffset = Session.StartTime?.Subtract(startDate ?? DateTimeOffset.MinValue).Days;
-
-            return Page();
-        }
+        return Page();
     }
 }

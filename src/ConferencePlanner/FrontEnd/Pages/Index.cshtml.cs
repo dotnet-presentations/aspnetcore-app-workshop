@@ -2,6 +2,7 @@
 using FrontEnd.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Security.Claims;
 
 namespace FrontEnd.Pages
 {
@@ -20,8 +21,11 @@ namespace FrontEnd.Pages
             _apiClient = apiClient;
         }
 
-        public async Task OnGet(int day = 0)
+        public bool IsAdmin { get; set; }
+
+        public async Task OnGetAsync(int day = 0)
         {
+            IsAdmin = User.IsAdmin();
             CurrentDayOffset = day;
 
             var sessions = await _apiClient.GetSessionsAsync();

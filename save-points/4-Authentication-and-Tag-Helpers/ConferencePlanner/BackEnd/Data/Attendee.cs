@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace BackEnd.Data;
 
-namespace BackEnd.Data
+public class Attendee : ConferenceDTO.Attendee
 {
-    public class Attendee : ConferenceDTO.Attendee
-    {
-        public virtual ICollection<SessionAttendee> SessionsAttendees { get; set; }
-    }
+    public virtual ICollection<SessionAttendee> SessionsAttendees { get; set; } = null!;
 }

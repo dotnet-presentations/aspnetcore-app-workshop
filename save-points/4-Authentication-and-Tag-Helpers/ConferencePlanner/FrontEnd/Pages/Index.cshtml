@@ -4,25 +4,18 @@
     ViewData["Title"] = "Home page";
 }
 
-@if (Model.ShowMessage)
-{
-    <div class="alert alert-success alert-dismissible" role="alert">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        @Model.Message
-    </div>
-}
-
-<ul class="nav nav-pills mb-3">
-    @foreach (var day in Model.DayOffsets)
-    {
-        <li role="presentation" class="nav-item">
-            <a class="nav-link @(Model.CurrentDayOffset == day.Offset ? "active" : null)" asp-route-day="@day.Offset">@day.DayofWeek?.ToString()</a>
-        </li>
-    }
-</ul>
-
 <div class="agenda">
     <h1>My Conference @System.DateTime.Now.Year</h1>
+
+    <ul class="nav nav-pills mb-3">
+        @foreach (var day in Model.DayOffsets)
+        {
+            <li role="presentation" class="nav-item">
+                <a class="nav-link @(Model.CurrentDayOffset == day.Offset ? "active" : null)"
+                asp-route-day="@day.Offset">@day.DayofWeek?.ToString()</a>
+            </li>
+        }
+    </ul>
 
     @foreach (var timeSlot in Model.Sessions)
     {
@@ -44,8 +37,8 @@
                                         <a asp-page="Speaker" asp-route-id="@speaker.Id">@speaker.Name</a>
                                     </li>
                                 }
+                                <a authz-policy="Admin" asp-page="/Admin/EditSession" asp-route-id="@session.Id" class="btn btn-default btn-xs">Edit</a>
                             </ul>
-                            <a authz-policy="Admin" asp-page="/Admin/EditSession" asp-route-id="@session.Id" class="btn btn-default btn-xs">Edit</a>
                         </div>
                     </div>
                 </div>

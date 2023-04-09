@@ -37,6 +37,7 @@
                                         <a asp-page="Speaker" asp-route-id="@speaker.Id">@speaker.Name</a>
                                     </li>
                                 }
+                                <a authz-policy="Admin" asp-page="/Admin/EditSession" asp-route-id="@session.Id" class="btn btn-default btn-xs">Edit</a>
                             </ul>
                         </div>
                     </div>
