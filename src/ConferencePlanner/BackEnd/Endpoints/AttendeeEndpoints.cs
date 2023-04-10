@@ -30,18 +30,17 @@ public static class AttendeeEndpoints
         async (string username, ApplicationDbContext db) =>
         {
             var sessions = await db.Sessions.AsNoTracking()
-                                                .Include(s => s.Track)
-                                                .Include(s => s.SessionSpeakers)
-                                                    .ThenInclude(ss => ss.Speaker)
-                                                .Where(s => s.SessionAttendees.Any(sa => sa.Attendee.UserName == username))
-                                                .Select(m => m.MapSessionResponse())
-                                                .ToListAsync();
+                .Include(s => s.Track)
+                .Include(s => s.SessionSpeakers)
+                    .ThenInclude(ss => ss.Speaker)
+                .Where(s => s.SessionAttendees.Any(sa => sa.Attendee.UserName == username))
+                .Select(m => m.MapSessionResponse())
+                .ToListAsync();
 
-            if (sessions is List<Data.Session>)
-            {
-                return Results.Ok(sessions);
-            }
-            return Results.NotFound();
+            return sessions is IQueryable<Data.Session>
+                 ? Results.Ok(sessions)
+                 : Results.NotFound();
+
         })
         .WithTags("Attendee")
         .WithName("GetAllSessionsForAttendee")
@@ -132,8 +131,8 @@ public static class AttendeeEndpoints
                         var sessionAttendee = attendee.SessionsAttendees
                             .FirstOrDefault(sa => sa.SessionId == sessionId);
 
-                        if(sessionAttendee is SessionAttendee)
-                        attendee.SessionsAttendees.Remove(sessionAttendee);
+                        if (sessionAttendee is SessionAttendee)
+                            attendee.SessionsAttendees.Remove(sessionAttendee);
 
                         await db.SaveChangesAsync();
                         return Results.Ok();
