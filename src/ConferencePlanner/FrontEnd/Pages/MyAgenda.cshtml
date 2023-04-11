@@ -1,0 +1,17 @@
+﻿@page
+@model MyAgendaModel
+@{
+    ViewData["Title"] = "My Agenda";
+}
+
+@if (Model.ShowMessage)
+{
+    <div class="alert alert-success alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        @Model.Message
+    </div>
+}
+
+<h1 class="mb-4">My Agenda - My Conference @System.DateTime.Now.Year</h1>
+
+<partial name="_AgendaPartial" model="Model" />

@@ -1,34 +1,39 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using ConferenceDTO;
-using FrontEnd.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Caching.Memory;
+using FrontEnd.Services;
+using ConferenceDTO;
 
-namespace FrontEnd.Pages.Admin
+namespace FrontEnd.Pages
 {
     public class EditSessionModel : PageModel
     {
         private readonly IApiClient _apiClient;
+        private readonly IMemoryCache _cache;
 
-        public EditSessionModel(IApiClient apiClient)
+        public EditSessionModel(IApiClient apiClient, IMemoryCache cache)
         {
             _apiClient = apiClient;
+            _cache = cache;
         }
+
+        [BindProperty]
+        public Session Session { get; set; }
 
         [TempData]
         public string Message { get; set; }
 
         public bool ShowMessage => !string.IsNullOrEmpty(Message);
 
-        [BindProperty]
-        public Session Session { get; set; }
-
-        public async Task OnGetAsync(int id)
+        public async Task<IActionResult> OnGet(int id)
         {
             var session = await _apiClient.GetSessionAsync(id);
+
+            if (session == null)
+            {
+                return RedirectToPage("/Index");
+            }
+
             Session = new Session
             {
                 Id = session.Id,
@@ -38,6 +43,8 @@ namespace FrontEnd.Pages.Admin
                 StartTime = session.StartTime,
                 EndTime = session.EndTime
             };
+
+            return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()
@@ -46,8 +53,6 @@ namespace FrontEnd.Pages.Admin
             {
                 return Page();
             }
-
-            Message = "Session updated successfully!";
 
             await _apiClient.PutSessionAsync(Session);
 
@@ -62,8 +67,6 @@ namespace FrontEnd.Pages.Admin
             {
                 await _apiClient.DeleteSessionAsync(id);
             }
-
-            Message = "Session deleted successfully!";
 
             return Page();
         }

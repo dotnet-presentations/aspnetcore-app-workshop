@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using FrontEnd.Infrastructure;
+﻿using FrontEnd.Infrastructure;
 using Microsoft.AspNetCore.Authorization;
 
 namespace FrontEnd.Infrastructure

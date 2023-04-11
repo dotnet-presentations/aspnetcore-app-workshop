@@ -23,6 +23,11 @@ namespace FrontEnd.Pages
 
         public bool IsAdmin { get; set; }
 
+        [TempData]
+        public string Message { get; set; }
+
+        public bool ShowMessage => !string.IsNullOrEmpty(Message);
+
         public async Task OnGetAsync(int day = 0)
         {
             IsAdmin = User.IsAdmin();

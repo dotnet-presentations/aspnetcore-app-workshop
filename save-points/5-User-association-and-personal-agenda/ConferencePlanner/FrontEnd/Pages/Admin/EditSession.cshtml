@@ -1,15 +1,13 @@
-﻿@page "{id}"
+@page "{id}"
 @model EditSessionModel
 
-<h3>Edit Session</h3>
-
-@if (Model.ShowMessage)
-{
-    <div class="alert alert-success alert-dismissible" role="alert">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>   </button>
-        @Model.Message
-    </div>
+@{
+    ViewData["Title"] = "Edit Session";
 }
+
+<h3>@ViewData["Title"]</h3>
+
+<partial name="_AlertPartial" model="(Model.ShowMessage, Model.Message)" />
 
 <form method="post" class="form-horizontal">
     <div asp-validation-summary="All" class="text-danger"></div>

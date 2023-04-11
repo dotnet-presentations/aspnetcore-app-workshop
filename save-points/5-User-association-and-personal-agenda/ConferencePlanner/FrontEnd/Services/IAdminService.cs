@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace FrontEnd.Services
+﻿namespace FrontEnd.Services
 {
     public interface IAdminService
     {

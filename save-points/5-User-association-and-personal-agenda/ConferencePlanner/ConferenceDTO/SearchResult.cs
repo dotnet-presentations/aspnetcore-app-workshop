@@ -1,21 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿namespace ConferenceDTO;
 
-namespace ConferenceDTO
+public record SearchResult
 {
-    public class SearchResult
-    {
-        public SearchResultType Type { get; set; }
+    public SearchResultType Type { get; set; }
+    public SessionResponse? Session { get; set; }
+    public SpeakerResponse? Speaker { get; set; }
+}
 
-        public SessionResponse Session { get; set; }
-
-        public SpeakerResponse Speaker { get; set; }
-    }
-
-    public enum SearchResultType
-    {
-        Session,
-        Speaker
-    }
+public enum SearchResultType
+{
+    Session,
+    Speaker
 }

@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using ConferenceDTO;
+﻿using ConferenceDTO;
 using FrontEnd.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging;
+using System.Security.Claims;
 
 namespace FrontEnd.Pages
 {
@@ -15,6 +10,11 @@ namespace FrontEnd.Pages
     {
         private readonly ILogger<IndexModel> _logger;
         protected readonly IApiClient _apiClient;
+
+        public IEnumerable<IGrouping<DateTimeOffset?, SessionResponse>> Sessions { get; set; } = null!;
+        public IEnumerable<(int Offset, DayOfWeek? DayofWeek)> DayOffsets { get; set; } = null!;
+        public List<int> UserSessions { get; set; } = new List<int>();
+        public int CurrentDayOffset { get; set; }
 
         public IndexModel(ILogger<IndexModel> logger, IApiClient apiClient)
         {
@@ -24,23 +24,13 @@ namespace FrontEnd.Pages
 
         public bool IsAdmin { get; set; }
 
-        public IEnumerable<IGrouping<DateTimeOffset?, SessionResponse>> Sessions { get; set; }
-
-        public IEnumerable<(int Offset, DayOfWeek? DayofWeek)> DayOffsets { get; set; }
-
-        public int CurrentDayOffset { get; set; }
-
-        public List<int> UserSessions { get; set; } = new List<int>();
-
         [TempData]
         public string Message { get; set; }
-
         public bool ShowMessage => !string.IsNullOrEmpty(Message);
 
-        public async Task OnGet(int day = 0)
+        public async Task OnGetAsync(int day = 0)
         {
             IsAdmin = User.IsAdmin();
-
             CurrentDayOffset = day;
 
             if (User.Identity.IsAuthenticated)
@@ -56,8 +46,8 @@ namespace FrontEnd.Pages
             DayOffsets = sessions.Select(s => s.StartTime?.Date)
                                  .Distinct()
                                  .OrderBy(d => d)
-                                 .Select(day => ((int)Math.Floor((day.Value - startDate)?.TotalDays ?? 0),
-                                                 day?.DayOfWeek))
+                                 .Select(d => ((int)Math.Floor((d!.Value - startDate)?.TotalDays ?? 0),
+                                                 d?.DayOfWeek))
                                  .ToList();
 
             var filterDate = startDate?.AddDays(day);

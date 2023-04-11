@@ -1,8 +1,5 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using FrontEnd.Data;
 using Microsoft.EntityFrameworkCore;
-using FrontEnd.Data;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace FrontEnd.Services
 {

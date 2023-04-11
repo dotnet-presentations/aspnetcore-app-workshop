@@ -13,6 +13,7 @@ namespace FrontEnd.Pages
 
         public IEnumerable<IGrouping<DateTimeOffset?, SessionResponse>> Sessions { get; set; } = null!;
         public IEnumerable<(int Offset, DayOfWeek? DayofWeek)> DayOffsets { get; set; } = null!;
+        public List<int> UserSessions { get; set; } = new List<int>();
         public int CurrentDayOffset { get; set; }
 
         public IndexModel(ILogger<IndexModel> logger, IApiClient apiClient)
@@ -23,12 +24,22 @@ namespace FrontEnd.Pages
 
         public bool IsAdmin { get; set; }
 
+        [TempData]
+        public string Message { get; set; }
+        public bool ShowMessage => !string.IsNullOrEmpty(Message);
+
         public async Task OnGetAsync(int day = 0)
         {
             IsAdmin = User.IsAdmin();
             CurrentDayOffset = day;
 
-            var sessions = await _apiClient.GetSessionsAsync();
+            if (User.Identity.IsAuthenticated)
+            {
+                var userSessions = await _apiClient.GetSessionsByAttendeeAsync(User.Identity.Name);
+                UserSessions = userSessions.Select(u => u.Id).ToList();
+            }
+
+            var sessions = await GetSessionsAsync();
 
             var startDate = sessions.Min(s => s.StartTime?.Date);
 
@@ -45,6 +56,25 @@ namespace FrontEnd.Pages
                                .OrderBy(s => s.TrackId)
                                .GroupBy(s => s.StartTime)
                                .OrderBy(g => g.Key);
+        }
+
+        protected virtual Task<List<SessionResponse>> GetSessionsAsync()
+        {
+            return _apiClient.GetSessionsAsync();
+        }
+
+        public async Task<IActionResult> OnPostAsync(int sessionId)
+        {
+            await _apiClient.AddSessionToAttendeeAsync(User.Identity.Name, sessionId);
+
+            return RedirectToPage();
+        }
+
+        public async Task<IActionResult> OnPostRemoveAsync(int sessionId)
+        {
+            await _apiClient.RemoveSessionFromAttendeeAsync(User.Identity.Name, sessionId);
+
+            return RedirectToPage();
         }
     }
 }
